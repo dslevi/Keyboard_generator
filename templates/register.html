@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block body %}
+<h2>Register</h2><br>
+<form method="post">
+    <input type="text" name="name" placeholder="First name"><br>
+    <input type="text" name="email" placeholder="Email"><br>
+    <input type="password" name="password" placeholder="Password"><br>
+    <input type="password" name="verify_password" placeholder="Verify password"><br>
+    <input type="text" name="occupation" placeholder="Occupation"><br>
+    <input type="text" name="age" placeholder="Age"><br>
+    <b>Dominant hand: </b>
+    Left <input type="radio" name="right_hand" value="false">
+    Right <input type="radio" name="right_hand" value="true"><br>
+    <input type="submit">
+</form>
+{% endblock %}

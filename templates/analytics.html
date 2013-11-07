@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block body %}
+    <h2>Analytics</h2><br>
+    {% if not user_id %}
+        <b><a href="/register">Register</a> to save your future analytics.</b><br><br>
+    {% endif %}
+    <b>Raw input:</b> {{raw_text}}<br>
+    <b>Final input:</b> {{text}}<br><br>
+    <b>Strokes:</b><br> {{strokes}}<br><br>
+    {% if not user_id %}
+        <b><a href="{{url_for('view_pekl', user_id='guest')}}">Your keyboard</a></b>
+    {% else %}
+        <b><a href="{{url_for('view_pekl', user_id=user_id)}}">Your keyboard</a></b>
+    {% endif %}
+{% endblock %}

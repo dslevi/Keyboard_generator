@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% block body %}
+<br>
+    <h3>{{prompt}}</h3><br>
+    <form method="POST", id="typing_data" action="">
+        <textarea id='keyboard_text' cols=100 rows=10></textarea><br>
+        <input type="hidden" id="keystrokes" name="stroke" value="">
+        <input type="hidden" id="raw" name="rawtext" value="">
+        <input type="hidden" id="ftext" name="final_text" value="">
+        <input type="submit" id="repeat" value="Repeat">
+        <input type="submit" id="button" value="Process">
+    </form>
+
+<div class="keyboard">
+    <div class="keyboard_row">
+        <div class="key" id="tilde">~<br>`</div>
+        <div class="key" id="one">!<br>1</div>
+        <div class="key" id="two">@<br>2</div>
+        <div class="key" id="three">#<br>3</div>
+        <div class="key" id="four">$<br>4</div>
+        <div class="key" id="five">%<br>5</div>
+        <div class="key" id="six">^<br>6</div>
+        <div class="key" id="seven">&<br>7</div>
+        <div class="key" id="eight">*<br>8</div>
+        <div class="key" id="nine">(<br>9</div>
+        <div class="key" id="zero">)<br>0</div>
+        <div class="key" id="dash">_<br>-</div>
+        <div class="key" id="plus">+<br>=</div>
+        <div class="key" id="delete">DELETE</div>
+    </div>
+    <div class="keyboard_row">
+        <div class="key" id="tab">TAB</div>
+        <div class="key" id="Q">Q</div>
+        <div class="key" id="W">W</div>
+        <div class="key" id="E">E</div>
+        <div class="key" id="R">R</div>
+        <div class="key" id="T">T</div>
+        <div class="key" id="Y">Y</div>
+        <div class="key" id="U">U</div>
+        <div class="key" id="I">I</div>
+        <div class="key" id="O">O</div>
+        <div class="key" id="P">P</div>
+        <div class="key" id="brace_open">{<br>[</div>
+        <div class="key" id="brace_close">}<br>]</div>
+        <div class="key" id="pipe">|<br>\</div>
+    </div>
+    <div class="keyboard_row">
+        <div class="key" id="caps">CAPS</div>
+        <div class="key" id="A">A</div>
+        <div class="key" id="S">S</div>
+        <div class="key" id="D">D</div>
+        <div class="key" id="F">F</div>
+        <div class="key" id="G">G</div>
+        <div class="key" id="H">H</div>
+        <div class="key" id="J">J</div>
+        <div class="key" id="K">K</div>
+        <div class="key" id="L">L</div>
+        <div class="key" id="colon">:<br>;</div>
+        <div class="key" id="quote">"<br>'</div>
+        <div class="key" id="enter">ENTER</div>
+    </div>
+    <div class="keyboard_row">
+        <div class="key" id="shift_left">SHIFT</div>
+        <div class="key" id="Z">Z</div>
+        <div class="key" id="X">X</div>
+        <div class="key" id="C">C</div>
+        <div class="key" id="V">V</div>
+        <div class="key" id="B">B</div>
+        <div class="key" id="N">N</div>
+        <div class="key" id="M">M</div>
+        <div class="key" id="comma"><<br>,</div>
+        <div class="key" id="period">><br>.</div>
+        <div class="key" id="question">?<br>/</div>
+        <div class="key" id="shift_right">SHIFT</div>
+    </div>
+    <div class="keyboard_row">
+        <div class="key" id="control_left">CONTROL</div>
+        <div class="key" id="super_left">SUPER</div>
+        <div class="key" id="alt_left">ALT</div>
+        <div class="key" id="space">SPACE</div>
+        <div class="key" id="alt_right">ALT</div>
+        <div class="key" id="super_right">SUPER</div>
+        <div class="key" id="meta">META</div>
+        <div class="key" id="control_right">CONTROL</div>
+    </div>
+</div>
+<br><br>
+
+<script type="text/javascript">
+    var keys = {96:"tilde", 126:"tilde", 33:"one", 49:"one", 50:"two", 64:"two", 35:"three", 
+        51:"three", 52:"four", 53:"five", 37:"five", 54:"six", 94:"six", 55:"seven", 
+        38:"seven", 42:"eight", 56:"eight", 57:"nine", 40:"nine", 48:"zero", 41:"zero", 
+        36:"four", 45:"dash", 95:"dash", 43:"plus", 61:"plus", 8:"delete", 9:"tab", 
+        13:"enter", 16:"shift_left", 17:"control_left", 18:"alt_left", 20:"caps", 27:"escape",
+        32:"space", 97:"A", 65:"A", 113:"Q", 81:"Q", 119:"W", 87:"W", 101:"E", 69:"E", 114:"R",
+        82:"R", 116:"T", 84:"T", 89:"Y", 121:"Y", 85:"U", 117:"U", 73:"I", 105:"I", 80:"P", 
+        112:"P", 123:"brace_open", 91:"brace_open", 93:"brace_close", 125:"brace_close", 
+        124:"pipe", 92:"pipe", 111:"O", 79:"O", 98:"B", 66:"B", 115:"S", 83:"S", 100:"D", 
+        68:"D", 102:"F", 70:"F", 103:"G", 71:"G", 104:"H", 72:'H', 74:'J', 106:'J', 107:'K', 
+        75:'K', 76:'L', 108:'L', 77:'M', 109:'M', 59:"colon", 58:'colon', 39:'quote', 
+        34:'quote', 122:"Z", 90:"Z", 120:"X", 88:"X", 99:"C", 67:"C", 118:"V", 86:"V", 110:"N",
+        78:"N", 60:"comma", 44:"comma", 62:"period", 46:"period", 63:"question", 47:"question"
+        };
+    
+    
+    //makes assumption that caps lock default state is off
+    var caps_down = null;
+    var prev_key = null;
+
+    //find a way to update these values to the passed in ones
+    var keystrokes = "";
+    var raw_text = "";
+
+    function keyCount(metakey, timestamp) {
+        keystrokes += metakey + " " + timestamp + "|";
+        raw_text += String.fromCharCode(metakey);
+    }
+
+    $('#keyboard_text').keypress(function (event) { 
+        if ((event.which > 32) && (event.which <= 127)) {
+            if (prev_key != null) {
+                prev_key.style.backgroundColor="212121";
+            }
+            var key = document.getElementById(keys[event.which]);
+            key.style.backgroundColor="orange";
+            prev_key = key;
+            keyCount(event.which, JSON.stringify(new Date().getTime())); 
+        }
+    });
+
+    $('#keyboard_text').keydown(function (event) {
+        if (event.which <= 32) {
+            if (prev_key != null) {
+                prev_key.style.backgroundColor="212121";
+            }
+
+            var key = document.getElementById(keys[event.which]);
+            key.style.backgroundColor="orange";
+            keyCount(event.which, JSON.stringify(new Date().getTime()));
+
+            if (event.which == 16) {
+                document.getElementById('shift_left').style.backgroundColor="orange";
+                document.getElementById('shift_right').style.backgroundColor="orange";
+            } else if ((event.which == 20) && (caps_down != null)) {
+                caps_down.style.backgroundColor="212121";
+                caps_down = null;
+            } else if (event.which == 20) {
+                caps_down = key;
+            } else {
+                prev_key = key;
+            }
+        }
+    });
+
+    //Should I just make all keys resturn to default value when key released?
+    $('#keyboard_text').keyup(function (event) {
+        if (event.which == 16) {
+            document.getElementById('shift_left').style.backgroundColor="212121";
+            document.getElementById('shift_right').style.backgroundColor="212121";
+        }
+    });
+
+    $('#button').click(function(event) {
+        document.getElementById('keystrokes').value += keystrokes;
+        document.getElementById('raw').value += raw_text;
+        document.getElementById('ftext').value += document.getElementById('keyboard_text').value;
+        submitForm("/analytics");
+    });
+
+    $('#repeat').click(function(event) {
+        document.getElementById('keystrokes').value += keystrokes;
+        document.getElementById('raw').value += raw_text;
+        document.getElementById('ftext').value += document.getElementById('keyboard_text').value;
+        submitForm('/keyboard');
+    });
+
+    function submitForm(action) {
+        document.getElementById("typing_data").action = action;
+        document.getElementById("typing_data").submit();
+    }
+
+</script>
+{% endblock %}
