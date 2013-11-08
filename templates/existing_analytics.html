@@ -1,9 +1,17 @@
 {% extends "base.html" %}
 {% block body %}
-    <h2>Graph Experimentation</h2><br><br>
-    <canvas id="myChart" width="400" height="400"></canvas><br><br>
-    <script src="Chart.js">
-        
+    <h2>Graph Experimentation</h2>
+    <h3>Average keystroke times</h3><br>
+    <canvas id="myChart" width="650" height="350"></canvas><br><br>
+    <script src="/static/js/Chart.js"></script>
+    <script>
+        // function makeLabels(avg_times) {
+        //     var labels = []
+        //     for (var i = 0; i < avg_times.length; i++) {
+
+        //     }
+        // }
+
         var data = {
             labels : ["January","February","March","April","May","June","July"],
             datasets : [
@@ -23,11 +31,9 @@
                 }
             ]
         }
-
-        var context = document.getElementById("myChart").getContext("2d");
-        var newChart = new Chart(context).Line(data, options);
-
-    </script>
+        var ctx = document.getElementById("myChart").getContext("2d");
+        var newChart = new Chart(ctx).Line(data);
+    </script><br>
 
     <h2>Analytics</h2><br>
     <b>Raw input:</b> {{raw_text}}<br>
