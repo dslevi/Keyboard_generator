@@ -108,10 +108,9 @@
     var prev_key = null;
 
     //find a way to update these values to the passed in ones
-    var keystrokes = "";
-    var raw_text = "";
-
-    console.log({{strokes|tojson|safe}})
+    var keystrokes = {{strokes|tojson|safe}};
+    var raw_text = {{raw|tojson|safe}} + "|";
+    var final_text = {{final_text|tojson|safe}} + "|";
 
     function keyCount(key, timestamp) {
         keystrokes += key + " " + timestamp + "|";
@@ -163,16 +162,16 @@
     });
 
     $('#button').click(function(event) {
-        document.getElementById('keystrokes').value += keystrokes;
+        document.getElementById('keystrokes').value += keystrokes + "*";
         document.getElementById('raw').value += raw_text;
-        document.getElementById('ftext').value += document.getElementById('keyboard_text').value;
+        document.getElementById('ftext').value += final_text + document.getElementById('keyboard_text').value;
         submitForm("/analytics");
     });
 
     $('#repeat').click(function(event) {
-        document.getElementById('keystrokes').value += keystrokes;
+        document.getElementById('keystrokes').value += keystrokes + "*";
         document.getElementById('raw').value += raw_text;
-        document.getElementById('ftext').value += document.getElementById('keyboard_text').value;
+        document.getElementById('ftext').value += final_text + document.getElementById('keyboard_text').value;
         submitForm('/keyboard');
     });
 

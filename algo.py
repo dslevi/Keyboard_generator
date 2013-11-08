@@ -100,22 +100,27 @@ def calc_avg_times(strokes):
              '48': '0', '49': '1', '46': '.', '86': 'V', '44': ',', '45': '-', '42': '*', '43': '+', '40': '(', '41': ')', '9': 'TAB', '77': 'M', 
              '76': 'L', '75': 'K', '74': 'J', '73': 'I', '72': 'H', '71': 'G', '70': 'F', '79': 'O', '78': 'N', '47': '/'}
     key_times = {}
-    tokens = strokes[:-1].split("|")
-    prev_time = 0
-
-    for i in range(len(tokens)):
-        key = tokens[i].split()
-        key_code = int(key[0])
-        if i == 0:
-            timestamp = 0
-        else:
-            timestamp = abs(prev_time - ms_to_s(int(key[1])))
-        if key_times.has_key(key_code):
-            key_times[key_code].append(timestamp)
-        else:
-           key_times[key_code] = [timestamp]
-        prev_time = ms_to_s(int(key[1]))
     
+    sessions = strokes[:-1].split("*")
+    for session in sessions:
+        print session
+        tokens = session[:-1].split("|")
+        prev_time = 0
+
+        for i in range(len(tokens)):
+            key = tokens[i].split()
+            key_code = int(key[0])
+            if i == 0:
+                #should I change the zero to another time...?
+                timestamp = 0
+            else:
+                timestamp = abs(prev_time - ms_to_s(int(key[1])))
+            if key_times.has_key(key_code):
+                key_times[key_code].append(timestamp)
+            else:
+               key_times[key_code] = [timestamp]
+            prev_time = ms_to_s(int(key[1]))
+        
     avg_times = {}
     for key in key_times:
         total = 0

@@ -34,30 +34,6 @@ def index():
         user = None
     return render_template("index.html", user=user)
 
-@app.route("/analytics")
-def no_analytics():
-    if session.get('user_id'):
-        user = User.query.filter_by(id=session['user_id']).first()
-        analytics = user.analytics
-        if len(analytics) > 0:
-            return render_template("existing_analytics.html", raw_text=analytics[-1].raw_text, text=analytics[-1].text, strokes=analytics[-1].strokes)
-    return render_template("no_analytics.html")
-
-@app.route("/analytics", methods=["POST"])
-def show_analytics():
-    text = request.form.get("final_text")
-    raw_text = request.form.get("rawtext")
-    strokes = request.form.get("stroke")
-    avg_times = algo.calc_avg_times(strokes)
-    if session.get("user_id"):
-        user_id = session['user_id']
-        new_a = Analytics(text=text, raw_text=raw_text, strokes=strokes, user_id=user_id)
-        model.session.add(new_a)
-        model.session.commit()
-    else:
-        user_id=None
-    return render_template("analytics.html", strokes=strokes, text=text, raw_text=raw_text, user_id=user_id, avg_times=avg_times)
-
 @app.route("/register")
 def register():
     return render_template("register.html")
@@ -111,30 +87,73 @@ def authenticate():
     session['user_id'] = user.id
     return redirect(request.args.get("next", url_for("index")))
 
-@app.route("/pekl/<user_id>")
-def view_pekl(user_id):
-    return render_template("pekl.html")
+@app.route("/signout")
+def signout():
+    session.clear()
+    flash("User signed out.")
+    return redirect(url_for("login"))
 
+#can condense?
 @app.route("/keyboard", methods=["POST"])
 def continue_keyboard():
     prompt = Prompts.query.get(random.randint(1, 238))
     strokes = request.form.get("stroke")
-    # raw = request.form.get("rawtext")
-    # final = request.form.get("final_text")
-    return render_template("keyboard.html", prompt=prompt.text, strokes=strokes)
+    raw = request.form.get("rawtext")
+    final = request.form.get("final_text")
+    return render_template("keyboard.html", prompt=prompt.text, strokes=strokes, raw=raw, final_text=final)
 
 @app.route("/keyboard")
 def show_keyboard():
     prompt = Prompts.query.get(random.randint(1, 238))
     strokes = ""
-    return render_template("keyboard.html", prompt=prompt.text, strokes=strokes)
+    raw = ""
+    final = ""
+    return render_template("keyboard.html", prompt=prompt.text, strokes=strokes, raw=raw, final_text=final)
 
+@app.route("/analytics")
+def no_analytics():
+    if session.get('user_id'):
+        user = User.query.filter_by(id=session['user_id']).first()
+        analytics = user.analytics
+        if len(analytics) > 0:
+            return render_template("existing_analytics.html", raw_text=analytics[-1].raw_text, text=analytics[-1].text, strokes=analytics[-1].strokes)
+    return render_template("no_analytics.html")
+
+@app.route("/analytics", methods=["POST"])
+def show_analytics():
+    text = request.form.get("final_text")
+    raw_text = request.form.get("rawtext")
+    strokes = request.form.get("stroke")
+    avg_times = algo.calc_avg_times(strokes)
+    if session.get("user_id"):
+        user_id = session['user_id']
+        new_a = Analytics(text=text, raw_text=raw_text, strokes=strokes, user_id=user_id)
+        model.session.add(new_a)
+        model.session.commit()
+    else:
+        user_id=None
+    return render_template("analytics.html", strokes=strokes, text=text, raw_text=raw_text, user_id=user_id, avg_times=avg_times)
+
+
+
+
+
+
+
+
+
+
+
+#still under construction...
 @app.route("/allkeyboards")
 def all_keyboards():
     keyboards = []
     return render_template("all_keyboards.html", keyboards=keyboards)
 
-#still under construction...
+@app.route("/pekl/<user_id>")
+def view_pekl(user_id):
+    return render_template("pekl.html")
+
 @app.route("/keyboard/<keyboard_id>")
 def display_keyboard(keyboard_id):
     return render_template("display_keyboard.html")
@@ -150,12 +169,6 @@ def remap_keys():
 @app.route("/logging")
 def log_keys():
     return render_template("construction.html")
-
-@app.route("/signout")
-def signout():
-    session.clear()
-    flash("User signed out.")
-    return redirect(url_for("login"))
 
 if __name__ == "__main__":
     app.run(debug=True)
