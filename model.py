@@ -10,6 +10,7 @@ from sqlalchemy.orm import sessionmaker, scoped_session, relationship, backref
 
 from flask.ext.login import UserMixin
 
+
 engine = create_engine(config.DB_URI, echo=False) 
 session = scoped_session(sessionmaker(bind=engine,
                          autocommit = False,
@@ -73,6 +74,6 @@ def create_prompts(filename):
         session.add(p)
     session.commit()
 
-if __name__ == "__main__":
-    create_tables()
-    create_prompts("prompts.txt")
+# if __name__ == "__main__":
+#     create_tables()
+#     create_prompts("prompts.txt")

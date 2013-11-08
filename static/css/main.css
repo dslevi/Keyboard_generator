@@ -1,0 +1,102 @@
+.keyboard{
+    padding: 5px;
+    padding-bottom: 16px;
+
+}
+
+#keyboard_text{
+    width: 910px;
+    height: 150px;
+}
+
+.keyboard_row{
+    padding: 2px 0px 2px 0px;
+}
+
+.key{
+    padding: 5px;
+    width: 45px;
+    height: 45px;
+    float: left;
+    background-color: 212121;
+    margin: 3px;
+    color: white;
+}
+
+#delete{
+    width:90px;
+}
+
+#tab{
+    width:68px;
+}
+
+#pipe{
+    width:67px;
+}
+
+#caps{
+    width:97px;
+}
+
+#enter{
+    width:99px;
+}
+
+#shift_left{
+    width:128px;
+}
+
+#shift_right{
+    width:129px;
+}
+
+#space{
+    width:380px;
+}
+
+#control_left{
+    width:70px;
+}
+
+#control_right{
+    width:70px;
+}
+
+#super_left{
+    width:52px;
+}
+
+#super_right{
+    width:52px;
+}
+
+#alt_left{
+    width:49px;
+}
+
+#alt_right{
+    width:49px;
+}
+
+#meta{
+    width:49px;
+}
+
+#repeat{
+    padding: 4px;
+    margin-left: 7px;
+    margin-right: 5px;
+    margin-bottom: 9px;
+    font-size: 13px;
+    line-height: 18px;
+    color: #555555;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-weight: normal;
+    vertical-align: middle;
+    width: 55px;
+}

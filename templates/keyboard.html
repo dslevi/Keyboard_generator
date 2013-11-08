@@ -111,9 +111,11 @@
     var keystrokes = "";
     var raw_text = "";
 
-    function keyCount(metakey, timestamp) {
-        keystrokes += metakey + " " + timestamp + "|";
-        raw_text += String.fromCharCode(metakey);
+    console.log({{strokes|tojson|safe}})
+
+    function keyCount(key, timestamp) {
+        keystrokes += key + " " + timestamp + "|";
+        raw_text += String.fromCharCode(key);
     }
 
     $('#keyboard_text').keypress(function (event) { 
@@ -124,7 +126,7 @@
             var key = document.getElementById(keys[event.which]);
             key.style.backgroundColor="orange";
             prev_key = key;
-            keyCount(event.which, JSON.stringify(new Date().getTime())); 
+            keyCount(event.which, JSON.stringify(new Date().getTime()));
         }
     });
 

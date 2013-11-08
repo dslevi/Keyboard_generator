@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block body %}
+    <h2>All keyboards</h2>
+    {% for keyboard in keyboards %}
+        <a href="/keyboard/{{keyboard.id}}">{{keyboard.name}}</a><br>
+    {% endfor %}
+{% endblock %}
