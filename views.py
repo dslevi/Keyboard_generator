@@ -69,6 +69,7 @@ def login():
 
 @app.route("/login", methods=["POST"])
 def authenticate():
+    session.clear()
     form = forms.LoginForm(request.form)
     if not form.validate():
         flash("Incorrect username or password") 
@@ -112,11 +113,18 @@ def show_keyboard():
 
 @app.route("/analytics")
 def no_analytics():
+    if session.get('text'):
+        text = session['text']
+        raw_text = session['raw']
+        strokes = session['strokes']
+        avg_times = algo.calc_avg_times(strokes)
+        return render_template("analytics.html", raw_text=raw_text, text=text, strokes=strokes, avg_times=avg_times)
     if session.get('user_id'):
         user = User.query.filter_by(id=session['user_id']).first()
         analytics = user.analytics
         if len(analytics) > 0:
-            return render_template("existing_analytics.html", raw_text=analytics[-1].raw_text, text=analytics[-1].text, strokes=analytics[-1].strokes)
+            avg_times = algo.calc_avg_times(analytics[-1].strokes)
+            return render_template("existing_analytics.html", raw_text=analytics[-1].raw_text, text=analytics[-1].text, strokes=analytics[-1].strokes, avg_times=avg_times)
     return render_template("no_analytics.html")
 
 @app.route("/analytics", methods=["POST"])
@@ -124,6 +132,9 @@ def show_analytics():
     text = request.form.get("final_text")
     raw_text = request.form.get("rawtext")
     strokes = request.form.get("stroke")
+    session['text'] = text
+    session['raw'] = raw_text
+    session['strokes'] = strokes
     avg_times = algo.calc_avg_times(strokes)
     if session.get("user_id"):
         user_id = session['user_id']
