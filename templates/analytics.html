@@ -15,30 +15,39 @@
     <canvas id="myChart" width="650" height="350"></canvas><br><br>
     <script src="/static/js/Chart.js"></script>
     <script>
-        // function makeLabels(avg_times) {
-        //     var labels = []
-        //     for (var i = 0; i < avg_times.length; i++) {
+        function makeData(l) {
+            var labels = [];
+            var values = [];
+            for(var key in l) {
+                labels.push(key);
+                values.push(l[key]);
+            }
+            return [labels, values];
+        }
 
-        //     }
-        // }
-
+        var average_times = makeData({{avg_times|tojson|safe}});
+        var time_labels = average_times[0];
+        var time_values = average_times[1];
         var data = {
-            labels : ["January","February","March","April","May","June","July"],
+            labels : time_labels,
             datasets : [
-                {
-                    fillColor : "rgba(220,220,220,0.5)",
-                    strokeColor : "rgba(220,220,220,1)",
-                    pointColor : "rgba(220,220,220,1)",
-                    pointStrokeColor : "#fff",
-                    data : [65,59,90,81,56,55,40]
-                },
                 {
                     fillColor : "rgba(151,187,205,0.5)",
                     strokeColor : "rgba(151,187,205,1)",
                     pointColor : "rgba(151,187,205,1)",
                     pointStrokeColor : "#fff",
-                    data : [28,48,40,19,96,27,100]
+                    data : time_values
                 }
+                // ,{
+                    // fillColor : "rgba(220,220,220,0.5)",
+                    // strokeColor : "rgba(220,220,220,1)",
+                    // pointColor : "rgba(220,220,220,1)",
+                    // fillColor : "rgba(151,187,205,0.5)",
+                    // strokeColor : "rgba(151,187,205,1)",
+                    // pointColor : "rgba(151,187,205,1)",
+                    // pointStrokeColor : "#fff",
+                    // data : [28,48,40,19,96,27,100]
+                // }
             ]
         }
         var ctx = document.getElementById("myChart").getContext("2d");
