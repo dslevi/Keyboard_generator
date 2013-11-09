@@ -118,13 +118,16 @@ def no_analytics():
         raw_text = session['raw']
         strokes = session['strokes']
         avg_times = algo.calc_avg_times(strokes)
-        return render_template("analytics.html", raw_text=raw_text, text=text, strokes=strokes, avg_times=avg_times)
+        keyboard = algo.placeKeys(strokes)
+        return render_template("analytics.html", raw_text=raw_text, text=text, strokes=strokes, avg_times=avg_times, keyboard=keyboard)
     if session.get('user_id'):
         user = User.query.filter_by(id=session['user_id']).first()
         analytics = user.analytics
         if len(analytics) > 0:
             avg_times = algo.calc_avg_times(analytics[-1].strokes)
-            return render_template("existing_analytics.html", raw_text=analytics[-1].raw_text, text=analytics[-1].text, strokes=analytics[-1].strokes, avg_times=avg_times)
+            keyboard = algo.placeKeys(strokes)
+            return render_template("existing_analytics.html", raw_text=analytics[-1].raw_text, text=analytics[-1].text, strokes=analytics[-1].strokes, 
+                avg_times=avg_times, keyboard=keyboard)
     return render_template("no_analytics.html")
 
 @app.route("/analytics", methods=["POST"])
@@ -136,6 +139,7 @@ def show_analytics():
     session['raw'] = raw_text
     session['strokes'] = strokes
     avg_times = algo.calc_avg_times(strokes)
+    keyboard = algo.placeKeys(strokes)
     if session.get("user_id"):
         user_id = session['user_id']
         new_a = Analytics(text=text, raw_text=raw_text, strokes=strokes, user_id=user_id)
@@ -143,7 +147,7 @@ def show_analytics():
         model.session.commit()
     else:
         user_id=None
-    return render_template("analytics.html", strokes=strokes, text=text, raw_text=raw_text, user_id=user_id, avg_times=avg_times)
+    return render_template("analytics.html", strokes=strokes, text=text, raw_text=raw_text, user_id=user_id, avg_times=avg_times, keyboard=keyboard)
 
 
 

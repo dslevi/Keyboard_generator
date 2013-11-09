@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block body %}
+    {{keyboard}}<br><br>
     <h2>Graph Experimentation</h2>
     <h3>Average keystroke times</h3><br>
     <canvas id="myChart" width="650" height="350"></canvas><br><br>
@@ -38,7 +39,6 @@
     <h2>Analytics</h2><br>
     <b>Raw input:</b> {{raw_text}}<br>
     <b>Final input:</b> {{text}}<br><br>
-    <b>Strokes:</b><br> {{strokes}}<br><br>
     <b>Average key stroke time:</b><br> 
     {% for keytime in avg_times %}
        {{keytime}} -- {{avg_times[keytime]}}, 
