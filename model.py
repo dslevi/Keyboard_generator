@@ -68,12 +68,16 @@ def create_tables():
     session.commit()
 
 def create_prompts(filename):
+    count = 0
     f = open(filename)
     for line in f:
-        p = Prompts(text=unicode(line))
-        session.add(p)
+        if len(line) <= 95:
+            p = Prompts(text=unicode(line))
+            session.add(p)
+            count += 1
     session.commit()
+    print "Prompts: ", count
 
-# if __name__ == "__main__":
-#     create_tables()
-#     create_prompts("prompts.txt")
+if __name__ == "__main__":
+    create_tables()
+    create_prompts("prompts.txt")
