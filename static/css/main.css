@@ -91,6 +91,10 @@
     font-size: 15px;
 }
 
+.graph{
+    margin-left: -15px;
+}
+
 #repeat{
     padding: 4px;
     margin-left: 7px;

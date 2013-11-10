@@ -87,8 +87,8 @@
 <br><br>
 
 <script type="text/javascript">
-    //visual timer -- set for two minutes
-    //check and see if a longer prompt will run into the timer
+    //SECTION 1: visual timer -- set for two minutes
+    
     var Timer;
     var TotalSeconds;
 
@@ -126,6 +126,9 @@
 
     window.onload = CreateTimer("timer", 120);
 
+
+    //SECTION 2: keyboard typing animations
+
     var keys = {96:"tilde", 126:"tilde", 33:"one", 49:"one", 50:"two", 64:"two", 35:"three", 
         51:"three", 52:"four", 53:"five", 37:"five", 54:"six", 94:"six", 55:"seven", 
         38:"seven", 42:"eight", 56:"eight", 57:"nine", 40:"nine", 48:"zero", 41:"zero", 
@@ -145,7 +148,6 @@
     var caps_down = null;
     var prev_key = null;
 
-    //find a way to update these values to the passed in ones
     var keystrokes = {{strokes|tojson|safe}};
     var raw_text = {{raw|tojson|safe}} + "|";
     var final_text = {{final_text|tojson|safe}} + "|";
@@ -201,24 +203,30 @@
         }
     });
 
-    $('#button').click(function(event) {
-        document.getElementById('keystrokes').value += keystrokes + "*";
-        document.getElementById('raw').value += raw_text;
-        document.getElementById('ftext').value += final_text + document.getElementById('keyboard_text').value;
-        submitForm("/analytics");
-    });
 
-    $('#repeat').click(function(event) {
+
+    //SECITON 3: submitting form values
+
+    function updateValues(){
         document.getElementById('keystrokes').value += keystrokes + "*";
         document.getElementById('raw').value += raw_text;
         document.getElementById('ftext').value += final_text + document.getElementById('keyboard_text').value;
-        submitForm('/keyboard');
-    });
+    }
 
     function submitForm(action) {
         document.getElementById("typing_data").action = action;
         document.getElementById("typing_data").submit();
     }
+
+    $('#button').click(function(event) {
+        updateValues();
+        submitForm("/analytics");
+    });
+
+    $('#repeat').click(function(event) {
+        updateValues();
+        submitForm('/keyboard');
+    });
 
 </script>
 {% endblock %}
