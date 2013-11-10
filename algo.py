@@ -1,8 +1,7 @@
-
-#timestamps stripped out, metadata can be recycled later or removed later if necessary
+#timestamps stripped out
 def findStrokes(strokes):
     keystrokes = []
-    #results in an empty token at the end of tokens list, must be removed
+    #removes an empty token at the end of tokens list
     sessions = strokes[:-1].split("*")
     for session in sessions:
         tokens = session[:-1].split("|")
@@ -28,6 +27,37 @@ def keyFreq(keystrokes):
         key_value = keycodes[str(key)]
         freq[key_value] = freq.get(key_value, 0) + 1
     return freq
+
+def keyMistakes(strokes):
+    keycodes = { '20': 'CAPS', '8': 'DELETE', '120': 'x', '121': 'y', '122': 'z', '123': '{', '124': '|', '125': '}', '126': '~', '118': 'v', '59': ';', 
+            '58': ';', '55': '7', '54': '6', '57': '9', '56': '8', '51': '3', '50': '2', '53': '5', '52': '4', 'x': 'META', '115': 's', '114': 'r', 
+            '117': 'u', '116': 't', '111': 'o', '110': 'n', '113': 'q', '112': 'p', '82': 'R', '83': 'S', '80': 'P', '81': 'Q', '119': 'w', '87': 'W', 
+            '84': 'T', '85': 'U', '108': 'l', '109': 'm', '102': 'f', '103': 'g', '100': 'd', '101': 'e', '106': 'j', '107': 'k', '104': 'h',
+            '105': 'i', '39': "'", '38': '&', '33': '!', '32': 'SPACE', '37': '%', '36': '$', '35': '#', '34': '"', '60': '<', '61': '=', '62': '>', 
+            '63': '?', '64': '@', '65': 'A', '66': 'B', '67': 'C', '68': 'D', '69': 'E', '99': 'c', '98': 'b', '91': '[', '90': 'Z', '93': ']',
+             '92': '\\', '95': '_', '94': '^', '97': 'a', '96': '`', '13': 'ENTER', '17': 'CTRL', '16': 'SHIFT', '18': 'ALT', '88': 'X', '89': 'Y', 
+             '48': '0', '49': '1', '46': '.', '86': 'V', '44': ',', '45': '-', '42': '*', '43': '+', '40': '(', '41': ')', '9': 'TAB', '77': 'M', 
+             '76': 'L', '75': 'K', '74': 'J', '73': 'I', '72': 'H', '71': 'G', '70': 'F', '79': 'O', '78': 'N', '47': '/'}
+
+    mistakes = {}
+    delete = 8
+    count = 0
+    for i in range(len(strokes)):
+        if strokes[i] == delete:
+            count +=1
+        elif (count > 0):
+            for h in range(count):
+                index = i - (count + h + 1)
+                if index >= 0:
+                    devalued = keycodes[str(strokes[index])]
+                    mistakes[devalued] += 1
+                else:
+                    mistakes[keycodes[delete]] += 1
+            count = 0
+        key = keycodes[str(strokes[i])]
+        mistakes[key] = mistakes.get(key, 0)
+    print mistakes
+    return mistakes
 
 def findBigrams(keystrokes):
     bigrams = []

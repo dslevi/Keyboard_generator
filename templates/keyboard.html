@@ -103,6 +103,7 @@
     function Tick() {
         if (TotalSeconds <= 0) {
             Timer.innerHTML = "Proceed!";
+            document.getElementById(TimerID).style.color="212121";
             return;
         }
 
