@@ -35,9 +35,6 @@
                     mistakes.push(0);
                 }
             }
-            console.log(labels);
-            console.log(freq);
-            console.log(mistakes);
             return [labels, freq, mistakes];
         }
 
@@ -58,13 +55,11 @@
         }
         var ctx = document.getElementById("keytimes_line").getContext("2d");
         var newChart = new Chart(ctx).Line(lineData);
-        console.log({{mistakes|tojson|safe}});
         var frequencies = makeBarData({{key_freq|tojson|safe}}, {{mistakes|tojson|safe}});
         var bar_labels = frequencies[0];
         var freq_values = frequencies[1];
         var freq_mistakes = frequencies[2];
 
-        //values don't show up for small data sets?
         var barData = {
             labels: bar_labels,
             datasets: [

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block body %}
+    <h1>Testing</h1>
+    <div id="block">Hi</div><br>
+    <script language="javascript">
+        document.getElementById('block').style.position = "relative";
+        document.getElementById('block').style.left = "0px";
+        document.getElementById('block').style.width = "20px";
+
+        function computeWin() {
+            if(document.body.clientWidth) { 
+                this.windWidth=document.body.clientWidth; 
+                this.windHeight=document.body.clientHeight; 
+            } else { 
+                this.windWidth = window.innerWidth; 
+                this.windHeight=document.innerheight; 
+            } 
+            return this; 
+        }
+
+        function animBall() {
+            var imgLeftInt = parseInt(document.getElementById('block').style.left);
+            var imgWidth =  parseInt(document.getElementById('block').style.width); 
+            var winWidth = parseInt(computeWin().windWidth);
+
+            if (imgLeftInt <  (winWidth-imgWidth)){ 
+                goRight(); 
+            } else { 
+                clearInterval(t); 
+            }
+        }  
+
+        function goRight() {
+            document.getElementById('block').style.left = (parseInt(document.getElementById('block').style.left)-5) +"px"; 
+        }
+
+        function reset() {
+            document.getElementById('block').style.left = "0px";
+        }
+
+    </script>
+    <a href="javascript:var t=setInterval('animBall()', 80)">Try it</a> <a href="javascript:clearInterval(t)">Stop it</a>
+    <a href="javascript:reset()">Reset it</a>
+{% endblock %}
