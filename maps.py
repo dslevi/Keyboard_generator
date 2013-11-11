@@ -32,13 +32,24 @@ qwerty_map = { 126:'A1', 96:'A1', 33:'A2', 49:'A2', 64:'A3', 50:'A3', 35:'A4', 5
                 67:'D4', 99:'D4', 86:'D5', 118:'D5', 66:'D6', 98:'D6', 78:'D7', 110:'D7', 77:'D8', 109:'D8', 60:'D9', 44:'D9', 62:'D10', 46:'D10', 63:'D11', 
                 47:'D11', 17:'E1', 18:'E3', 32:'E4'}
 
+locations = ['A02', 'A03', 'A04', 'A04', 'A05', 'A06', 'A07', 'A08', 'A09', 'A10', 'A11', 'A12', 'A13', 'A14', 'B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B09', 'B10', 'B11', 'B12', 'B13', 'B14', 'C01', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C08', 'C09', 'C10', 'C11', 'C12', 'C13', 'D01', 'D02', 'D03', 'D04', 'D05', 'D06', 'D07', 'D08', 'D09', 'D10', 'D11', 'E01', 'E03', 'E04']
+values = []
+codes = []
+divs = []
+
+
+
+
+
+
+
 
 #the placements left to right with highest priority, key values are placed here
 dvorak_priorites = []
 #the corresponding location value for the qwerty map, removed D12 - shift, E8 - ctrl, E5 - alt
-dvorak_map = ['C6', 'C5', 'C7', 'C4', 'C8', 'C3', 'C9', 'C2', 'C10', 'C1', 'C11', 'C12', 'C13', 'B6', 'B5', 'B7', 'B4', 'B8', 'B3', 'B9', 'B2', 'B10', 'B1', 'B11', 
-                'B12', 'B13', 'B14', 'D7', 'D6', 'D8', 'D5', 'D9', 'D4', 'D10', 'D3', 'D11', 'D2', 'D1', 'E4', 'A8', 'A7', 'A6', 'A9', 
-                'A5', 'A10', 'A4', 'A11', 'A3', 'A12', 'A2', 'A13', 'A4', 'A14', 'E3', 'E1']
+dvorak_map = ['C06', 'C05', 'C07', 'C04', 'C08', 'C03', 'C09', 'C02', 'C10', 'C01', 'C11', 'C12', 'C13', 'B06', 'B05', 'B07', 'B04', 'B08', 'B03', 'B09', 'B02', 'B10', 'B01', 'B11', 
+                'B12', 'B13', 'B14', 'D07', 'D06', 'D08', 'D05', 'D09', 'D04', 'D10', 'D03', 'D11', 'D02', 'D01', 'E04', 'A08', 'A07', 'A06', 'A09', 
+                'A05', 'A10', 'A04', 'A11', 'A03', 'A12', 'A02', 'A13', 'A04', 'A14', 'E03', 'E01']
 
 common = ["space", "E", "T", "shift", 'A', 'O', 'I', 'N', 'S', 'R', 'H', 'delete', 'L', 'D', 'C', 'U', 'enter', 'M', 'F', 'P', 'G', 'W', 'Y', 'B', 'comma', 'period', 'V',
             'K', 'nine', 'zero', 'dash', 'colon', 'quote', 'plus', 'tab', 'X', 'question', 'four', 'eight', 'one', 'J', 'brace_open', 'brace_close', 'Q', "two", 'Z', 'five',

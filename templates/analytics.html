@@ -1,34 +1,47 @@
 {% extends "base.html" %}
 {% block body %}
+    <h1>Analytics</h1>
     {% if not user_id %}
-        <h3><a href="{{url_for('view_pekl', user_id='guest')}}">Your keyboard</a></h3></b>
-    {% else %}
-        <h3><a href="{{url_for('view_pekl', user_id=user_id)}}">Your keyboard</a></h3></b>
-    {% endif %}<br>
-    {% for key in keyboard %}
-        {% for attr in key %}
-            {{attr}}
-        {% endfor %} |
-    {% endfor %}<br><br>
+        <b><a href="/register">Register</a> to save your future analytics.</b><br>
+    {% endif %}
+    <b>Final input:</b> {{text[1:]}}<br><br>
     <h2>Graph Experimentation</h2>
     <h3>Average keystroke times</h3><br>
-    <canvas id="myChart" width="650" height="350"></canvas><br><br>
+    <canvas class="graph" id="keytimes_line" width="900" height="300"></canvas><br><br>
     <script src="/static/js/Chart.js"></script>
+    <h3>Key frequencies</h3><br>
+    <canvas class="graph" id="freq_bar" width="900" height="300"></canvas><br><br>
     <script>
-        function makeData(l) {
+        function makeLineData(l) {
             var labels = [];
-            var values = [];
+            var time = [];
             for(var key in l) {
                 labels.push(key);
-                values.push(l[key]);
+                time.push(l[key]);
             }
-            return [labels, values];
+            return [labels, time];
         }
 
-        var average_times = makeData({{avg_times|tojson|safe}});
+        function makeBarData(l, l2) {
+            var labels = [];
+            var freq = [];
+            var mistakes = [];
+            for(var key in l) {
+                labels.push(key);
+                freq.push(l[key]);
+                if (key in l2) {
+                    mistakes.push(l2[key]);
+                } else {
+                    mistakes.push(0);
+                }
+            }
+            return [labels, freq, mistakes];
+        }
+
+        var average_times = makeLineData({{avg_times|tojson|safe}});
         var time_labels = average_times[0];
         var time_values = average_times[1];
-        var data = {
+        var lineData = {
             labels : time_labels,
             datasets : [
                 {
@@ -36,30 +49,51 @@
                     strokeColor : "rgba(151,187,205,1)",
                     pointColor : "rgba(151,187,205,1)",
                     pointStrokeColor : "#fff",
-                    data : time_values
+                    data : time_values,
                 }
-                // ,{
-                    // fillColor : "rgba(220,220,220,0.5)",
-                    // strokeColor : "rgba(220,220,220,1)",
-                    // pointColor : "rgba(220,220,220,1)",
-                    // fillColor : "rgba(151,187,205,0.5)",
-                    // strokeColor : "rgba(151,187,205,1)",
-                    // pointColor : "rgba(151,187,205,1)",
-                    // pointStrokeColor : "#fff",
-                    // data : [28,48,40,19,96,27,100]
-                // }
             ]
         }
-        var ctx = document.getElementById("myChart").getContext("2d");
-        var newChart = new Chart(ctx).Line(data);
+        var ctx = document.getElementById("keytimes_line").getContext("2d");
+        var newChart = new Chart(ctx).Line(lineData);
+        var frequencies = makeBarData({{key_freq|tojson|safe}}, {{mistakes|tojson|safe}});
+        var bar_labels = frequencies[0];
+        var freq_values = frequencies[1];
+        var freq_mistakes = frequencies[2];
+
+        var barData = {
+            labels: bar_labels,
+            datasets: [
+                {
+                    fillColor : "rgba(220,220,220,0.5)",
+                    strokeColor : "rgba(220,220,220,1)",
+                    data : freq_values
+                },
+                {
+                    fillColor : "rgba(151,187,205,0.5)",
+                    strokeColor : "rgba(151,187,205,1)",
+                    data : freq_mistakes
+                }
+            ]
+        }
+
+        var context = document.getElementById("freq_bar").getContext("2d");
+        var barChart = new Chart(context).Bar(barData);
+
+
     </script><br>
 
-    <h2>Analytics</h2><br>
     {% if not user_id %}
-        <b><a href="/register">Register</a> to save your future analytics.</b><br><br>
-    {% endif %}
-    <b>Raw input:</b> {{raw_text}}<br>
-    <b>Final input:</b> {{text}}<br><br>
+        <h3><a href="{{url_for('view_pekl', user_id='guest')}}">Your Keyboard</a></h3></b>
+    {% else %}
+        <h3><a href="{{url_for('view_pekl', user_id=user_id)}}">Your Keyboard</a></h3></b>
+    {% endif %}<br>
+    <b>Predicted dvorak keyboard:</b><br>
+    {% for key in keyboard %}
+        {% for attr in key %}
+            {{attr}}
+        {% endfor %} |
+    {% endfor %}<br><br>
+    <b>Raw input:</b><br> {{raw_text[1:]}}<br><br>
     <b>Average key stroke time:</b><br> 
         {% for keytime in avg_times %}
            {{keytime}} -- {{avg_times[keytime]}}, 

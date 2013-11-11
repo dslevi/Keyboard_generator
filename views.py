@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, request, g, session, url_for, flash
-from model import User, Analytics, Prompts
+from model import User, Analytics, Prompts, Keyboard, Key, Key_Code, Key_Div, Key_Location, Key_Value
 from flask.ext.login import LoginManager, login_required, login_user, current_user
 from flaskext.markdown import Markdown
 import config
@@ -97,7 +97,8 @@ def signout():
 #can condense?
 @app.route("/keyboard", methods=["POST"])
 def continue_keyboard():
-    prompt = Prompts.query.get(random.randint(1, 238))
+    #there should be 228 total prompt, but ...just to be safe!
+    prompt = Prompts.query.get(random.randint(1, 227))
     strokes = request.form.get("stroke")
     raw = request.form.get("rawtext")
     final = request.form.get("final_text")
@@ -105,7 +106,7 @@ def continue_keyboard():
 
 @app.route("/keyboard")
 def show_keyboard():
-    prompt = Prompts.query.get(random.randint(1, 238))
+    prompt = Prompts.query.get(random.randint(1, 227))
     strokes = ""
     raw = ""
     final = ""
@@ -119,16 +120,25 @@ def no_analytics():
         strokes = session['strokes']
         avg_times = algo.calc_avg_times(strokes)
         keyboard = algo.placeKeys(strokes)
-        return render_template("analytics.html", raw_text=raw_text, text=text, strokes=strokes, avg_times=avg_times, keyboard=keyboard)
+        key_freq = algo.keyFreq(algo.findStrokes(strokes))
+        mistakes = algo.keyMistakes(algo.findStrokes(strokes))
+        return render_template("analytics.html", raw_text=raw_text, text=text, strokes=strokes, avg_times=avg_times, keyboard=keyboard,
+            key_freq=key_freq, mistakes=mistakes)
     if session.get('user_id'):
         user = User.query.filter_by(id=session['user_id']).first()
         analytics = user.analytics
         if len(analytics) > 0:
             avg_times = algo.calc_avg_times(analytics[-1].strokes)
-            keyboard = algo.placeKeys(strokes)
+            keyboard = algo.placeKeys(analytics[-1].strokes)
+            key_freq = algo.keyFreq(algo.findStrokes(analytics[-1].strokes))
+            mistakes = algo.keyMistakes(algo.findStrokes(analytics[-1].strokes))
             return render_template("existing_analytics.html", raw_text=analytics[-1].raw_text, text=analytics[-1].text, strokes=analytics[-1].strokes, 
-                avg_times=avg_times, keyboard=keyboard)
+                avg_times=avg_times, keyboard=keyboard, key_freq=key_freq, mistakes=mistakes)
     return render_template("no_analytics.html")
+
+def genName():
+    rand_str = "".join(random.choice('ABCDEFGHIJKLMNOP1234567890') for i in range(10))
+    return rand_str
 
 @app.route("/analytics", methods=["POST"])
 def show_analytics():
@@ -140,22 +150,41 @@ def show_analytics():
     session['strokes'] = strokes
     avg_times = algo.calc_avg_times(strokes)
     keyboard = algo.placeKeys(strokes)
+    key_freq = algo.keyFreq(algo.findStrokes(strokes))
+    mistakes = algo.keyMistakes(algo.findStrokes(strokes))
     if session.get("user_id"):
         user_id = session['user_id']
         new_a = Analytics(text=text, raw_text=raw_text, strokes=strokes, user_id=user_id)
         model.session.add(new_a)
+        new_k = Keyboard(name=genName(), user_id=user_id)
+        model.session.add(new_k)
+        for i in range(len(keyboard)):
+            key = Key(kb_id=new_k.id)
+            l = Key_Location(location=keyboard[i][0], key_id=key.id)
+            key.location = l
+            key.div = Key_Div.query.get(i + 1)
+            values = Key_Value.query.filter_by(key_id=(i+1))
+            for value in values:
+                key.values.append(value)
+            codes = Key_Code.query.filter_by(key_id=(i+1))
+            for code in codes:
+                key.codes.append(code)
+            new_SELECk.keys.append(key)
         model.session.commit()
     else:
         user_id=None
-    return render_template("analytics.html", strokes=strokes, text=text, raw_text=raw_text, user_id=user_id, avg_times=avg_times, keyboard=keyboard)
+    return render_template("analytics.html", strokes=strokes, text=text, raw_text=raw_text, user_id=user_id, avg_times=avg_times, 
+        keyboard=keyboard, key_freq=key_freq, mistakes=mistakes)
 
 
+#testing - remove later
+@app.route("/testing")
+def testing():
+    return render_template("test.html")
 
-
-
-
-
-
+@app.route("/derrrick")
+def derrrick():
+    return render_template("derrrick.html")
 
 
 

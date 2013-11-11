@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block body %}
-    <h3>{{prompt}}</h3><br>
+    <h3>{{prompt}}</h3> <span id="timer"></span><br>
     <form method="POST", id="typing_data" action="">
         <textarea id='keyboard_text' cols=100 rows=10></textarea><br>
         <input type="hidden" id="keystrokes" name="stroke" value="">
@@ -87,6 +87,49 @@
 <br><br>
 
 <script type="text/javascript">
+    //SECTION 1: visual timer -- set for two minutes
+    
+    var Timer;
+    var TotalSeconds;
+
+    function CreateTimer(TimerID, Time) {
+        Timer = document.getElementById(TimerID);
+        TotalSeconds = Time;
+
+        UpdateTimer();
+        window.setTimeout("Tick()", 1000);
+    }
+
+    function Tick() {
+        if (TotalSeconds <= 0) {
+            Timer.innerHTML = "Proceed!";
+            document.getElementById(TimerID).style.color="212121";
+            return;
+        }
+
+        TotalSeconds -= 1;
+        UpdateTimer()
+        window.setTimeout("Tick()", 1000);
+    }
+
+    function UpdateTimer() {
+        var Seconds = TotalSeconds;
+        var Minutes = Math.floor(Seconds/60);
+        Seconds -= (Minutes * 60);
+
+        var TimeStr = Minutes + ":" + LeadingZero(Seconds);
+        Timer.innerHTML = TimeStr;
+    }
+
+    function LeadingZero(Time) {
+        return (Time < 10) ? "0" + Time : Time;
+    }
+
+    window.onload = CreateTimer("timer", 120);
+
+
+    //SECTION 2: keyboard typing animations
+
     var keys = {96:"tilde", 126:"tilde", 33:"one", 49:"one", 50:"two", 64:"two", 35:"three", 
         51:"three", 52:"four", 53:"five", 37:"five", 54:"six", 94:"six", 55:"seven", 
         38:"seven", 42:"eight", 56:"eight", 57:"nine", 40:"nine", 48:"zero", 41:"zero", 
@@ -106,7 +149,6 @@
     var caps_down = null;
     var prev_key = null;
 
-    //find a way to update these values to the passed in ones
     var keystrokes = {{strokes|tojson|safe}};
     var raw_text = {{raw|tojson|safe}} + "|";
     var final_text = {{final_text|tojson|safe}} + "|";
@@ -133,9 +175,7 @@
             if (prev_key != null) {
                 prev_key.style.backgroundColor="212121";
             }
-
-            var key = document.getElementById(keys[event.which]);
-            key.style.backgroundColor="orange";
+            
             keyCount(event.which, JSON.stringify(new Date().getTime()));
 
             if (event.which == 16) {
@@ -145,8 +185,12 @@
                 caps_down.style.backgroundColor="212121";
                 caps_down = null;
             } else if (event.which == 20) {
+                var key = document.getElementById(keys[event.which]);
+                key.style.backgroundColor="orange";
                 caps_down = key;
             } else {
+                var key = document.getElementById(keys[event.which]);
+                key.style.backgroundColor="orange";
                 prev_key = key;
             }
         }
@@ -160,24 +204,30 @@
         }
     });
 
-    $('#button').click(function(event) {
-        document.getElementById('keystrokes').value += keystrokes + "*";
-        document.getElementById('raw').value += raw_text;
-        document.getElementById('ftext').value += final_text + document.getElementById('keyboard_text').value;
-        submitForm("/analytics");
-    });
 
-    $('#repeat').click(function(event) {
+
+    //SECITON 3: submitting form values
+
+    function updateValues(){
         document.getElementById('keystrokes').value += keystrokes + "*";
         document.getElementById('raw').value += raw_text;
         document.getElementById('ftext').value += final_text + document.getElementById('keyboard_text').value;
-        submitForm('/keyboard');
-    });
+    }
 
     function submitForm(action) {
         document.getElementById("typing_data").action = action;
         document.getElementById("typing_data").submit();
     }
+
+    $('#button').click(function(event) {
+        updateValues();
+        submitForm("/analytics");
+    });
+
+    $('#repeat').click(function(event) {
+        updateValues();
+        submitForm('/keyboard');
+    });
 
 </script>
 {% endblock %}
