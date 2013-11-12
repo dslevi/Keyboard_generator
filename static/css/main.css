@@ -9,77 +9,83 @@
     height: 150px;
 }
 
-.keyboard_row{
-    padding: 2px 0px 2px 0px;
-}
-
 .key{
     padding: 5px;
     width: 45px;
     height: 45px;
     float: left;
-    background-color: 212121;
+    background-color: #212121;
     margin: 3px;
     color: white;
 }
 
-#delete{
+.block{
+    padding: 5px;
+    width: 45px;
+    height: 45px;
+    float: left;
+    background-color: orange;
+    margin: 3px;
+    color: white;
+}
+
+#A14{
     width:90px;
 }
 
-#tab{
+#B01{
     width:68px;
 }
 
-#pipe{
+#B14{
     width:67px;
 }
 
-#caps{
+#C01{
     width:97px;
 }
 
-#enter{
+#C13{
     width:99px;
 }
 
-#shift_left{
+#D01{
     width:128px;
 }
 
-#shift_right{
+#D12{
     width:129px;
 }
 
-#space{
+#E04{
     width:380px;
 }
 
-#control_left{
+#E01{
     width:70px;
 }
 
-#control_right{
+#E08{
     width:70px;
 }
 
-#super_left{
+#E02{
     width:52px;
 }
 
-#super_right{
+#E06{
     width:52px;
 }
 
-#alt_left{
+#E03{
     width:49px;
 }
 
-#alt_right{
+#E05{
     width:49px;
 }
 
-#meta{
+#E07{
     width:49px;
 }
 

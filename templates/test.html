@@ -1,44 +1,135 @@
 {% extends "base.html" %}
 {% block body %}
     <h1>Testing</h1>
-    <div id="block">Hi</div><br>
+    <div class="block" id="moving">Hi</div><br>
     <script language="javascript">
-        document.getElementById('block').style.position = "relative";
-        document.getElementById('block').style.left = "0px";
-        document.getElementById('block').style.width = "20px";
-
-        function computeWin() {
-            if(document.body.clientWidth) { 
-                this.windWidth=document.body.clientWidth; 
-                this.windHeight=document.body.clientHeight; 
-            } else { 
-                this.windWidth = window.innerWidth; 
-                this.windHeight=document.innerheight; 
-            } 
-            return this; 
-        }
-
-        function animBall() {
-            var imgLeftInt = parseInt(document.getElementById('block').style.left);
-            var imgWidth =  parseInt(document.getElementById('block').style.width); 
-            var winWidth = parseInt(computeWin().windWidth);
-
-            if (imgLeftInt <  (winWidth-imgWidth)){ 
-                goRight(); 
-            } else { 
-                clearInterval(t); 
-            }
-        }  
+        document.getElementById('moving').style.position = "relative";
+        document.getElementById('moving').style.left = "0px";
 
         function goRight() {
-            document.getElementById('block').style.left = (parseInt(document.getElementById('block').style.left)-5) +"px"; 
+            document.getElementById('moving').style.left = (parseInt(document.getElementById('moving').style.left)+5) +"px"; 
         }
 
         function reset() {
-            document.getElementById('block').style.left = "0px";
+            document.getElementById('moving').style.left = "0px";
         }
 
     </script>
-    <a href="javascript:var t=setInterval('animBall()', 80)">Try it</a> <a href="javascript:clearInterval(t)">Stop it</a>
-    <a href="javascript:reset()">Reset it</a>
+    <a href="javascript:var t=setInterval('goRight()', 80)">Try it</a> <a href="javascript:clearInterval(t)">Stop it</a>
+    <a href="javascript:reset()">Reset it</a><br><br><br><br>
+    <textarea id='keyboard_text' cols=100 rows=10></textarea>
+    <div class=keyboard>
+        {% for key in keyboard %}
+            {% if key[0]=="D11" %}
+                <div class="block" id="{{key[0]}}">
+                    {% for value in key[1] %}
+                        {{value}} <br>
+                    {% endfor %}
+                </div>
+                <div class="block" id="D12">SHIFT</div>
+            {% elif key[0]=="E01" %}
+                <div class="block" id="{{key[0]}}">
+                    {% for value in key[1] %}
+                        {{value}} <br>
+                    {% endfor %}
+                </div>
+                <div class="block" id="E02">SUPER</div>
+            {% elif key[0]=="E04" %}
+                <div class="block" id="{{key[0]}}">
+                    {% for value in key[1] %}
+                        {{value}} <br>
+                    {% endfor %}
+                </div>
+                <div class="block" id="E05">ALT</div>
+                <div class="block" id="E06">SUPER</div>
+                <div class="block" id="E07">META</div>
+                <div class="block" id="E08">CONTROL</div>
+            {% else %}
+                <div class="block" id="{{key[0]}}">
+                    {% for value in key[1] %}
+                        {{value}} <br>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <script>
+    var keyboard = {{keyboard|tojson|safe}};
+    console.log(keyboard);
+    for (var key in keyboard){
+            console.log(key[0][0][0])
+            // document.getElementById(key).style.backgroundColor = "white"; 
+        }
+
+    // function mapKeys(keyboard) {
+    //     for (var key in keyboard){
+    //         document.getElementById(key[0]).style.backgroundColor = "#21212"; 
+    //     }
+
+    // }
+
+    
+    // $(document).ready(function() {
+    //     setTimeout("mapKeys(keyboard)", 750);
+    // });
+
+    var keys = {96:"A01", 126:"A01", 33:"A02", 49:"A02", 50:"A03", 64:"A03", 35:"A04", 51:"A04", 36:"A05", 52:"A05", 53:"A06", 37:"A06", 54:"A07", 94:"A07", 55:"A08", 
+    38:"A08", 42:"A09", 56:"A09", 57:"A10", 40:"A10", 48:"A11", 41:"A11", 45:"A12", 95:"A12", 43:"A13", 61:"A13", 8:"A14", 9:"B01", 13:"C13", 16:"D01",
+    17:"E01", 18:"E03", 20:"C01", 32:"E04", 97:"C02", 65:"C02", 113:"B02", 81:"B02", 119:"B03", 87:"B03", 101:"B04", 69:"B04", 114:"B05",82:"B05", 116:"B06", 
+    84:"B06", 89:"B07", 121:"B07", 85:"B08", 117:"B08", 73:"B09", 105:"B09", 80:"B11", 112:"B11", 123:"B12", 91:"B12", 93:"B13", 125:"B13", 124:"B14", 
+    92: "B14", 111:"B10", 79:"B10", 98:"D06", 66:"D06", 115:"C03", 83:"C03", 100:"C04", 68:"C04", 102:"C05", 70:"C05", 103:"C06", 71:"C06", 104:"C07", 72:'C07', 
+    74:'C08', 106:'C08', 107:'C09', 75:'C09', 76:'C10', 108:'C10', 77:'D08', 109:'D08', 59:"C11", 58:'C11', 39:'C12', 34:'C12', 122:"D02", 90:"D02", 120:"D03", 
+    88:"D03", 99:"D04", 67:"D04", 118:"D05", 86:"D05", 110:"D07", 78:"D07", 60:"D09", 44:"D09", 62:"D10", 46:"D10", 63:"D11", 47:"D11"}
+
+
+    //makes assumption that caps lock default state is off
+    var caps_down = null;
+    var prev_key = null;
+
+
+    $('#keyboard_text').keypress(function (event) { 
+        if ((event.which > 32) && (event.which <= 127)) {
+            if (prev_key != null) {
+                prev_key.style.backgroundColor="212121";
+            }
+            var key = document.getElementById(keys[event.which]);
+            key.style.backgroundColor="orange";
+            prev_key = key;;
+        }
+    });
+
+    //do both key animations for control and alt
+    $('#keyboard_text').keydown(function (event) {
+        if (event.which <= 32) {
+            if (prev_key != null) {
+                prev_key.style.backgroundColor="212121";
+            }
+
+            if (event.which == 16) {
+                document.getElementById('D1').style.backgroundColor="orange";
+                document.getElementById('D12').style.backgroundColor="orange";
+            } else if ((event.which == 20) && (caps_down != null)) {
+                caps_down.style.backgroundColor="212121";
+                caps_down = null;
+            } else if (event.which == 20) {
+                var key = document.getElementById(keys[event.which]);
+                key.style.backgroundColor="orange";
+                caps_down = key;
+            } else {
+                var key = document.getElementById(keys[event.which]);
+                key.style.backgroundColor="orange";
+                prev_key = key;
+            }
+        }
+    });
+
+    //Should I just make all keys resturn to default value when key released?
+    $('#keyboard_text').keyup(function (event) {
+        if (event.which == 16) {
+            document.getElementById('D1').style.backgroundColor="212121";
+            document.getElementById('D12').style.backgroundColor="212121";
+        }
+    });
+
+    </script>
 {% endblock %}

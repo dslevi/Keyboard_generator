@@ -56,7 +56,6 @@ def keyMistakes(strokes):
             count = 0
         key = keycodes[str(strokes[i])]
         mistakes[key] = mistakes.get(key, 0)
-    print mistakes
     return mistakes
 
 def findBigrams(keystrokes):
