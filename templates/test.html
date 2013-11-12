@@ -18,60 +18,44 @@
     <a href="javascript:var t=setInterval('goRight()', 80)">Try it</a> <a href="javascript:clearInterval(t)">Stop it</a>
     <a href="javascript:reset()">Reset it</a><br><br><br><br>
     <textarea id='keyboard_text' cols=100 rows=10></textarea>
-    <div class=keyboard>
+    <div class='newKeyboard'>
         {% for key in keyboard %}
+            <div class="block" id="{{key[0]}}">
+                {% for value in key[1] %}
+                    {{value}} <br>
+                {% endfor %}
+            </div>
             {% if key[0]=="D11" %}
-                <div class="block" id="{{key[0]}}">
-                    {% for value in key[1] %}
-                        {{value}} <br>
-                    {% endfor %}
-                </div>
                 <div class="block" id="D12">SHIFT</div>
             {% elif key[0]=="E01" %}
-                <div class="block" id="{{key[0]}}">
-                    {% for value in key[1] %}
-                        {{value}} <br>
-                    {% endfor %}
-                </div>
                 <div class="block" id="E02">SUPER</div>
             {% elif key[0]=="E04" %}
-                <div class="block" id="{{key[0]}}">
-                    {% for value in key[1] %}
-                        {{value}} <br>
-                    {% endfor %}
-                </div>
                 <div class="block" id="E05">ALT</div>
                 <div class="block" id="E06">SUPER</div>
                 <div class="block" id="E07">META</div>
                 <div class="block" id="E08">CONTROL</div>
-            {% else %}
-                <div class="block" id="{{key[0]}}">
-                    {% for value in key[1] %}
-                        {{value}} <br>
-                    {% endfor %}
-                </div>
             {% endif %}
         {% endfor %}
     </div>
+
     <script>
-    var keyboard = {{keyboard|tojson|safe}};
-    console.log(keyboard);
-    for (var key in keyboard){
-            console.log(key[0][0][0])
-            // document.getElementById(key).style.backgroundColor = "white"; 
-        }
-
-    // function mapKeys(keyboard) {
-    //     for (var key in keyboard){
-    //         document.getElementById(key[0]).style.backgroundColor = "#21212"; 
-    //     }
-
-    // }
-
     
-    // $(document).ready(function() {
-    //     setTimeout("mapKeys(keyboard)", 750);
-    // });
+    //PLACEMENT ANIMATION
+
+    var randNumMin = 100;
+    var randNumMax = 2000;
+
+    $(document).ready(function() {
+        $(function() {
+            $('.block').each(function(i) {
+                $(this).delay((Math.floor(Math.random() * (randNumMax - randNumMin + 1)) + randNumMin)).fadeTo(30, 1); })
+        });
+    });
+
+    //KEYPRESS ANIMATIONS
+
+    var divs = ['A01', 'A02', 'A03', 'A04', 'A04', 'A05', 'A06', 'A07', 'A08', 'A09', 'A10', 'A11', 'A12', 'A13', 'A14', 'B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B09', 'B10', 'B11', 'B12', 'B13', 'B14', 'C01', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C08', 'C09', 'C10', 'C11', 
+        'C12', 'C13', 'D01', 'D02', 'D03', 'D04', 'D05', 'D06', 'D07', 'D08', 'D09', 'D10', 'D11', 'E01', 'E03', 'E04']
 
     var keys = {96:"A01", 126:"A01", 33:"A02", 49:"A02", 50:"A03", 64:"A03", 35:"A04", 51:"A04", 36:"A05", 52:"A05", 53:"A06", 37:"A06", 54:"A07", 94:"A07", 55:"A08", 
     38:"A08", 42:"A09", 56:"A09", 57:"A10", 40:"A10", 48:"A11", 41:"A11", 45:"A12", 95:"A12", 43:"A13", 61:"A13", 8:"A14", 9:"B01", 13:"C13", 16:"D01",
@@ -90,7 +74,7 @@
     $('#keyboard_text').keypress(function (event) { 
         if ((event.which > 32) && (event.which <= 127)) {
             if (prev_key != null) {
-                prev_key.style.backgroundColor="212121";
+                prev_key.style.backgroundColor="gray";
             }
             var key = document.getElementById(keys[event.which]);
             key.style.backgroundColor="orange";
@@ -102,14 +86,14 @@
     $('#keyboard_text').keydown(function (event) {
         if (event.which <= 32) {
             if (prev_key != null) {
-                prev_key.style.backgroundColor="212121";
+                prev_key.style.backgroundColor="gray";
             }
 
             if (event.which == 16) {
                 document.getElementById('D1').style.backgroundColor="orange";
                 document.getElementById('D12').style.backgroundColor="orange";
             } else if ((event.which == 20) && (caps_down != null)) {
-                caps_down.style.backgroundColor="212121";
+                caps_down.style.backgroundColor="gray";
                 caps_down = null;
             } else if (event.which == 20) {
                 var key = document.getElementById(keys[event.which]);
@@ -126,8 +110,8 @@
     //Should I just make all keys resturn to default value when key released?
     $('#keyboard_text').keyup(function (event) {
         if (event.which == 16) {
-            document.getElementById('D1').style.backgroundColor="212121";
-            document.getElementById('D12').style.backgroundColor="212121";
+            document.getElementById('D1').style.backgroundColor="gray";
+            document.getElementById('D12').style.backgroundColor="gray";
         }
     });
 

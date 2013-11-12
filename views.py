@@ -168,6 +168,10 @@ def show_analytics():
         keyboard=new_keyboard, key_freq=key_freq, mistakes=mistakes)
 
 
+
+
+
+
 #testing - remove later
 @app.route("/testing")
 def testing():
