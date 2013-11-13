@@ -75,17 +75,6 @@
         62:['D10',true], 46:['D10',false], 63:['D11',true], 47:['D11',false], 
         17:['E01',false], 18:['E03',false], 32:['E04',false]};
 
-    var visual_value = [];
-
-    div_to_value = {"tilde":["~", '`'], "one":['!', '1'], 'two':['@', '2'], 'three':['#', '3'], 'four':['$', '4'], 
-            'five':['%', '5'], 'six':['^', '6'], 'seven':['&', '7'], 'eight':['*', '8'], 'nine':['(', '9'], 
-            'zero':[')', '0'], 'dash':['_', '-'], 
-            'plus':['+', '='], 'delete':['DELETE'],'tab':['TAB'], 'Q':['Q'], 'W':['W'], 'E':['E'], 'R':['R'], 'T':['T'], 'Y':['Y'], 
-            'U':['U'], 'I':['I'], 'O':['O'], 'P':['P'], 'brace_open':['{', '['], 'brace_close':['}', ']'],
-            'pipe':['|', '\\'], 'caps':['CAPS'], 'A':['A'], 'S':['S'], 'D':['D'], 'F':['F'], 'G':['G'], 'H':['H'], 'J':['J'], 
-            'K':['K'], 'L':['L'], 'colon':[':', ';'], 'quote':['"', "'"], 'enter':['ENTER'], 'shift':['SHIFT'], 'Z':['Z'], 'X':['X'], 
-            'C':['C'], 'V':['V'], 'B':['B'], 'N':['N'], 'M':['M'], 'comma':['<', ','], 'period':['>', '.'], 'question':['?', '/'], 
-            'control':['CONTROL'], 'alt':['ALT'], 'space':['SPACE']};
 
     //makes assumption that caps lock default state is off
     var caps_down = null;
@@ -93,113 +82,176 @@
 
     var keyboard = {{keyboard|tojson|safe}};
     var new_keys = {}
+
+    var shift = null;
+    var caps = null;
+    var caps_on = false;
+    var shift_on = false;
     
+    function find_altValue(value, location) {
+        switch(value) {
+            //doesn't actually create a tab, just a single space
+            case 'TAB':
+                return '    ';
+            case 'Q':
+                return 'q';
+            case 'W':
+                return 'w';
+            case 'E':
+                return 'e';
+            case 'R':
+                return 'r';
+            case 'T':
+                return 't';
+            case 'Y':
+                return 'y';
+            case 'U':
+                return 'u';
+            case 'I':
+                return 'i';
+            case 'O':
+                return 'o';
+            case 'P':
+                return 'p';
+            case 'A':
+                return 'a';
+            case 'S':
+                return 's';
+            case 'D':
+                return 'd';
+            case 'F':
+                return 'f';
+            case 'G':
+                return 'g';
+            case 'H':
+                return 'h';
+            case 'J':
+                return 'j';
+            case 'K':
+                return 'k';
+            case 'L':
+                return 'l';
+            case 'Z':
+                return 'z';
+            case 'X':
+                return 'x';
+            case 'C':
+                return 'c';
+            case 'V':
+                return 'v';
+            case 'B':
+                return 'b';
+            case 'N':
+                return 'n';
+            case 'M':
+                return 'm';
+            case 'SPACE':
+                return ' ';
+            case 'ENTER':
+                return '<br>';
+            case 'CAPS':
+                caps = location;
+                return "";
+            case 'SHIFT':
+                shift = location;
+                return "";
+            case 'CONTROL':
+                return "";
+            case 'ALT':
+                return '';
+            default:
+                return '';
+        }
+    }
+
+    //creates dictionary from passed in keyboard var for remapping process
     for (var i =0; i<keyboard.length;i++) {
         for (var h in keyboard[i]) {
             if (h == 0) {
                 new_keys[keyboard[i][h]] = [];    
             } else {
-                for (var j in keyboard[i][h]) {
-                    new_keys[keyboard[i][0]].push(keyboard[i][h][j]);
+                if (keyboard[i][1].length > 1) {
+                    new_keys[keyboard[i][0]].push(keyboard[i][1][1]);
+                    new_keys[keyboard[i][0]].push(keyboard[i][1][0]);
+                } else {
+                    var value = keyboard[i][1][0];
+                    if (value != 'DELETE') {
+                        var alt_value = find_altValue(value, keyboard[i][0]);
+                        new_keys[keyboard[i][0]].push(alt_value); 
+                    }
+                    if ((value != 'SPACE') & (value != 'ENTER') & (value != 'TAB') & 
+                        (value != 'CAPS') & (value != 'ALT') & (value != 'CONTROL') & (value != 'SHIFT')) {
+                        new_keys[keyboard[i][0]].push(value);
+                    } 
                 }
             }
         }
     }
 
-    $('#keyboard_text2').keypress(function (event) { 
-        if ((event.which > 32) && (event.which <= 127)) {
-            if (prev_key != null) {
-                prev_key.style.backgroundColor="212121";
+    console.log(new_keys);
+
+    function keyDisplays(event) {
+        if (prev_key != null) {
+            prev_key.style.backgroundColor="212121";
+        }
+
+        //remaps key values
+        var textarea = document.getElementById('remapped_text');
+        var k = key_specific[event.which];
+        var possible_values = new_keys[k[0]];
+
+        //if shift, return shifted value
+        if (event.which == 17) {
+            if (caps_on) {
+                document.getElementById(caps).style.backgroundColor="212121";
+            } else {
+                document.getElementById(caps).style.backgroundColor="orange"; 
             }
+            caps_on = !caps_on;
+        } else if ((event.which == 39) || (event.which == 34)) {
+            shift_on = true;
+            document.getElementById(shift).style.backgroundColor="orange";
+        } else {
             var key = document.getElementById(keys[event.which]);
             key.style.backgroundColor="orange";
             prev_key = key;
-
-            //remaps key values
-            var textarea = document.getElementById('remapped_text');
-            var k = key_specific[event.which];
-            var possible_values = new_keys[k[0]];
-
-            if (k[1]){
-                var chr = possible_values[0];
+        }
+        
+        if (possible_values[0] == 'DELETE') {
+            textarea.innerHTML = textarea.innerHTML.slice(0, -1);
+        } else if ((caps_on) || (shift_on)) {
+            if (possible_values[1]) {
+                var chr = possible_values[1];
+                textarea.innerHTML += chr;
             } else {
-                if (possible_values[0] == 'DELETE') {
-                    textarea.innerHTML = textarea.innerHTML.slice(0, -1);
-                } else if (possible_values[0] == 'SPACE') {
-                    textarea.innerHTML += " ";
-                } else if (possible_values[0] == 'ENTER') {
-                    textarea.innerHTML += "<br>";
-                } else if (possible_values[0] == 'TAB') {
-                    textarea.innerHTML += "    ";
-                } else if ((possible_values[0] == 'CAPS') || (possible_values[0] == 'ALT') || (possible_values[0] == 'CONTROL') || (possible_values[0] == 'SHIFT')){
-                    textarea.innerHTML += "";
-                } else if (possible_values[1]) {
-                    var chr = possible_values[1];
-                    textarea.innerHTML += chr;
-                } else {
-                    var chr = possible_values[0];
-                    textarea.innerHTML += chr;
-                }
+                var chr = possible_values[0];
+                textarea.innerHTML += chr;
             }
+        } else {
+            var chr = possible_values[0];
+            textarea.innerHTML += chr;
+        }
+    }
+
+    //does visual keypress animations, displays remapped text for non-meta (qwerty location) keys
+    $('#keyboard_text2').keypress(function (event) { 
+        if ((event.which > 32) && (event.which <= 127)) {
+            keyDisplays(event);
         }
     });
-
-    //do both key animations for control and alt
+    
+    //does key animations for both left/right key pairs for control and alt
     $('#keyboard_text2').keydown(function (event) {
         if (event.which <= 32) {
-            if (prev_key != null) {
-                prev_key.style.backgroundColor="212121";
-            }
-
-            var textarea = document.getElementById('remapped_text');
-            var k = key_specific[event.which];
-            var possible_values = new_keys[k[0]];
-
-            if (k[1]){
-                var chr = possible_values[0];
-            } else {
-                if (possible_values[0] == 'DELETE') {
-                    textarea.innerHTML = textarea.innerHTML.slice(0, -1);
-                } else if (possible_values[0] == 'SPACE') {
-                    textarea.innerHTML += " ";
-                } else if (possible_values[0] == 'ENTER') {
-                    textarea.innerHTML += "<br>";
-                } else if (possible_values[0] == 'TAB') {
-                    textarea.innerHTML += "    ";
-                } else if ((possible_values[0] == 'CAPS') || (possible_values[0] == 'ALT') || (possible_values[0] == 'CONTROL') || (possible_values[0] == 'SHIFT')){
-                    textarea.innerHTML += "";
-                } else if (possible_values[1]) {
-                    var chr = possible_values[1];
-                    textarea.innerHTML += chr;
-                } else {
-                    var chr = possible_values[0];
-                    textarea.innerHTML += chr;
-                }
-            }
-
-            if (event.which == 16) {
-                document.getElementById('D01').style.backgroundColor="orange";
-                document.getElementById('D12').style.backgroundColor="orange";
-            } else if ((event.which == 20) && (caps_down != null)) {
-                caps_down.style.backgroundColor="212121";
-                caps_down = null;
-            } else if (event.which == 20) {
-                var key = document.getElementById(keys[event.which]);
-                key.style.backgroundColor="orange";
-                caps_down = key;
-            } else {
-                var key = document.getElementById(keys[event.which]);
-                key.style.backgroundColor="orange";
-                prev_key = key;
-            }
+            keyDisplays(event);
         }
     });
 
     //Should I just make all keys resturn to default value when key released?
     $('#keyboard_text2').keyup(function (event) {
-        if (event.which == 16) {
-            document.getElementById('D01').style.backgroundColor="212121";
-            document.getElementById('D12').style.backgroundColor="212121";
+        if (event.which == 222) {
+            shift_on = false;
+            document.getElementById(shift).style.backgroundColor="212121";
         }
     });
 
