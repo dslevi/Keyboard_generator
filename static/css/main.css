@@ -9,7 +9,7 @@
     position:absolute;
     left:0;
     top: 0;
-    width:220px;
+    width:160px;
     height:1000px;
     opacity: 0.5;
 }
@@ -18,10 +18,10 @@
     padding: 5px;
     padding-bottom: 50px;
 }
-
+/*
 body{
     background-color: gray;
-}
+}*/
 
 #fake_text{
     background-color: white;
@@ -43,7 +43,7 @@ body{
     width: 910px;
     height: 150px;
     z-index: 1;
-    visibility: hidden;
+/*    visibility: hidden;*/
 }
 
 .key{

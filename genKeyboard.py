@@ -63,8 +63,11 @@ def keyMistakes(keystrokes):
     delete = 8
     count = 0
     mistakes = {}
+
     for i in range(len(keystrokes)):
-        if ((count > 0) and (keystrokes[i] != delete)) or (i == len(keystrokes) + 1):
+        if keystrokes[i] == delete:
+            count += 1
+        elif (count > 0):
             for h in range(count):
                 index = i - (count + h + 1)
                 if index >= 0:
@@ -72,10 +75,17 @@ def keyMistakes(keystrokes):
                     mistakes[mistake] += 1
                 else:
                     mistakes[visual_value[delete]] += 1
-        if keystrokes[i] == delete:
-            count += 1
+            count = 0
         key = visual_value[keystrokes[i]]
         mistakes[key] = mistakes.get(key, 0)
+    if (count > 0):
+        for h in range(count):
+            index = i - (count + h)
+            if index >= 0:
+                mistake = visual_value[keystrokes[index]]
+                mistakes[mistake] += 1
+            else:
+                mistakes[visual_value[delete]] += 1
     return mistakes
 
 def ms_to_s(time):
@@ -114,6 +124,7 @@ def avgTimes(strokes):
 
 def createAnalytics(strokes):
     keystrokes = parseKeystrokes(strokes)
+    print keystrokes
     frequencies = keyFreq(keystrokes)
     mistakes = keyMistakes(keystrokes)
     average_times = avgTimes(strokes)
