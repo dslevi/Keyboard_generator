@@ -18,18 +18,15 @@
     padding: 5px;
     padding-bottom: 50px;
 }
-/*
-body{
-    background-color: gray;
-}*/
 
-#fake_text{
-    background-color: white;
-    height: 157px;
-    width:10000px;
+
+#remapped_text{
+    width:880px;
+    height:225px;
     position:absolute;
-    top:178px;
-    left:-500px;
+    top:125px;
+    left:167px;
+    color:gray;
 }
 
 #keyboard_text{
@@ -41,9 +38,12 @@ body{
 #keyboard_text2{
     resize: none;
     width: 910px;
-    height: 150px;
-    z-index: 1;
-/*    visibility: hidden;*/
+    color:white;
+    height:5px;
+    margin-top: 260px;
+    border-color:white;
+    background-color: white;
+    padding:0px;
 }
 
 .key{
@@ -61,7 +61,7 @@ body{
     width: 45px;
     height: 45px;
     float: left;
-    background-color: gray;
+    background-color: black;
     border: 1px solid white;
     margin: 2px;
     color: white;
@@ -75,7 +75,7 @@ body{
     width: 45px;
     height: 45px;
     float: left;
-    background-color: gray;
+    background-color: white;
     border: 1px solid white;
     margin: 4px 0px 2px 7px;
     color: white;

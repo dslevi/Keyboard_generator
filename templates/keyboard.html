@@ -174,7 +174,7 @@
             keyCount(event.which, JSON.stringify(new Date().getTime()));
 
             if (event.which == 16) {
-                document.getElementById('D1').style.backgroundColor="orange";
+                document.getElementById('D01').style.backgroundColor="orange";
                 document.getElementById('D12').style.backgroundColor="orange";
             } else if ((event.which == 20) && (caps_down != null)) {
                 caps_down.style.backgroundColor="212121";
@@ -194,7 +194,7 @@
     //Should I just make all keys resturn to default value when key released?
     $('#keyboard_text').keyup(function (event) {
         if (event.which == 16) {
-            document.getElementById('D1').style.backgroundColor="212121";
+            document.getElementById('D01').style.backgroundColor="212121";
             document.getElementById('D12').style.backgroundColor="212121";
         }
     });

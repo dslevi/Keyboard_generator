@@ -189,7 +189,7 @@ def all_keyboards():
 def view_pekl(user_id):
     keyboard=session['keyboard']
     css_keyboard = genKeyboard.CSSkeyboard(keyboard)
-    return render_template("pekl.html", keyboard=css_keyboard)
+    return render_template("test.html", keyboard=css_keyboard)
 
 @app.route("/keyboard/<keyboard_id>")
 def display_keyboard(keyboard_id):

@@ -16,12 +16,9 @@ def keyMistakes(keystrokes):
     mistakes = {}
 
     for i in range(len(keystrokes)):
-        print i, keystrokes[i]
         if keystrokes[i] == delete:
             count += 1
-            print "count increased: ", count
         elif (count > 0):
-            print "decreasing begins ", count
             for h in range(count):
                 index = i - (count + h + 1)
                 if index >= 0:
@@ -35,7 +32,6 @@ def keyMistakes(keystrokes):
     if (count > 0):
         for h in range(count):
             index = i - (count + h)
-            print count
             if index >= 0:
                 mistake = visual_value[keystrokes[index]]
                 mistakes[mistake] += 1
@@ -43,12 +39,42 @@ def keyMistakes(keystrokes):
                 mistakes[visual_value[delete]] += 1
     return mistakes
 
+def mistypedWord(keystrokes):
+    words = {}
+    word = []
+    count = 0
+    for i in range(len(keystrokes)):
+        if (keystrokes[i] == 8):
+            count += 1
+        elif (i == len(keystrokes) - 2):
+            print word
+            if len(word) > 0:
+                if words.has_key():
+                    last_count = words.get(word)
+                    if count > last_count:
+                        words[word] = count
+                else:
+                    words[word] = count
+        elif (keystrokes[i] == 32) and (keystrokes[i + 1] != 8):
+            if len(word) > 0:
+                if word in words:
+                    last_count = words.get(word)
+                    if count > last_count:
+                        words[word] = count
+                else:
+                    words[word] = count
+        else:
+            word.append(keystrokes[i])
+    return words
+
+
+
 
 
 
 
 keystrokes = [100, 8, 100, 8, 100, 8]
-print keyMistakes(keystrokes)
+print mistypedWord(keystrokes)
 
 
 
