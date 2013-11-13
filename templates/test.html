@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block body %}
-    <h1>Testing</h1>
-    <div class="block" id="moving">Hi</div><br>
+    <h1 id="test">Testing</h1>
+    <div class="title_block" id="moving">T</div><br>
     <script language="javascript">
         document.getElementById('moving').style.position = "relative";
         document.getElementById('moving').style.left = "0px";
@@ -15,9 +15,12 @@
         }
 
     </script>
-    <a href="javascript:var t=setInterval('goRight()', 80)">Try it</a> <a href="javascript:clearInterval(t)">Stop it</a>
-    <a href="javascript:reset()">Reset it</a><br><br><br><br>
-    <textarea id='keyboard_text' cols=100 rows=10></textarea>
+<!--     <a href="javascript:var t=setInterval('goRight()', 80)">Try it</a> <a href="javascript:clearInterval(t)">Stop it</a>
+    <a href="javascript:reset()">Reset it</a> -->
+    <br><br><br><br>
+    <textarea id='keyboard_text2' cols=100 rows=1></textarea>
+    <div id="fake_text"></div>
+    <div id="testbar"></div>
     <div class='newKeyboard'>
         {% for key in keyboard %}
             <div class="block" id="{{key[0]}}">
@@ -71,23 +74,25 @@
     var prev_key = null;
 
 
-    $('#keyboard_text').keypress(function (event) { 
+    $('#keyboard_text2').keypress(function (event) { 
         if ((event.which > 32) && (event.which <= 127)) {
             if (prev_key != null) {
                 prev_key.style.backgroundColor="gray";
             }
             var key = document.getElementById(keys[event.which]);
             key.style.backgroundColor="orange";
-            prev_key = key;;
+            prev_key = key;
+            console.log(event.which);
         }
     });
 
     //do both key animations for control and alt
-    $('#keyboard_text').keydown(function (event) {
+    $('#keyboard_text2').keydown(function (event) {
         if (event.which <= 32) {
             if (prev_key != null) {
                 prev_key.style.backgroundColor="gray";
             }
+            console.log(event.which);
 
             if (event.which == 16) {
                 document.getElementById('D1').style.backgroundColor="orange";
@@ -108,7 +113,7 @@
     });
 
     //Should I just make all keys resturn to default value when key released?
-    $('#keyboard_text').keyup(function (event) {
+    $('#keyboard_text2').keyup(function (event) {
         if (event.which == 16) {
             document.getElementById('D1').style.backgroundColor="gray";
             document.getElementById('D12').style.backgroundColor="gray";
