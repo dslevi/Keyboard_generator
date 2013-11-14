@@ -1,7 +1,11 @@
 {% extends "base.html" %}
 {% block body %}
     {% if session_id == keyboard.user.id %}
-        <textarea id="keyboard_name">{{keyboard.name}}</textarea><br>
+        <form method="POST", id="typing_data" action="/keyboard/{{keyboard.id}}">
+            <input type="hidden" name="board_id" value="{{keyboard.id}}">
+            <textarea id="keyboard_name" name="new_name">{{keyboard.name}}</textarea>
+            <input type="submit" id="rename_keyboard" value="Rename keyboard"><br><br>
+        </form>
     {% else %}
         <h2>{{keyboard.name}}</h2>
     {% endif %}

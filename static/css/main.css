@@ -21,9 +21,29 @@
 
 #keyboard_name{
     border:white;
-    height:25px;
-    width:150px;
+    height:28px;
+    width:500px;
+    font-size:25px;
+    color: #333333;
+    font-weight: bold;
     resize:none;
+}
+
+#rename_keyboard{
+    padding: 4px;
+    margin: 4px 40px 0px 5px;
+    font-size: 13px;
+    line-height: 18px;
+    color: #555555;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-weight: normal;
+    vertical-align: middle;
+    width: 125px;
+    float:right; 
 }
 
 #remapped_text{

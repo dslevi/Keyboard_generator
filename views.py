@@ -182,6 +182,28 @@ def all_keyboards():
     keyboards = Keyboard.query.all()
     return render_template("all_keyboards.html", keyboards=keyboards)
 
+@app.route("/keyboard/<keyboard_id>", methods=["POST"])
+def rename_keyboard(keyboard_id):
+    id = request.form.get('board_id')
+    keyboard = Keyboard.query.get(id)
+    keyboard.name = request.form.get('new_name')
+    model.session.commit()
+    date = time.strftime('%b %d, %Y %I:%M%p', keyboard.created_at.timetuple())
+    keys = keyboard.keys
+    values = []
+    if session.get('user_id'):
+        session_id = session['user_id']
+    else:
+        session_id = None
+    for key in keys:
+        key_values = key.values
+        tokens = key_values.split()
+        if len(tokens) > 1:
+            values.append([tokens[1],tokens[0]])
+        else:
+            values.append([tokens[0]])
+    return render_template("display_keyboard.html", keyboard=keyboard, values=values, session_id=session_id, date=date)
+
 @app.route("/keyboard/<keyboard_id>")
 def display_keyboard(keyboard_id):
     keyboard = Keyboard.query.get(keyboard_id)
