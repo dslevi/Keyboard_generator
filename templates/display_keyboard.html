@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block body %}
+    {% if session_id == keyboard.user.id %}
+        <textarea id="keyboard_name">{{keyboard.name}}</textarea><br>
+    {% else %}
+        <h2>{{keyboard.name}}</h2>
+    {% endif %}
+    <b>Owner: </b> 
+    {% if keyboard.user == None %}
+        Communal
+    {% else %}
+        <a href="/user/{{keyboard.user.id}}">{{keyboard.user.name}}</a>
+    {% endif %}<br>
+    <b>Created: </b> {{date}}
+    <br><br>
+    <div class='newKeyboard'>
+        {% for key in keyboard.keys %}
+            <div class="key" id="{{key.location}}">
+            {% for value in values[loop.index - 1] %}
+                {{value}}<br>
+            {% endfor %}
+            </div>
+            {% if key.location=="D11" %}
+                <div class="key" id="D12">SHIFT</div>
+            {% elif key.location=="E01" %}
+                <div class="key" id="E02">SUPER</div>
+            {% elif key.location=="E04" %}
+                <div class="key" id="E05">ALT</div>
+                <div class="key" id="E06">SUPER</div>
+                <div class="key" id="E07">META</div>
+                <div class="key" id="E08">CONTROL</div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -22,6 +22,7 @@ key_divs = {96:"tilde", 126:"tilde", 33:"one", 49:"one", 50:"two", 64:"two", 35:
         75:'K', 76:'L', 108:'L', 77:'M', 109:'M', 59:"colon", 58:'colon', 39:'quote', 
         34:'quote', 122:"Z", 90:"Z", 120:"X", 88:"X", 99:"C", 67:"C", 118:"V", 86:"V", 110:"N",
         78:"N", 60:"comma", 44:"comma", 62:"period", 46:"period", 63:"question", 47:"question"}
+
 div_to_value = {"tilde":["~", '`'], "one":['!', '1'], 'two':['@', '2'], 'three':['#', '3'], 'four':['$', '4'], 
             'five':['%', '5'], 'six':['^', '6'], 'seven':['&', '7'], 'eight':['*', '8'], 'nine':['(', '9'], 
             'zero':[')', '0'], 'dash':['_', '-'], 
@@ -38,6 +39,8 @@ def CSSkeyboard(keyboard):
         css.append((key[0], div_to_value[key[1]]))
     return css
 
+def existingCSSkeyboard(locations):
+    pass
 
 #ANALYTICS GENERATION
 
@@ -51,6 +54,14 @@ def parseKeystrokes(strokes):
             key_data = token.split()
             keystrokes.append(int(key_data[0]))
     return keystrokes
+
+def testParseKeystrokes():
+    strokes = "104 1384392124262|103 1384392124409|102 1384392124418|*114 1384392126482|115 1384392126618|101 1384392126627|*"
+    output = parseKeystrokes(strokes)
+    if output == [104, 103, 102, 114, 115, 101]:
+        print "success!!"
+    else:
+        print "fail!! output is ", output
 
 def keyFreq(keystrokes):
     freq = {}
@@ -88,6 +99,15 @@ def keyMistakes(keystrokes):
                 mistakes[visual_value[delete]] += 1
     return mistakes
 
+def testKeyMistakes():
+    strokes = [8, 104, 103, 102, 114, 115, 8, 101, 8]
+    expected_output = {'e':1, 'g':0, 'f':0, 'h':0, 's':1, 'r':0, 'DELETE':1}
+    output = keyMistakes(strokes)
+    if expected_output == output:
+        print "success"
+    else:
+        print "failure ", output
+
 def ms_to_s(time):
     return float(time)/float(1000)
 
@@ -102,25 +122,29 @@ def avgTimes(strokes):
         for i in range(len(tokens)):
             key = tokens[i].split()
             key_code = int(key[0])
-            timestamp = key[1]
+            timestamp = int(key[1])
             if i == 0:
                 time = 0
             else:
-                time = abs(prev_time - ms_to_s(timestamp))
+                time = timestamp - prev_time
             if key_times.has_key(key_code):
                 key_times[key_code].append(time)
             else:
                key_times[key_code] = [time]
-            prev_time = ms_to_s(timestamp)
-        
+            prev_time = timestamp
+
     avg_times = {}
     for key in key_times:
         total = 0
         for time in key_times[key]:
             total += time
         keyvalue = visual_value[key]
-        avg_times[keyvalue] = '%.2f' % (total/len(key_times[key]))
+        avg_times[keyvalue] = '%.2f' % (float(total)/len(key_times[key]))
     return avg_times
+
+def testavgTimes():
+    strokes = "104 1384392124262|102 1384392124263|103 1384392124264|103 1384392124266|*"
+    print avgTimes(strokes)
 
 def createAnalytics(strokes):
     keystrokes = parseKeystrokes(strokes)

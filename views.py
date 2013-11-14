@@ -7,6 +7,7 @@ import forms
 import model
 import random
 import genKeyboard
+import time
 
 
 app = Flask(__name__)
@@ -29,10 +30,9 @@ Markdown(app)
 @app.route("/")
 def index():
     if session.get('user_id'):
-        user = User.query.filter_by(id=session['user_id']).first()
+        return redirect(url_for("display_user", user_id=session['user_id']))
     else:
-        user = None
-    return render_template("index.html", user=user)
+        return render_template("index.html")
 
 @app.route("/register")
 def register():
@@ -164,26 +164,9 @@ def show_analytics():
         model.session.commit()
     else:
         user_id=None
+    print avg_times
     return render_template("analytics.html", strokes=strokes, text=text, raw_text=raw_text, user_id=user_id, avg_times=avg_times, 
         keyboard=new_keyboard, key_freq=key_freq, mistakes=mistakes)
-
-
-
-
-
-
-#testing - remove later
-@app.route("/testing")
-def testing():
-    keyboard=session['keyboard']
-    css_keyboard = genKeyboard.CSSkeyboard(keyboard)
-    return render_template("test.html", keyboard=css_keyboard)
-
-#still under construction...
-@app.route("/allkeyboards")
-def all_keyboards():
-    keyboards = []
-    return render_template("all_keyboards.html", keyboards=keyboards)
 
 @app.route("/pekl/<user_id>")
 def view_pekl(user_id):
@@ -191,13 +174,39 @@ def view_pekl(user_id):
         print user_id
         keyboard=session['keyboard']
         css_keyboard = genKeyboard.CSSkeyboard(keyboard)
-        return render_template("test.html", keyboard=css_keyboard)
+        return render_template("pekl.html", keyboard=css_keyboard)
     return render_template("no_keyboard.html")
+
+@app.route("/allkeyboards")
+def all_keyboards():
+    keyboards = Keyboard.query.all()
+    return render_template("all_keyboards.html", keyboards=keyboards)
 
 @app.route("/keyboard/<keyboard_id>")
 def display_keyboard(keyboard_id):
-    return render_template("display_keyboard.html")
+    keyboard = Keyboard.query.get(keyboard_id)
+    date = time.strftime('%b %d, %Y %I:%M%p', keyboard.created_at.timetuple())
+    keys = keyboard.keys
+    values = []
+    if session.get('user_id'):
+        session_id = session['user_id']
+    else:
+        session_id = None
+    for key in keys:
+        key_values = key.values
+        tokens = key_values.split()
+        if len(tokens) > 1:
+            values.append([tokens[1],tokens[0]])
+        else:
+            values.append([tokens[0]])
+    return render_template("display_keyboard.html", keyboard=keyboard, values=values, session_id=session_id, date=date)
 
+@app.route("/user/<user_id>")
+def display_user(user_id):
+    user = User.query.get(user_id)
+    return render_template("display_user.html", user=user)
+
+#still under construction...
 @app.route("/typingtest")
 def typing_test():
     return render_template("construction.html")

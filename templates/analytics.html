@@ -12,12 +12,12 @@
     <h3>Key frequencies</h3><br>
     <canvas class="graph" id="freq_bar" width="900" height="300"></canvas><br><br>
     <script>
-        function makeLineData(l) {
+        function makeLineData(d) {
             var labels = [];
             var time = [];
-            for(var key in l) {
+            for(var key in d) {
                 labels.push(key);
-                time.push(l[key]);
+                time.push(parseFloat(d[key]));
             }
             return [labels, time];
         }
@@ -49,10 +49,11 @@
                     strokeColor : "rgba(151,187,205,1)",
                     pointColor : "rgba(151,187,205,1)",
                     pointStrokeColor : "#fff",
-                    data : time_values,
+                    data : time_values
                 }
             ]
         }
+        
         var ctx = document.getElementById("keytimes_line").getContext("2d");
         var newChart = new Chart(ctx).Line(lineData);
         var frequencies = makeBarData({{key_freq|tojson|safe}}, {{mistakes|tojson|safe}});

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block body %}
+    <h2>{{user.name}}</h2><br>
+    <b>Occupation: </b> {{user.occupation}}<br>
+    <b>Dominant hand: </b>
+        {% if user.right_hand %}
+            Right
+        {% else %}
+            Left
+        {% endif %}<br><br>
+    <b>Keyboards: </b><br>
+    {% for board in user.keyboard %}
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/keyboard/{{board.id}}">{{board.name}}</a><br>
+    {% endfor %}
+{% endblock %}

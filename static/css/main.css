@@ -19,14 +19,20 @@
     padding-bottom: 50px;
 }
 
+#keyboard_name{
+    border:white;
+    height:25px;
+    width:150px;
+    resize:none;
+}
 
 #remapped_text{
     width:880px;
     height:225px;
-    position:absolute;
     top:125px;
     left:167px;
     color:gray;
+    font-size: 12px;
 }
 
 #keyboard_text{
@@ -39,10 +45,10 @@
     resize: none;
     width: 910px;
     color:white;
-    margin-top: 260px;
     border-color:white;
     background-color: white;
     padding:0px;
+    
 }
 
 .key{

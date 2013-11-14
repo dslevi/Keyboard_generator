@@ -17,10 +17,13 @@
                         <li><a href="{{url_for("show_analytics")}}">Analytics</a></li>
                         <li><a href="{{url_for("all_keyboards")}}">All keyboards</a></li>
                         <li><a href="{{url_for("typing_test")}}">Typing test</a></li>
-                        <li><a href="{{url_for("remap_keys")}}">Remap keys</a></li>
-                        <li><a href="{{url_for("log_keys")}}">Keylogger</a></li>
-                        <li><a href="{{url_for("login")}}">Login</a></li>
-                        <li><a href="{{url_for("signout")}}">Sign out</a></li>
+<!--                         <li><a href="{{url_for("remap_keys")}}">Remap keys</a></li>
+                        <li><a href="{{url_for("log_keys")}}">Keylogger</a></li> -->
+                        {% if session_id %}
+                            <li><a href="{{url_for("signout")}}">Sign out</a></li>
+                        {% else %}
+                            <li><a href="{{url_for("login")}}">Login</a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

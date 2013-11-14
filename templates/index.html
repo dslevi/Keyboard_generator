@@ -1,9 +1,5 @@
 {% extends 'base.html' %}
 {% block body %}
-{% if user %}
-    <h2>Welcome {{user.name}}!</h2>
-{% else %}
     <h2>Welcome stranger!</h2>
     <a href="/register">Register today</a>
-{% endif %}
 {% endblock %}
