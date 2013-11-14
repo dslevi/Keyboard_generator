@@ -10,10 +10,15 @@
                     {{value}} <br>
                 {% endfor %}
             </div>
-            {% if key[0]=="D11" %}
+            {% if key[0]=="B14" %}
+                <div class="block" id="C01">CAPS</div>
+            {% elif key[0]=="C13"%}
+                <div class="block" id="D01">SHIFT</div>
+            {% elif key[0]=="D11"%}
                 <div class="block" id="D12">SHIFT</div>
-            {% elif key[0]=="E01" %}
+                <div class="block" id="E01">CONTROL</div>
                 <div class="block" id="E02">SUPER</div>
+                <div class="block" id="E03">ALT</div>
             {% elif key[0]=="E04" %}
                 <div class="block" id="E05">ALT</div>
                 <div class="block" id="E06">SUPER</div>
@@ -77,17 +82,13 @@
 
 
     //makes assumption that caps lock default state is off
-    var caps_down = null;
+    var caps_on = false;
+    var shift_on = false;
     var prev_key = null;
 
     var keyboard = {{keyboard|tojson|safe}};
     var new_keys = {}
 
-    var shift = null;
-    var caps = null;
-    var caps_on = false;
-    var shift_on = false;
-    
     function find_altValue(value, location) {
         switch(value) {
             //doesn't actually create a tab, just a single space
@@ -149,16 +150,6 @@
                 return ' ';
             case 'ENTER':
                 return '<br>';
-            case 'CAPS':
-                caps = location;
-                return "";
-            case 'SHIFT':
-                shift = location;
-                return "";
-            case 'CONTROL':
-                return "";
-            case 'ALT':
-                return '';
             default:
                 return '';
         }
@@ -180,15 +171,13 @@
                         var alt_value = find_altValue(value, keyboard[i][0]);
                         new_keys[keyboard[i][0]].push(alt_value); 
                     }
-                    if ((value != 'SPACE') & (value != 'ENTER') & (value != 'TAB') & 
-                        (value != 'CAPS') & (value != 'ALT') & (value != 'CONTROL') & (value != 'SHIFT')) {
+                    if ((value != 'SPACE') & (value != 'ENTER') & (value != 'TAB')) {
                         new_keys[keyboard[i][0]].push(value);
                     } 
                 }
             }
         }
     }
-    console.log(new_keys);
 
     function keyDisplays(event) {
         if (prev_key != null) {
@@ -201,16 +190,17 @@
         var possible_values = new_keys[k[0]];
 
         //if shift, return shifted value
-        if (event.which == 17) {
+        if (event.which == 20) {
             if (caps_on) {
-                document.getElementById(caps).style.backgroundColor="212121";
+                document.getElementById('C01').style.backgroundColor="212121";
             } else {
-                document.getElementById(caps).style.backgroundColor="orange"; 
+                document.getElementById('C01').style.backgroundColor="orange"; 
             }
             caps_on = !caps_on;
-        } else if ((event.which == 39) || (event.which == 34)) {
+        } else if (event.which == 16) {
             shift_on = true;
-            document.getElementById(shift).style.backgroundColor="orange";
+            document.getElementById('D01').style.backgroundColor="orange";
+            document.getElementById('D12').style.backgroundColor="orange";
         } else {
             var key = document.getElementById(keys[event.which]);
             key.style.backgroundColor="orange";
@@ -222,11 +212,10 @@
         } else if ((caps_on) || (shift_on)) {
             if (possible_values[1]) {
                 var chr = possible_values[1];
-                textarea.innerHTML += chr;
             } else {
-                var chr = possible_values[0];
-                textarea.innerHTML += chr;
+                var chr = possible_values[0];   
             }
+            textarea.innerHTML += chr;
         } else {
             var chr = possible_values[0];
             textarea.innerHTML += chr;
@@ -249,9 +238,10 @@
 
     //Should I just make all keys resturn to default value when key released?
     $('#keyboard_text2').keyup(function (event) {
-        if (event.which == 222) {
+        if (event.which == 16) {
             shift_on = false;
-            document.getElementById(shift).style.backgroundColor="212121";
+            document.getElementById('D01').style.backgroundColor="212121";
+            document.getElementById('D12').style.backgroundColor="212121";
         }
     });
 

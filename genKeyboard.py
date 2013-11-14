@@ -166,9 +166,9 @@ def bigramFreq(keystrokes):
 
 def createKeyboard(strokes):
     #key values ordered from most frequently typed to least
-    common_keys = ['space', "E", "T", "shift", 'A', 'O', 'I', 'N', 'S', 'R', 'H', 'delete', 'L', 'D', 'C', 'U', 'enter', 'M', 'F', 'P', 'G', 'W', 'Y', 'B', 'comma', 'period', 'V',
+    common_keys = ['space', "E", "T", 'A', 'O', 'I', 'N', 'S', 'R', 'H', 'delete', 'L', 'D', 'C', 'U', 'enter', 'M', 'F', 'P', 'G', 'W', 'Y', 'B', 'comma', 'period', 'V',
             'K', 'nine', 'zero', 'dash', 'colon', 'quote', 'plus', 'tab', 'X', 'question', 'four', 'eight', 'one', 'J', 'brace_open', 'brace_close', 'Q', "two", 'Z', 'five',
-            'three', 'pipe', 'six', 'seven', 'tilde', "control", "alt", 'caps']
+            'three', 'pipe', 'six', 'seven', 'tilde']
 
     bigram_freq = bigramFreq(parseKeystrokes(strokes))
     reversed_bigrams = []
@@ -187,8 +187,8 @@ def createKeyboard(strokes):
                 dvorak_keyboard.append(h)
 
     #the corresponding location map, highest priority to lowest| removed D12 - shift, E8 - ctrl, E5 - alt
-    dvorak_map = ['C06', 'C05', 'C07', 'C04', 'C08', 'C03', 'C09', 'C02', 'C10', 'C01', 'C11', 'C12', 'C13', 'B06', 'B05', 'B07', 'B04', 'B08', 'B03', 'B09', 'B02', 'B10', 'B01', 'B11', 
-                'B12', 'B13', 'B14', 'D07', 'D06', 'D08', 'D05', 'D09', 'D04', 'D10', 'D03', 'D11', 'D02', 'D01', 'E04', 'A08', 'A07', 'A06', 'A09', 
-                'A05', 'A10', 'A04', 'A11', 'A03', 'A12', 'A02', 'A13', 'A01', 'A14', 'E03', 'E01']
+    dvorak_map = ['C06', 'C05', 'C07', 'C04', 'C08', 'C03', 'C09', 'C02', 'C10', 'C11', 'C12', 'C13', 'B06', 'B05', 'B07', 'B04', 'B08', 'B03', 'B09', 'B02', 'B10', 'B01', 'B11', 
+                'B12', 'B13', 'B14', 'D07', 'D06', 'D08', 'D05', 'D09', 'D04', 'D10', 'D03', 'D11', 'D02', 'E04', 'A08', 'A07', 'A06', 'A09', 
+                'A05', 'A10', 'A04', 'A11', 'A03', 'A12', 'A02', 'A13', 'A01', 'A14']
 
     return sorted(zip(dvorak_map, dvorak_keyboard))
