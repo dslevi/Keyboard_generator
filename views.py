@@ -64,6 +64,7 @@ def register_newuser():
 
 @app.route("/login")
 def login():
+    session.clear()
     return render_template("login.html")
 
 @app.route("/login", methods=["POST"])
@@ -177,6 +178,10 @@ def view_pekl(user_id):
         return render_template("pekl.html", keyboard=css_keyboard)
     return render_template("no_keyboard.html")
 
+@app.route("/allusers")
+def all_users():
+    users = User.query.all()
+    return render_template("all_users.html", users=users)
 @app.route("/allkeyboards")
 def all_keyboards():
     keyboards = Keyboard.query.all()

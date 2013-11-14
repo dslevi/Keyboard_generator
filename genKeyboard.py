@@ -52,16 +52,9 @@ def parseKeystrokes(strokes):
         tokens = response[:-1].split("|")
         for token in tokens:
             key_data = token.split()
-            keystrokes.append(int(key_data[0]))
+            if len(key_data) > 0:
+                keystrokes.append(int(key_data[0]))
     return keystrokes
-
-def testParseKeystrokes():
-    strokes = "104 1384392124262|103 1384392124409|102 1384392124418|*114 1384392126482|115 1384392126618|101 1384392126627|*"
-    output = parseKeystrokes(strokes)
-    if output == [104, 103, 102, 114, 115, 101]:
-        print "success!!"
-    else:
-        print "fail!! output is ", output
 
 def keyFreq(keystrokes):
     freq = {}
@@ -99,15 +92,6 @@ def keyMistakes(keystrokes):
                 mistakes[visual_value[delete]] += 1
     return mistakes
 
-def testKeyMistakes():
-    strokes = [8, 104, 103, 102, 114, 115, 8, 101, 8]
-    expected_output = {'e':1, 'g':0, 'f':0, 'h':0, 's':1, 'r':0, 'DELETE':1}
-    output = keyMistakes(strokes)
-    if expected_output == output:
-        print "success"
-    else:
-        print "failure ", output
-
 def ms_to_s(time):
     return float(time)/float(1000)
 
@@ -141,10 +125,6 @@ def avgTimes(strokes):
         keyvalue = visual_value[key]
         avg_times[keyvalue] = '%.2f' % (float(total)/len(key_times[key]))
     return avg_times
-
-def testavgTimes():
-    strokes = "104 1384392124262|102 1384392124263|103 1384392124264|103 1384392124266|*"
-    print avgTimes(strokes)
 
 def createAnalytics(strokes):
     keystrokes = parseKeystrokes(strokes)
