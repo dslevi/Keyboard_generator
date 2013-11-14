@@ -1,22 +1,23 @@
 {% extends "base.html" %}
 {% block body %}
     {% if session_id == keyboard.user.id %}
-        <form method="POST", id="typing_data" action="/keyboard/{{keyboard.id}}">
+        <form method="POST" id="rename form" action="/keyboard/{{keyboard.id}}">
             <input type="hidden" name="board_id" value="{{keyboard.id}}">
             <textarea id="keyboard_name" name="new_name">{{keyboard.name}}</textarea>
-            <input type="submit" id="rename_keyboard" value="Rename keyboard"><br><br>
+            <input type="submit" id="rename_keyboard" value="Rename keyboard">
         </form>
     {% else %}
         <h2>{{keyboard.name}}</h2>
     {% endif %}
-    <b>Owner: </b> 
+    <h3 id="keyboard_display"><b> 
     {% if keyboard.user == None %}
         Communal
     {% else %}
         <a href="/user/{{keyboard.user.id}}">{{keyboard.user.name}}</a>
-    {% endif %}<br>
-    <b>Created: </b> {{date}}
+    {% endif %}</b></h3>
+    <h3 id="keyboard_display">{{date}}</h3>
     <br><br>
+    <div id="keyboard_text"></div>
     <div class='newKeyboard'>
         {% for key in keyboard.keys %}
             <div class="key" id="{{key.location}}">
