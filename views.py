@@ -165,14 +165,12 @@ def show_analytics():
         model.session.commit()
     else:
         user_id=None
-    print avg_times
     return render_template("analytics.html", strokes=strokes, text=text, raw_text=raw_text, user_id=user_id, avg_times=avg_times, 
         keyboard=new_keyboard, key_freq=key_freq, mistakes=mistakes)
 
 @app.route("/pekl/<user_id>")
 def view_pekl(user_id):
     if session.get('keyboard'):
-        print user_id
         keyboard=session['keyboard']
         css_keyboard = genKeyboard.CSSkeyboard(keyboard)
         return render_template("pekl.html", keyboard=css_keyboard)

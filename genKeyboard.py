@@ -128,7 +128,6 @@ def avgTimes(strokes):
 
 def createAnalytics(strokes):
     keystrokes = parseKeystrokes(strokes)
-    print keystrokes
     frequencies = keyFreq(keystrokes)
     mistakes = keyMistakes(keystrokes)
     average_times = avgTimes(strokes)
@@ -159,8 +158,9 @@ def createKeyboard(strokes):
     dvorak_keyboard = []
     for x, y in sorted_bigrams:
         for i in y:
-            if key_divs[i] not in dvorak_keyboard:
-                dvorak_keyboard.append(key_divs[i])
+            if key_divs[i] != "shift" and key_divs[i] != "control" and key_divs[i] != "alt" and key_divs[i] != "caps": 
+                if key_divs[i] not in dvorak_keyboard:
+                    dvorak_keyboard.append(key_divs[i])
     if len(dvorak_keyboard) < len(common_keys):
         for h in common_keys:
             if h not in dvorak_keyboard:

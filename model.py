@@ -154,4 +154,3 @@ if __name__ == "__main__":
     create_tables()
     create_QWERTY()
     create_prompts("prompts.txt")
-    create_prompts("textsamples.txt")  

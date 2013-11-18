@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 {% block body %}
     <h1 id="test">New Keyboard</h1><br>
-    <div id="remapped_text"></div>
-    <div id='keyboard_text2'></div>
+    <pre><div id="remapped_text"></div></pre>
     <div class='newKeyboard'>
         {% for key in keyboard %}
             <div class="block" id="{{key[0]}}">
@@ -154,8 +153,8 @@
                 return '';
         }
     }
-    console.log(keyboard.length);
-    console.log(keyboard);
+
+
     //creates dictionary from passed in keyboard var for remapping process
     for (var i =0; i<keyboard.length;i++) {
         for (var h in keyboard[i]) {
