@@ -189,16 +189,11 @@
     }
 
     function keyDisplays(event) {
-        if (prev_key != null) {
-            prev_key.style.backgroundColor="212121";
-        }
-
         //remaps key values
         var textarea = document.getElementById('keyboard_text1');
         var k = key_specific[event.which];
         var possible_values = new_keys[k[0]];
         var text = {{text|tojson|safe}};
-        console.log(text.length);
 
         //if shift, return shifted value
         if (event.which == 20) {
@@ -246,14 +241,22 @@
         }
     });
 
-    //Should I just make all keys resturn to default value when key released?
+var keyup_divs = {192:"A01", 49:"A02",50:"A03", 51:"A04", 52:"A05", 53:"A06", 54:"A07", 55:"A08", 56:"A09", 57:"A10", 48:"A11", 189:"A12", 187:"A13", 8:"A14", 
+        9:"B01", 13:"C13", 16:"D01", 17:"E01", 18:"E03", 20:"C01", 32:"E04", 20:"C01", 65:"C02", 81:"B02", 87:"B03", 69:"B04", 82:"B05", 
+        84:"B06", 89:"B07", 85:"B08", 73:"B09", 80:"B11", 219:"B12",  221:"B13", 220:"B14", 79:"B10", 66:"D06", 83:"C03", 68:"C04", 70:"C05", 71:"C06", 72:'C07', 
+        74:'C08', 75:'C09', 76:'C10', 77:'D08', 186:"C11", 222:'C12', 90:"D02", 88:"D03", 67:"D04", 86:"D05", 78:"D07", 188:"D09", 190:"D10", 191:"D11"};
+
     $('body').keyup(function (event) {
         if (event.which == 16) {
             shift_on = false;
             document.getElementById('D01').style.backgroundColor="212121";
             document.getElementById('D12').style.backgroundColor="212121";
+        } else if (event.which != 20) {
+            var key = document.getElementById(keyup_divs[event.which]);
+            key.style.backgroundColor="212121";
         }
     });
+
 
     </script>
 {% endblock %}
