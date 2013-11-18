@@ -9,6 +9,9 @@
             </form>
         {% else %}
             <h2>{{keyboard.name}}</h2>
+            <form method="POST" id="add_form" action="/keyboard/{{keyboard.id}}">
+                <input type="submit" id="add_keyboard" value="Add to Inventory">
+            </form>
         {% endif %}
         <h3 id="keyboard_display"><b>Creator:</b> 
         {% if keyboard.user == None %}
@@ -18,8 +21,10 @@
         {% endif %}</h3>
         <h3 id="keyboard_display">{{date}}</h3>
     </div>
-    <div id="typing_test"></div>
-    <div id="keyboard_text"></div>
+    <div id="typing_test1">
+            <span id="text_sample">{{text}}</span>
+    </div>
+    <pre><div id="keyboard_text1"></div></pre>
     <div class='newKeyboard'>
         {% for key in keyboard.keys %}
             <div class="key" id="{{key.location}}">
@@ -92,11 +97,12 @@
     var shift_on = false;
     var prev_key = null;
     var new_keys = {}
+    var keyboard = {{jsonKeyboard|tojson|safe}};
 
     function find_altValue(value, location) {
         switch(value) {
             //doesn't actually create a tab, just a single space
-            case 'TAB':
+            case 'tab':
                 return '    ';
             case 'Q':
                 return 'q';
@@ -150,46 +156,37 @@
                 return 'n';
             case 'M':
                 return 'm';
-            case 'SPACE':
+            case 'space':
                 return ' ';
-            case 'ENTER':
+            case 'enter':
                 return '<br>';
             default:
                 return '';
         }
     }
 
-    // var key_structure = {};
-
-    // {% for key in keyboard.keys %}
-    //     key_structure[{{key.location}}] = [];
-    //     key_structure[{{key.location}}].push({{key.value}});
-    // {% endfor %}
-
-    // console.log(key_structure);
-    
-    // //creates dictionary from passed in keyboard var for remapping process
-    // for (var key in keyboard) {
-    //     for (var h in keyboard[i]) {
-    //         if (h == 0) {
-    //             new_keys[keyboard[i][h]] = [];    
-    //         } else {
-    //             if (keyboard[i][1].length > 1) {
-    //                 new_keys[keyboard[i][0]].push(keyboard[i][1][1]);
-    //                 new_keys[keyboard[i][0]].push(keyboard[i][1][0]);
-    //             } else {
-    //                 var value = keyboard[i][1][0];
-    //                 if (value != 'DELETE') {
-    //                     var alt_value = find_altValue(value, keyboard[i][0]);
-    //                     new_keys[keyboard[i][0]].push(alt_value); 
-    //                 }
-    //                 if ((value != 'SPACE') & (value != 'ENTER') & (value != 'TAB')) {
-    //                     new_keys[keyboard[i][0]].push(value);
-    //                 } 
-    //             }
-    //         }
-    //     }
-    // }
+    //creates dictionary from passed in keyboard var for remapping process
+    for (var i =0; i<keyboard.length;i++) {
+        for (var h in keyboard[i]) {
+            if (h == 0) {
+                new_keys[keyboard[i][h]] = [];
+            } else {
+                if (keyboard[i][1].length > 1) {
+                    new_keys[keyboard[i][0]].push(keyboard[i][1][1]);
+                    new_keys[keyboard[i][0]].push(keyboard[i][1][0]);
+                } else {
+                    var value = keyboard[i][1][0];
+                    if (value != 'delete') {
+                        var alt_value = find_altValue(value, keyboard[i][0]);
+                        new_keys[keyboard[i][0]].push(alt_value); 
+                    }
+                    if ((value != 'space') & (value != 'enter') & (value != 'tab')) {
+                        new_keys[keyboard[i][0]].push(value);
+                    } 
+                }
+            }
+        }
+    }
 
     function keyDisplays(event) {
         if (prev_key != null) {
@@ -197,39 +194,41 @@
         }
 
         //remaps key values
-        var textarea = document.getElementById('remapped_text');
+        var textarea = document.getElementById('keyboard_text1');
         var k = key_specific[event.which];
-        // var possible_values = new_keys[k[0]];
+        var possible_values = new_keys[k[0]];
+        var text = {{text|tojson|safe}};
+        console.log(text.length);
 
         //if shift, return shifted value
         if (event.which == 20) {
             if (caps_on) {
                 document.getElementById('C01').style.backgroundColor="212121";
             } else {
-                document.getElementById('C01').style.backgroundColor="orange"; 
+                document.getElementById('C01').style.backgroundColor="gray"; 
             }
             caps_on = !caps_on;
         } else if (event.which == 16) {
             shift_on = true;
-            document.getElementById('D01').style.backgroundColor="orange";
-            document.getElementById('D12').style.backgroundColor="orange";
+            document.getElementById('D01').style.backgroundColor="gray";
+            document.getElementById('D12').style.backgroundColor="gray";
         } else {
             var key = document.getElementById(keys[event.which]);
-            key.style.backgroundColor="orange";
+            key.style.backgroundColor="gray";
             prev_key = key;
-            // if (possible_values[0] == 'DELETE') {
-            //     textarea.innerHTML = textarea.innerHTML.slice(0, -1);
-            // } else if ((caps_on) || (shift_on)) {
-            //     if (possible_values[1]) {
-            //         var chr = possible_values[1];
-            //     } else {
-            //         var chr = possible_values[0];   
-            //     }
-            //     textarea.innerHTML += chr;
-            // } else {
-            //     var chr = possible_values[0];
-            //     textarea.innerHTML += chr;
-            // }
+            if (possible_values[0] == 'delete') {
+                textarea.innerHTML = textarea.innerHTML.slice(0, -1);
+            } else if ((caps_on) || (shift_on)) {
+                if (possible_values[1]) {
+                    var chr = possible_values[1];
+                } else {
+                    var chr = possible_values[0];   
+                }
+                textarea.innerHTML += chr;
+            } else {
+                var chr = possible_values[0];
+                textarea.innerHTML += chr;
+            }
         }
     }
 

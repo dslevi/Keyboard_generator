@@ -46,6 +46,23 @@
     float:right; 
 }
 
+#add_keyboard{
+    padding: 4px;
+    margin: -30px 40px 0px 5px;
+    font-size: 13px;
+    line-height: 18px;
+    color: #555555;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-weight: normal;
+    vertical-align: middle;
+    width: 125px;
+    float:right; 
+}
+
 #remapped_text{
     width:880px;
     height:225px;
@@ -63,15 +80,42 @@
     width: 890px;
     height: 175px;
     resize: none;
+    font-size: 14px;
+    padding: 10px;
+}
+
+#keyboard_text1{
+    width: 890px;
+    height: 175px;
+    resize: none;
+    font-size: 14px;
+    padding: 0px 5px 0px 5px;
 }
 
 #typing_test{
-    width: 890px;
-    height: 75px;
-    margin: 30px 0px 10px 0px;
+    height: 100px;
+    margin: 30px 0px 10px -40px;
     border: 1px dashed gray;
-    padding: 10px;
     resize: none;
+    font-size: 20px;
+}
+
+#typing_test1{
+    height: 100px;
+    border: 1px dashed gray;
+    resize: none;
+    font-size: 20px;
+    width:890px;
+    padding: 8px;
+    margin: 30px 0px 10px 0px;
+    text-align: center;
+}
+
+
+#text_sample{
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
 }
 
 #keyboard_text2{
@@ -223,7 +267,11 @@ h3#keyboard_display{
     font-weight: normal;
 }
 
-
+pre{
+    width:890px;
+    background-color: white;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
 
 
 

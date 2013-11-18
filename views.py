@@ -207,7 +207,22 @@ def rename_keyboard(keyboard_id):
             values.append([tokens[1],tokens[0]])
         else:
             values.append([tokens[0]])
-    return render_template("display_keyboard.html", keyboard=keyboard, values=values, session_id=session_id, date=date)
+    jsonKeyboard = json_keyboard(keyboard)
+    return render_template("display_keyboard.html", keyboard=keyboard, values=values, session_id=session_id, date=date, rename_success=True,
+        jsonKeyboard = jsonKeyboard)
+
+def json_keyboard(keyboard):
+    l = []
+    for key in keyboard.keys:
+        values = key.values.split()
+        sublist = []
+        sublist.append(key.location)
+        if len(values) > 1:
+            sublist.append([values[1], values[0]])
+        else:
+            sublist.append(values)
+        l.append(sublist)
+    return l
 
 @app.route("/keyboard/<keyboard_id>")
 def display_keyboard(keyboard_id):
@@ -226,7 +241,10 @@ def display_keyboard(keyboard_id):
             values.append([tokens[1],tokens[0]])
         else:
             values.append([tokens[0]])
-    return render_template("display_keyboard.html", keyboard=keyboard, values=values, session_id=session_id, date=date)
+    jsonKeyboard = json_keyboard(keyboard)
+    text = "The quick brown fox jumps over the lazy dog."
+    return render_template("display_keyboard.html", keyboard=keyboard, values=values, session_id=session_id, date=date, jsonKeyboard = jsonKeyboard, 
+        add_success=False, rename_success=False, text=text)
 
 @app.route("/user/<user_id>")
 def display_user(user_id):
