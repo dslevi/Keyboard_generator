@@ -4,7 +4,6 @@
     <form method="POST", id="typing_data" action="">
         <textarea id='keyboard_text' cols=100 rows=10></textarea><br>
         <input type="hidden" id="keystrokes" name="stroke" value="">
-        <input type="hidden" id="raw" name="rawtext" value="">
         <input type="hidden" id="ftext" name="final_text" value="">
         <input type="hidden" id="layout" name="layout" value="">
         <input type="submit" id="repeat" value="Repeat">
@@ -103,7 +102,6 @@
     function Tick() {
         if (TotalSeconds <= 0) {
             Timer.innerHTML = "Proceed!";
-            document.getElementById(TimerID).style.color="212121";
             return;
         }
 
@@ -130,13 +128,11 @@
 
     //SECTION 2: keyboard typing animations
 
-    var keys = {96:"A01", 126:"A01", 33:"A02", 49:"A02", 50:"A03", 64:"A03", 35:"A04", 51:"A04", 36:"A05", 52:"A05", 53:"A06", 37:"A06", 54:"A07", 94:"A07", 55:"A08", 
-        38:"A08", 42:"A09", 56:"A09", 57:"A10", 40:"A10", 48:"A11", 41:"A11", 45:"A12", 95:"A12", 43:"A13", 61:"A13", 8:"A14", 9:"B01", 13:"C13", 16:"D01",
-        17:"E01", 18:"E03", 20:"C01", 32:"E04", 97:"C02", 65:"C02", 113:"B02", 81:"B02", 119:"B03", 87:"B03", 101:"B04", 69:"B04", 114:"B05",82:"B05", 116:"B06", 
-        84:"B06", 89:"B07", 121:"B07", 85:"B08", 117:"B08", 73:"B09", 105:"B09", 80:"B11", 112:"B11", 123:"B12", 91:"B12", 93:"B13", 125:"B13", 124:"B14", 
-        92: "B14", 111:"B10", 79:"B10", 98:"D06", 66:"D06", 115:"C03", 83:"C03", 100:"C04", 68:"C04", 102:"C05", 70:"C05", 103:"C06", 71:"C06", 104:"C07", 72:'C07', 
-        74:'C08', 106:'C08', 107:'C09', 75:'C09', 76:'C10', 108:'C10', 77:'D08', 109:'D08', 59:"C11", 58:'C11', 39:'C12', 34:'C12', 122:"D02", 90:"D02", 120:"D03", 
-        88:"D03", 99:"D04", 67:"D04", 118:"D05", 86:"D05", 110:"D07", 78:"D07", 60:"D09", 44:"D09", 62:"D10", 46:"D10", 63:"D11", 47:"D11"}
+    var keys = {192:"A01", 49:"A02", 50:"A03", 51:"A04", 52:"A05", 53:"A06", 54:"A07", 55:"A08", 56:"A09", 57:"A10", 48:"A11", 189:"A12", 187:"A13", 8:"A14", 
+            9:"B01", 81:"B02", 87:"B03", 69:"B04", 82:"B05", 84:"B06", 89:"B07", 85:"B08", 73:"B09", 79:"B10", 80:"B11", 219:"B12", 221:"B13", 220:"B14", 
+            20:"C01", 65:"C02", 83:"C03", 68:"C04", 70:"C05", 71:"C06", 72:'C07', 74:'C08', 75:'C09', 76:'C10',  186:"C11", 222:'C12', 13:"C13", 
+            16:"D01", 90:"D02", 88:"D03", 67:"D04", 86:"D05", 66:"D06", 78:"D07", 77:'D08', 188:"D09", 190:"D10", 191:"D11", 
+            17:"E01", 18:"E03", 32:"E04"}
     
     
     //makes assumption that caps lock default state is off
@@ -144,57 +140,42 @@
     var prev_key = null;
 
     var keystrokes = {{strokes|tojson|safe}};
-    var raw_text = {{raw|tojson|safe}} + "|";
     var final_text = {{final_text|tojson|safe}} + "|";
 
-    function keyCount(key, timestamp) {
-        keystrokes += key + " " + timestamp + "|";
-        raw_text += String.fromCharCode(key);
+    function keyCount(eType, key, timestamp) {
+        keystrokes += eType + " " + key + " " + timestamp + " ";
     }
-
-    $('#keyboard_text').keypress(function (event) { 
-        if ((event.which > 32) && (event.which <= 127)) {
-            var key = document.getElementById(keys[event.which]);
-            key.style.backgroundColor="orange";
-            keyCount(event.which, JSON.stringify(new Date().getTime()));
-        }
-    });
 
 //do both key animations for control and alt
     $('#keyboard_text').keydown(function (event) {
-        if (event.which <= 32) {
 
-            keyCount(event.which, JSON.stringify(new Date().getTime()));
+        keyCount("D", event.which, JSON.stringify(new Date().getTime()));
 
-            if (event.which == 16) {
-                document.getElementById('D01').style.backgroundColor="orange";
-                document.getElementById('D12').style.backgroundColor="orange";
-            } else if ((event.which == 20) && (caps_down != null)) {
-                caps_down.style.backgroundColor="212121";
-                caps_down = null;
-            } else if (event.which == 20) {
-                var key = document.getElementById(keys[event.which]);
-                key.style.backgroundColor="orange";
-                caps_down = key;
-            } else {
-                var key = document.getElementById(keys[event.which]);
-                key.style.backgroundColor="orange";
-            }
+        if (event.which == 16) {
+            document.getElementById('D01').style.backgroundColor="orange";
+            document.getElementById('D12').style.backgroundColor="orange";
+        } else if ((event.which == 20) && (caps_down != null)) {
+            caps_down.style.backgroundColor="212121";
+            caps_down = null;
+        } else if (event.which == 20) {
+            var key = document.getElementById(keys[event.which]);
+            key.style.backgroundColor="orange";
+            caps_down = key;
+        } else {
+            var key = document.getElementById(keys[event.which]);
+            key.style.backgroundColor="orange";
         }
     });
 
-    var keyup_divs = {192:"A01", 49:"A02",50:"A03", 51:"A04", 52:"A05", 53:"A06", 54:"A07", 55:"A08", 56:"A09", 57:"A10", 48:"A11", 189:"A12", 187:"A13", 8:"A14", 
-        9:"B01", 13:"C13", 16:"D01", 17:"E01", 18:"E03", 20:"C01", 32:"E04", 20:"C01", 65:"C02", 81:"B02", 87:"B03", 69:"B04", 82:"B05", 
-        84:"B06", 89:"B07", 85:"B08", 73:"B09", 80:"B11", 219:"B12",  221:"B13", 220:"B14", 79:"B10", 66:"D06", 83:"C03", 68:"C04", 70:"C05", 71:"C06", 72:'C07', 
-        74:'C08', 75:'C09', 76:'C10', 77:'D08', 186:"C11", 222:'C12', 90:"D02", 88:"D03", 67:"D04", 86:"D05", 78:"D07", 188:"D09", 190:"D10", 191:"D11"};
-
     $('#keyboard_text').keyup(function (event) {
-        keyCount(event.which, JSON.stringify(new Date().getTime()));
+
+        keyCount("U", event.which, JSON.stringify(new Date().getTime()));
+        
         if (event.which == 16) {
             document.getElementById('D01').style.backgroundColor="212121";
             document.getElementById('D12').style.backgroundColor="212121";
         } else if (event.which != 20) {
-            var key = document.getElementById(keyup_divs[event.which]);
+            var key = document.getElementById(keys[event.which]);
             key.style.backgroundColor="212121";
         }
     });
@@ -202,8 +183,7 @@
     //SECITON 3: submitting form values
 
     function updateValues(){
-        document.getElementById('keystrokes').value += keystrokes + "*";
-        document.getElementById('raw').value += raw_text;
+        document.getElementById('keystrokes').value += keystrokes;
         document.getElementById('ftext').value += final_text + document.getElementById('keyboard_text').value;
     }
 

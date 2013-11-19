@@ -6,7 +6,7 @@ import config
 import forms
 import model
 import random
-import genKeyboard
+import genKeyboard, genData
 import time
 
 
@@ -139,40 +139,54 @@ def genName():
 @app.route("/analytics", methods=["POST"])
 def show_analytics():
     text = request.form.get("final_text")
-    raw_text = request.form.get("rawtext")
     strokes = request.form.get("stroke")
     session['text'] = text
-    session['raw'] = raw_text
     session['strokes'] = strokes
-    key_freq, mistakes, avg_times = genKeyboard.createAnalytics(strokes)
-    new_keyboard = genKeyboard.createKeyboard(strokes)
-    session['keyboard'] = new_keyboard
-    if session.get("user_id"):
-        user_id = session['user_id']
-        new_a = Analytics(text=text, raw_text=raw_text, strokes=strokes, user_id=user_id)
-        model.session.add(new_a)
-        new_k = Keyboard(name=genName(), user_id=user_id)
-        model.session.add(new_k)
-        #creates a new keyboard each time
-        for i in range(len(new_keyboard)):
-            key = Key(kb_id=new_k.id)
-            key.location = new_keyboard[i][0]
-            key.div = new_keyboard[i][1]
-            qwerty_key = Key.query.filter_by(div=new_keyboard[i][1]).first()
-            key.values = qwerty_key.values
-            key.codes = qwerty_key.codes
-            new_k.keys.append(key)
-        model.session.commit()
-    else:
-        user_id=None
-    return render_template("analytics.html", strokes=strokes, text=text, raw_text=raw_text, user_id=user_id, avg_times=avg_times, 
-        keyboard=new_keyboard, key_freq=key_freq, mistakes=mistakes)
+    keystrokes = genData.parseKeystrokes(strokes)
+    freq = genData.keyFreq(keystrokes)
+    mistakes = genData.keyMistakes(keystrokes)
+    keytimes = genData.findKeytimes(keystrokes)
+    bigrams = genData.findngrams(2, keytimes)
+    trigrams = genData.findngrams(3, keytimes)
+    dwelltimes = genData.dwellTime(keytimes)
+    flighttimes = genData.flightTime(bigrams)
+    fastflights = genData.definingTimes(3, flighttimes, True)
+    fastdwell = genData.definingTimes(3, dwelltimes, True)
+    slowflights = genData.definingTimes(3, flighttimes, False)
+    slowdwell = genData.definingTimes(3, dwelltimes, False)
+    keyboard = genData.createKeyboard(keystrokes)
+    session['keyboard'] = keyboard
+
+    # if session.get("user_id"):
+    #     user_id = session['user_id']
+    #     new_a = Analytics(text=text, strokes=strokes, user_id=user_id)
+    #     model.session.add(new_a)
+    #     new_k = Keyboard(name=genName(), user_id=user_id)
+    #     model.session.add(new_k)
+    #     #creates a new keyboard each time
+    #     for i in range(len(new_keyboard)):
+    #         key = Key(kb_id=new_k.id)
+    #         key.location = new_keyboard[i][0]
+        #filter by value to find code
+    #         qwerty_key = Key.query.filter_by(div=new_keyboard[i][1]).first()
+    #         key.values = qwerty_key.values
+    #         key.codes = qwerty_key.codes
+    #         new_k.keys.append(key)
+    #     model.session.commit()
+    # else:
+    #     user_id=None
+    # return render_template("analytics.html", strokes=strokes, text=text, raw_text=raw_text, user_id=user_id, avg_times=avg_times, 
+    #     keyboard=new_keyboard, key_freq=key_freq, mistakes=mistakes)
+    
+    return render_template("test.html", trigrams=trigrams, dwelltimes=dwelltimes, flighttimes=flighttimes, fastflights=fastflights, fastdwell=fastdwell,
+        slowdwell=slowdwell, slowflights=slowflights, keyboard=keyboard, bigrams=bigrams, keytimes=keytimes, strokes=strokes, keystrokes=keystrokes, text=text, 
+        freq=freq, mistakes=mistakes)
 
 @app.route("/pekl/<user_id>")
 def view_pekl(user_id):
     if session.get('keyboard'):
         keyboard=session['keyboard']
-        css_keyboard = genKeyboard.CSSkeyboard(keyboard)
+        css_keyboard = genData.visualKeyboard(keyboard)
         return render_template("pekl.html", keyboard=css_keyboard)
     return render_template("no_keyboard.html")
 

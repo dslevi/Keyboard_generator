@@ -71,7 +71,6 @@ class Keyboard(Base):
 class Key(Base):
     __tablename__="keys"
     id = Column(Integer, primary_key=True)
-    div = Column(Text, nullable=False)
     location = Column(Text, nullable=False)
     values = Column(Text, nullable=False)
     codes = Column(Text, nullable=False)
@@ -103,25 +102,20 @@ def create_QWERTY():
                 'B04', 'B05', 'B06', 'B07', 'B08', 'B09', 'B10', 'B11', 'B12', 'B13', 'B14', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C08', 
                 'C09', 'C10', 'C11', 'C12', 'C13', 'D02', 'D03', 'D04', 'D05', 'D06', 'D07', 'D08', 'D09', 'D10', 'D11','E04']
 
-    divs = ["tilde", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero", "dash", "plus", "delete",
-            "tab", "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "brace_open", "brace_close", "pipe",
-            "A", "S", "D", "F", "G", "H", "J", "K", "L", "colon", "quote", "enter", "Z", "X", "C", "V", "B", "N", "M", "comma", "period", "question", "space"]
-
     codes = ["126 96", "33 49", "64 50", "35 51", "36 52", "37 53", "94 54", "38 55", '42 56', '40 57', '41 48', '95 45', '43 61', '8',
             '9', '81 113', '87 119', '69 101', '82 114', '84 116', '89 121', '85 117', '73 105', '79 111', '80 112', '123 91', '125 93', '124 92',
             '65 97', '83 115', '68 100', '70 102', '71 103', '72 104', '74 106', '75 107', '76 108', '58 59',  '34 39', '13',
             '90 122', '88 120', '67 99', '86 118', '66 98', '78 110', '77 109', '60 44', '62 46', '63 47', '32']
 
-    values = ['` ~', '1 !', '2 @', '3 #', '4 $', '5 %', '6 ^', '7 &', '8 *', '9 (', '0 )', '- _', '= +', 'delete',
-            'tab', 'q Q', 'w W', 'e E', 'r R', 't T', 'y Y', 'u U', 'i I', 'o O', 'p P', '[ {', '] }', '\\ |',
-            'a A', 's S', 'd D', 'f F', 'g G', 'h H', 'j J', 'k K', 'l L', '; :', '\' "', 'enter', 'z Z', 'x X', 'c C', 'v V', 'b B', 'n N', 'm M', ', <', '. >', '/ ?','space']
+    values = ['` ~', '1 !', '2 @', '3 #', '4 $', '5 %', '6 ^', '7 &', '8 *', '9 (', '0 )', '- _', '= +', 'DELETE',
+            'TAB', 'q Q', 'w W', 'e E', 'r R', 't T', 'y Y', 'u U', 'i I', 'o O', 'p P', '[ {', '] }', '\\ |',
+            'a A', 's S', 'd D', 'f F', 'g G', 'h H', 'j J', 'k K', 'l L', '; :', '\' "', 'ENTER', 'z Z', 'x X', 'c C', 'v V', 'b B', 'n N', 'm M', ', <', '. >', '/ ?','SPACE']
 
     k = Keyboard(name="QWERTY", user_id=0)
     session.add(k)
     for i in range(len(locations)):
         key = Key(kb_id=k.id)
         key.location = locations[i]
-        key.div = divs[i]
         key.values = values[i]
         key.codes = codes[i]
         k.keys.append(key)
