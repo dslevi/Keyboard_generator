@@ -137,10 +137,9 @@
     
     //makes assumption that caps lock default state is off
     var caps_down = null;
-    var prev_key = null;
 
     var keystrokes = {{strokes|tojson|safe}};
-    var final_text = {{final_text|tojson|safe}} + "|";
+    var final_text = {{final_text|tojson|safe}} + " ";
 
     function keyCount(eType, key, timestamp) {
         keystrokes += eType + " " + key + " " + timestamp + " ";

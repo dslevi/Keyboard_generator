@@ -1,6 +1,6 @@
 #MAPS
 visual_value = {219:('[', '{'), 220:('\\', '|'), 221:(']', '}'), 192:('`','~'), 186:(';', ':'), 190:('.', '>'), 188:(',','>'), 189:('-','_'),
-        222:("'",'"'), 187:('=','+'), 190:("/", '?'), 9:('TAB','TAB'), 3:('ENTER','ENTER'), 17:('CTRL','CTRL'), 16:('SHIFT','SHIFT'), 
+        222:("'",'"'), 187:('=','+'), 190:("/", '?'), 9:('TAB','TAB'), 13:('ENTER','ENTER'), 17:('CTRL','CTRL'), 16:('SHIFT','SHIFT'), 
         18:('ALT','ALT'), 32:('SPACE','SPACE'), 20:('CAPS','CAPS'), 8:('DELETE','DELETE'),
         48:('0', ')'), 49:('1', '!'), 50:('2','@'), 51:('3','#'), 52:('4','$'), 53:('5','%'), 54:('6','^'), 55:('7','&'), 56:('8','*'), 57:('9','('),
         65:('a', 'A'), 66:('b', 'B'), 67:('c', 'C'), 68:('d', 'D'), 69:('e', 'E'), 82:('r', 'R'), 83:('s', 'S'), 80:('p', 'P'), 81:('q', 'Q'), 87:('w', 'W'), 
@@ -166,6 +166,12 @@ def createKeyboard(strokes):
         ('V'), ('K'), ('9', '('), ('0', '1'), ('-', '_'), (';',':'), ("'", '"'), ('=', '+'), ('TAB'), ('X'), ('/','?'), ('4','$'), ('8', '*'), 
         ('1', '!'), ('J'), ('[', '{'), (']', '}'), ('Q'), ("2", '@'), ('Z'), ('5', '%'), ('3', '#'), ('\\', '|'), ('6','^'), ('7','&'), ('`', '~')]
 
+    common_keys2 = [('SPACE', 'SPACE'), ('e', 'E'), ('t', 'T'), ('a', 'A'), ('o', 'O'), ('i', 'I'), ('n', 'N'), ('s', 'S'), ('r', 'R'), ('h', 'H'), ('DELETE', 'DELETE'), 
+        ('l', 'L'), ('d', 'D'), ('c', 'C'), ('u', 'U'), ('ENTER', 'ENTER'), ('m', 'M'), ('f', 'F'), ('p', 'P'), ('g', 'G'), ('w', 'W'), ('y', 'Y'), ('b', 'B'), 
+        (',', '<'), ('.', '>'), ('v', 'V'), ('k', 'K'), ('9', '('), ('0', ')'), ('-', '_'), (';',':'), ("'", '"'), ('=', '+'), ('TAB', 'TAB'), ('x', 'X'), ('/','?'), 
+        ('4','$'), ('8', '*'), ('1', '!'), ('j', 'J'), ('[', '{'), (']', '}'), ('q', 'Q'), ("2", '@'), ('z', 'Z'), ('5', '%'), ('3', '#'), ('\\', '|'), ('6','^'), 
+        ('7','&'), ('`', '~')]
+
     bigram_freq = bigramFreq(strokes)
     reversed_bigrams = []
     for x in bigram_freq:
@@ -173,6 +179,7 @@ def createKeyboard(strokes):
     sorted_bigrams = sorted(reversed_bigrams, reverse=True)
 
     dvorak_keyboard = []
+    dvorak_keyboard2 = []
     for x, y in sorted_bigrams:
         if visual_value[y][0] != "SHIFT" and visual_value[y][0] != "CONTROL" and visual_value[y][0] != "ALT" and visual_value[y][0] != "CAPS": 
             if visual_value[y] not in dvorak_keyboard:
@@ -181,11 +188,19 @@ def createKeyboard(strokes):
                 elif y <= 32:
                     dvorak_keyboard.append(visual_value[y][0])
                 else:
-                    dvorak_keyboard.append(visual_value[y])
+                    dvorak_keyboard.append((visual_value[y][1], visual_value[y][0]))
+            if visual_value[y] not in dvorak_keyboard2:
+                dvorak_keyboard2.append(visual_value[y])
     if len(dvorak_keyboard) < len(common_keys):
         for h in common_keys:
             if h not in dvorak_keyboard:
-                dvorak_keyboard.append(h)
+                if len(h) > 1 and h != "ENTER" and h != "SPACE" and h != "TAB" and h!="DELETE":
+                    dvorak_keyboard.append((h[1], h[0]))
+                else:
+                    dvorak_keyboard.append(h)
+        for h in common_keys2:
+            if h not in dvorak_keyboard2:
+                dvorak_keyboard2.append(h)
 
     #the corresponding location map, highest priority to lowest| removed D12 - shift, E8 - ctrl, E5 - alt
     dvorak_map = ['C06', 'C05', 'C07', 'C04', 'C08', 'C03', 'C09', 'C02', 'C10', 'C11', 'C12', 'C13', 'B06', 'B05', 'B07', 'B04', 'B08', 'B03', 'B09', 'B02', 'B10', 'B01', 'B11', 
@@ -193,6 +208,6 @@ def createKeyboard(strokes):
                 'A05', 'A10', 'A04', 'A11', 'A03', 'A12', 'A02', 'A13', 'A01', 'A14']
 
     visual_map = sorted(zip(dvorak_map, dvorak_keyboard))
-    value_map = 
-    
+    value_map = sorted(zip(dvorak_map, dvorak_keyboard2))
+
     return visual_map, value_map

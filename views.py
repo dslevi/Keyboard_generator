@@ -114,22 +114,44 @@ def show_keyboard():
 def no_analytics():
     if session.get('text'):
         text = session['text']
-        raw_text = session['raw']
         strokes = session['strokes']
         keyboard = session['keyboard']
-        key_freq, mistakes, avg_times = genKeyboard.createAnalytics(strokes)
-        return render_template("analytics.html", raw_text=raw_text, text=text, strokes=strokes, avg_times=avg_times, keyboard=keyboard,
-            key_freq=key_freq, mistakes=mistakes)
+        keystrokes = genData.parseKeystrokes(strokes)
+        freq = genData.keyFreq(keystrokes)
+        mistakes = genData.keyMistakes(keystrokes)
+        keytimes = genData.findKeytimes(keystrokes)
+        bigrams = genData.findngrams(2, keytimes)
+        trigrams = genData.findngrams(3, keytimes)
+        dwelltimes = genData.dwellTime(keytimes)
+        flighttimes = genData.flightTime(bigrams)
+        fastflights = genData.definingTimes(3, flighttimes, True)
+        fastdwell = genData.definingTimes(3, dwelltimes, True)
+        slowflights = genData.definingTimes(3, flighttimes, False)
+        slowdwell = genData.definingTimes(3, dwelltimes, False)
+        return render_template("test.html", trigrams=trigrams, dwelltimes=dwelltimes, flighttimes=flighttimes, fastflights=fastflights, fastdwell=fastdwell,
+        slowdwell=slowdwell, slowflights=slowflights, keyboard=keyboard, bigrams=bigrams, keytimes=keytimes, strokes=strokes, keystrokes=keystrokes, text=text, 
+        freq=freq, mistakes=mistakes)
 
     if session.get('user_id'):
         user = User.query.filter_by(id=session['user_id']).first()
         analytics = user.analytics
         if len(analytics) > 0:
             strokes = analytics[-1].strokes
-            key_freq, mistakes, avg_times = genKeyboard.createAnalytics(strokes)
-            keyboard = genKeyboard.createKeyboard(strokes)
-            return render_template("existing_analytics.html", raw_text=analytics[-1].raw_text, text=analytics[-1].text, strokes=analytics[-1].strokes, 
-                avg_times=avg_times, keyboard=keyboard, key_freq=key_freq, mistakes=mistakes)
+            keystrokes = genData.parseKeystrokes(strokes)
+            freq = genData.keyFreq(keystrokes)
+            mistakes = genData.keyMistakes(keystrokes)
+            keytimes = genData.findKeytimes(keystrokes)
+            bigrams = genData.findngrams(2, keytimes)
+            trigrams = genData.findngrams(3, keytimes)
+            dwelltimes = genData.dwellTime(keytimes)
+            flighttimes = genData.flightTime(bigrams)
+            fastflights = genData.definingTimes(3, flighttimes, True)
+            fastdwell = genData.definingTimes(3, dwelltimes, True)
+            slowflights = genData.definingTimes(3, flighttimes, False)
+            slowdwell = genData.definingTimes(3, dwelltimes, False)
+            return render_template("test.html", trigrams=trigrams, dwelltimes=dwelltimes, flighttimes=flighttimes, fastflights=fastflights, fastdwell=fastdwell,
+            slowdwell=slowdwell, slowflights=slowflights, keyboard=keyboard, bigrams=bigrams, keytimes=keytimes, strokes=strokes, keystrokes=keystrokes, text=text, 
+            freq=freq, mistakes=mistakes)   
     return render_template("no_analytics.html")
 
 def genName():
@@ -154,29 +176,26 @@ def show_analytics():
     fastdwell = genData.definingTimes(3, dwelltimes, True)
     slowflights = genData.definingTimes(3, flighttimes, False)
     slowdwell = genData.definingTimes(3, dwelltimes, False)
-    keyboard = genData.createKeyboard(keystrokes)
+    visualKeyboard, keyboard = genData.createKeyboard(keystrokes)
     session['keyboard'] = keyboard
-
-    # if session.get("user_id"):
-    #     user_id = session['user_id']
-    #     new_a = Analytics(text=text, strokes=strokes, user_id=user_id)
-    #     model.session.add(new_a)
-    #     new_k = Keyboard(name=genName(), user_id=user_id)
-    #     model.session.add(new_k)
-    #     #creates a new keyboard each time
-    #     for i in range(len(new_keyboard)):
-    #         key = Key(kb_id=new_k.id)
-    #         key.location = new_keyboard[i][0]
-        #filter by value to find code
-    #         qwerty_key = Key.query.filter_by(div=new_keyboard[i][1]).first()
-    #         key.values = qwerty_key.values
-    #         key.codes = qwerty_key.codes
-    #         new_k.keys.append(key)
-    #     model.session.commit()
-    # else:
-    #     user_id=None
-    # return render_template("analytics.html", strokes=strokes, text=text, raw_text=raw_text, user_id=user_id, avg_times=avg_times, 
-    #     keyboard=new_keyboard, key_freq=key_freq, mistakes=mistakes)
+    session['visualKeyboard'] = visualKeyboard
+    if session.get("user_id"):
+        user_id = session['user_id']
+        new_a = Analytics(text=text, strokes=strokes, user_id=user_id)
+        model.session.add(new_a)
+        new_k = Keyboard(name=genName(), user_id=user_id)
+        model.session.add(new_k)
+        for i in range(len(keyboard)):
+            key = Key(kb_id=new_k.id)
+            key.location = keyboard[i][0]
+            key.values = keyboard[i][1][0] + " " + keyboard[i][1][1]
+            qwerty_key = Key.query.get(i + 1)
+            key.code = qwerty_key.code
+            new_k.keys.append(key)
+            print key.location, key.values, key.code
+        model.session.commit()
+    else:
+        user_id=None
     
     return render_template("test.html", trigrams=trigrams, dwelltimes=dwelltimes, flighttimes=flighttimes, fastflights=fastflights, fastdwell=fastdwell,
         slowdwell=slowdwell, slowflights=slowflights, keyboard=keyboard, bigrams=bigrams, keytimes=keytimes, strokes=strokes, keystrokes=keystrokes, text=text, 
@@ -186,42 +205,45 @@ def show_analytics():
 def view_pekl(user_id):
     if session.get('keyboard'):
         keyboard=session['keyboard']
-        css_keyboard = genData.visualKeyboard(keyboard)
-        return render_template("pekl.html", keyboard=css_keyboard)
+        visualKeyboard = session['visualKeyboard']
+        return render_template("pekl.html", keyboard=keyboard, visualKeyboard=visualKeyboard)
     return render_template("no_keyboard.html")
 
 @app.route("/allusers")
 def all_users():
     users = User.query.all()
     return render_template("all_users.html", users=users)
+
 @app.route("/allkeyboards")
 def all_keyboards():
     keyboards = Keyboard.query.all()
     return render_template("all_keyboards.html", keyboards=keyboards)
 
-@app.route("/keyboard/<keyboard_id>", methods=["POST"])
-def rename_keyboard(keyboard_id):
-    id = request.form.get('board_id')
-    keyboard = Keyboard.query.get(id)
-    keyboard.name = request.form.get('new_name')
-    model.session.commit()
-    date = time.strftime('%b %d, %Y %I:%M%p', keyboard.created_at.timetuple())
-    keys = keyboard.keys
-    values = []
-    if session.get('user_id'):
-        session_id = session['user_id']
-    else:
-        session_id = None
-    for key in keys:
-        key_values = key.values
-        tokens = key_values.split()
-        if len(tokens) > 1:
-            values.append([tokens[1],tokens[0]])
-        else:
-            values.append([tokens[0]])
-    jsonKeyboard = json_keyboard(keyboard)
-    return render_template("display_keyboard.html", keyboard=keyboard, values=values, session_id=session_id, date=date, rename_success=True,
-        jsonKeyboard = jsonKeyboard)
+# @app.route("/keyboard/<keyboard_id>", methods=["POST"])
+# def rename_keyboard(keyboard_id):
+#     id = request.form.get('board_id')
+#     keyboard = Keyboard.query.get(id)
+#     keyboard.name = request.form.get('new_name')
+#     model.session.commit()
+#     date = time.strftime('%b %d, %Y %I:%M%p', keyboard.created_at.timetuple())
+#     keys = keyboard.keys
+#     values = []
+#     if session.get('user_id'):
+#         session_id = session['user_id']
+#     else:
+#         session_id = None
+#     for key in keys:
+#         key_values = key.values
+#         tokens = key_values.split()
+#         print tokens[0]
+#         if tokens[0] != "DELETE" and tokens[0] != "TAB" and tokens[0] != "SPACE" and tokens[0] != "ENTER":
+#             values.append([tokens[1],tokens[0]])
+#         else:
+#             values.append([tokens[0]])
+
+#     jsonKeyboard = json_keyboard(keyboard)
+#     return render_template("display_keyboard.html", keyboard=keyboard, values=values, session_id=session_id, date=date, rename_success=True,
+#         jsonKeyboard = jsonKeyboard)
 
 def json_keyboard(keyboard):
     l = []
@@ -242,6 +264,7 @@ def display_keyboard(keyboard_id):
     date = time.strftime('%b %d, %Y %I:%M%p', keyboard.created_at.timetuple())
     keys = keyboard.keys
     values = []
+    word_list = ["DELETE","TAB","SPACE","ENTER", "A", "B", "C", "O", "D", "E", 'F', 'G', 'H', 'J', 'I', 'L', 'K', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
     if session.get('user_id'):
         session_id = session['user_id']
     else:
@@ -249,10 +272,10 @@ def display_keyboard(keyboard_id):
     for key in keys:
         key_values = key.values
         tokens = key_values.split()
-        if len(tokens) > 1:
+        if tokens[1] not in word_list: 
             values.append([tokens[1],tokens[0]])
         else:
-            values.append([tokens[0]])
+            values.append([tokens[1]])
     jsonKeyboard = json_keyboard(keyboard)
     text = "The quick brown fox jumps over the lazy dog."
     return render_template("display_keyboard.html", keyboard=keyboard, values=values, session_id=session_id, date=date, jsonKeyboard = jsonKeyboard, 

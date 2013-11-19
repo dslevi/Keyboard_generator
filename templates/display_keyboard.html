@@ -29,7 +29,7 @@
         {% for key in keyboard.keys %}
             <div class="key" id="{{key.location}}">
             {% for value in values[loop.index - 1] %}
-                {{value}}<br>
+                    {{value}}<br>
             {% endfor %}
             </div>
             {% if key.location=="B14" %}
