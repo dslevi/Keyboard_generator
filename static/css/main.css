@@ -110,7 +110,7 @@
 }
 
 #typing_test1{
-    height: 100px;
+    height: auto;
     border: 1px dashed gray;
     resize: none;
     font-size: 20px;
@@ -125,6 +125,7 @@
     display: inline-block;
     vertical-align: middle;
     line-height: normal;
+    padding:10px;
 }
 
 #keyboard_text2{

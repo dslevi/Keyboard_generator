@@ -291,7 +291,7 @@ def display_keyboard(keyboard_id):
         else:
             values.append([tokens[1]])
     jsonKeyboard = json_keyboard(keyboard.keys)
-    text = "The quick brown fox jumps over the lazy dog."
+    text = Text.query.get(random.randint(1, 11))
     return render_template("wtf.html", keyboard=keyboard, values=values, session_id=session_id, date=date, jsonKeyboard = jsonKeyboard, text=text)
 
 @app.route("/user/<user_id>")

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block body %}
-<!--     <div id="user_info">
+    <div id="user_info">
         {% if session_id == keyboard.user.id %}
             <form method="POST" id="rename form" action="/keyboard/{{keyboard.id}}">
                 <input type="hidden" name="board_id" value="{{keyboard.id}}">
@@ -23,7 +23,7 @@
     </div>
     <div id="typing_test1">
             <span id="text_sample">{{text}}</span>
-    </div> -->
+    </div>
 <!--     <pre><div id="keyboard_text1"></div></pre>
     <div class='newKeyboard'>
         {% for key in visualKeyboard %}
