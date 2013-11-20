@@ -1,13 +1,17 @@
 {% extends "base.html" %}
 {% block body %}
-    <h3>{{prompt}}</h3> <span id="timer"></span><br>
+    <div id="text_content"><span class="texts" id="new_text"></span><span class="texts" id="old_text"></span></div> <br>
+    <div id="text_details"><span id="text_title"><b>{{text.title}}</b></span> <span id="text_author">-{{text.author}}</span></div>
     <form method="POST", id="typing_data" action="">
-        <textarea id='keyboard_text' cols=100 rows=10></textarea><br>
-        <input type="hidden" id="input1" name="input1" value="">
+        <textarea id='input2_text' cols=700 rows=10></textarea><br>
         <input type="hidden" id="layout" name="layout" value="">
+        <input type="hidden" id="input1" name="input1" value="">
+        <input type="hidden" id="input2" name="input2" value="">
         <input type="submit" id="repeat" value="Repeat">
         <input type="submit" id="button" value="Process">
+        <span id="text_timer"></span><br>
     </form>
+    <span id="proceed"></span>
 
 <div class="keyboard">
     <div class="keyboard_row">
@@ -99,12 +103,7 @@
     }
 
     function Tick() {
-        if (TotalSeconds <= 0) {
-            Timer.innerHTML = "Proceed!";
-            return;
-        }
-
-        TotalSeconds -= 1;
+        TotalSeconds++;
         UpdateTimer()
         window.setTimeout("Tick()", 1000);
     }
@@ -122,15 +121,15 @@
         return (Time < 10) ? "0" + Time : Time;
     }
 
-    window.onload = CreateTimer("timer", 120);
+    window.onload = CreateTimer("text_timer", 0);
 
 
     //SECTION 2: keyboard typing animations
 
-    var keys = {192:"A01", 49:"A02", 50:"A03", 51:"A04", 52:"A05", 53:"A06", 54:"A07", 55:"A08", 56:"A09", 57:"A10", 48:"A11", 189:"A12", 187:"A13", 8:"A14", 
-            9:"B01", 81:"B02", 87:"B03", 69:"B04", 82:"B05", 84:"B06", 89:"B07", 85:"B08", 73:"B09", 79:"B10", 80:"B11", 219:"B12", 221:"B13", 220:"B14", 
-            20:"C01", 65:"C02", 83:"C03", 68:"C04", 70:"C05", 71:"C06", 72:'C07', 74:'C08', 75:'C09', 76:'C10',  186:"C11", 222:'C12', 13:"C13", 
-            16:"D01", 90:"D02", 88:"D03", 67:"D04", 86:"D05", 66:"D06", 78:"D07", 77:'D08', 188:"D09", 190:"D10", 191:"D11", 
+    var keys = {192:"A01", 49:"A02", 50:"A03", 51:"A04", 52:"A05", 53:"A06", 54:"A07", 55:"A08", 56:"A09", 57:"A10", 48:"A11", 189:"A12", 187:"A13", 
+            8:"A14", 9:"B01", 81:"B02", 87:"B03", 69:"B04", 82:"B05", 84:"B06", 89:"B07", 85:"B08", 73:"B09", 79:"B10", 80:"B11", 219:"B12", 
+            221:"B13", 220:"B14", 20:"C01", 65:"C02", 83:"C03", 68:"C04", 70:"C05", 71:"C06", 72:'C07', 74:'C08', 75:'C09', 76:'C10',  186:"C11", 
+            222:'C12', 13:"C13", 16:"D01", 90:"D02", 88:"D03", 67:"D04", 86:"D05", 66:"D06", 78:"D07", 77:'D08', 188:"D09", 190:"D10", 191:"D11", 
             17:"E01", 18:"E03", 32:"E04"}
     
     
@@ -138,13 +137,50 @@
     var caps_down = null;
 
     var input1 = {{input1|tojson|safe}};
+    var input2 = "";
 
     function keyCount(eType, key, timestamp) {
-        input1 += eType + " " + key + " " + timestamp + " ";
+        input2 += eType + " " + key + " " + timestamp + " ";
     }
 
-//do both key animations for control and alt
-    $('#keyboard_text').keydown(function (event) {
+    var text = {{text.content|tojson|safe}};
+    var i = 0;
+    var d = 0;
+    document.getElementById('old_text').innerHTML = {{text.content|tojson|safe}};
+
+    function animateTyping(key) {
+        var new_text = document.getElementById('new_text');
+        if ((key==8) & (d > 0)) {
+            new_text.innerHTML = new_text.innerHTML.slice(0, -30);
+            d--;
+        } else if ((d == 0) & (key == 8)) {
+            if (i > 0) {
+                old_text.innerHTML = text.slice(i - 1);
+                new_text.innerHTML = new_text.innerHTML.slice(0, -1);
+                i--;
+            }
+        } else if ((String.fromCharCode(key) == text[i]) & (d==0)){
+            new_text.innerHTML += text[i];
+            old_text.innerHTML = old_text.innerHTML.slice(1);
+            i++;
+        } else {
+            d++;
+            new_text.innerHTML += "<span class='mistake'>"+String.fromCharCode(key)+"</span>";
+        }
+        if (i == (text.length - 1)) {
+            document.getElementById("proceed").innerHTML = "Proceed!";
+        }
+    } 
+
+    $('#input2_text').keypress(function (event) {
+        animateTyping(event.which);
+    });
+
+    $('#input2_text').keydown(function (event) {
+
+        if (event.which == 8) {
+            animateTyping(event.which);
+        }
 
         keyCount("D", event.which, JSON.stringify(new Date().getTime()));
 
@@ -164,7 +200,7 @@
         }
     });
 
-    $('#keyboard_text').keyup(function (event) {
+    $('#input2_text').keyup(function (event) {
 
         keyCount("U", event.which, JSON.stringify(new Date().getTime()));
         
@@ -181,6 +217,7 @@
 
     function updateValues(){
         document.getElementById('input1').value += input1;
+        document.getElementById('input2').value += input2;
     }
 
     function submitForm(action) {
@@ -190,12 +227,12 @@
 
     $('#button').click(function(event) {
         updateValues();
-        submitForm("/input2");
+        submitForm("/input3");
     });
 
     $('#repeat').click(function(event) {
         updateValues();
-        submitForm('/keyboard');
+        submitForm('/input2');
     });
 
 </script>

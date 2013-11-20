@@ -1,12 +1,12 @@
 from flask import Flask, render_template, redirect, request, g, session, url_for, flash
-from model import User, Analytics, Prompts, Keyboard, Key
+from model import User, Analytics, Prompts, Keyboard, Key, Text
 from flask.ext.login import LoginManager, login_required, login_user, current_user
 from flaskext.markdown import Markdown
 import config
 import forms
 import model
 import random
-import genKeyboard, genData
+import genData
 import time
 
 
@@ -97,24 +97,34 @@ def signout():
 @app.route("/keyboard", methods=["POST"])
 def continue_keyboard():
     prompt = Prompts.query.get(random.randint(1, 227))
-    strokes = request.form.get("stroke")
-    raw = request.form.get("rawtext")
-    final = request.form.get("final_text")
-    return render_template("keyboard.html", prompt=prompt.text, strokes=strokes, raw=raw, final_text=final)
+    input1 = request.form.get("input1")
+    return render_template("keyboard.html", prompt=prompt.text, input1=input1)
 
 @app.route("/keyboard")
 def show_keyboard():
     prompt = Prompts.query.get(random.randint(1, 227))
-    strokes = ""
-    raw = ""
-    final = ""
-    return render_template("keyboard.html", prompt=prompt.text, strokes=strokes, raw=raw, final_text=final)
+    input1 = ""
+    return render_template("keyboard.html", prompt=prompt.text, input1=input1)
+
+@app.route("/input2", methods=["POST"])
+def get_input2():
+    text = Text.query.get(random.randint(1, 11))
+    input1 = request.form.get("input1")
+    return render_template("input2.html", text=text, input1=input1)
+
+@app.route("/input3", methods=["POST"])
+def get_input3():
+    pattern = genData.makePattern()
+    input1 = request.form.get("input1")
+    input2 = request.form.get("input2")
+    return render_template("input3.html", pattern=pattern, input1=input1, input2=input2)
 
 @app.route("/analytics")
 def no_analytics():
-    if session.get('text'):
-        text = session['text']
-        strokes = session['strokes']
+    if session.get('input1'):
+        strokes = session['input1']
+        input2 = session['input2']
+        input3 = session['input3']
         keyboard = session['keyboard']
         keystrokes = genData.parseKeystrokes(strokes)
         freq = genData.keyFreq(keystrokes)
@@ -129,14 +139,16 @@ def no_analytics():
         slowflights = genData.definingTimes(3, flighttimes, False)
         slowdwell = genData.definingTimes(3, dwelltimes, False)
         return render_template("test.html", trigrams=trigrams, dwelltimes=dwelltimes, flighttimes=flighttimes, fastflights=fastflights, fastdwell=fastdwell,
-        slowdwell=slowdwell, slowflights=slowflights, keyboard=keyboard, bigrams=bigrams, keytimes=keytimes, strokes=strokes, keystrokes=keystrokes, text=text, 
-        freq=freq, mistakes=mistakes)
+        slowdwell=slowdwell, slowflights=slowflights, keyboard=keyboard, bigrams=bigrams, keytimes=keytimes, keystrokes=keystrokes, 
+        freq=freq, mistakes=mistakes, input2=input2, input3=input3)
 
     if session.get('user_id'):
         user = User.query.filter_by(id=session['user_id']).first()
         analytics = user.analytics
         if len(analytics) > 0:
-            strokes = analytics[-1].strokes
+            strokes = analytics[-1].input1
+            input2 = analytics[-1].input2
+            input3 = analytics[-1].input3
             keystrokes = genData.parseKeystrokes(strokes)
             freq = genData.keyFreq(keystrokes)
             mistakes = genData.keyMistakes(keystrokes)
@@ -150,7 +162,7 @@ def no_analytics():
             slowflights = genData.definingTimes(3, flighttimes, False)
             slowdwell = genData.definingTimes(3, dwelltimes, False)
             return render_template("test.html", trigrams=trigrams, dwelltimes=dwelltimes, flighttimes=flighttimes, fastflights=fastflights, fastdwell=fastdwell,
-            slowdwell=slowdwell, slowflights=slowflights, keyboard=keyboard, bigrams=bigrams, keytimes=keytimes, strokes=strokes, keystrokes=keystrokes, text=text, 
+            slowdwell=slowdwell, slowflights=slowflights, keyboard=keyboard, bigrams=bigrams, keytimes=keytimes, keystrokes=keystrokes, 
             freq=freq, mistakes=mistakes)   
     return render_template("no_analytics.html")
 
@@ -160,10 +172,12 @@ def genName():
 
 @app.route("/analytics", methods=["POST"])
 def show_analytics():
-    text = request.form.get("final_text")
-    strokes = request.form.get("stroke")
-    session['text'] = text
+    strokes = request.form.get("input1")
     session['strokes'] = strokes
+    input2 = request.form.get("input2")
+    session['input2'] = input2
+    input3 = request.form.get("input3")
+    session['input3'] = input3
     keystrokes = genData.parseKeystrokes(strokes)
     freq = genData.keyFreq(keystrokes)
     mistakes = genData.keyMistakes(keystrokes)
@@ -181,7 +195,7 @@ def show_analytics():
     session['visualKeyboard'] = visualKeyboard
     if session.get("user_id"):
         user_id = session['user_id']
-        new_a = Analytics(text=text, strokes=strokes, user_id=user_id)
+        new_a = Analytics(input1=strokes, input2=input2, input3=input3, user_id=user_id)
         model.session.add(new_a)
         new_k = Keyboard(name=genName(), user_id=user_id)
         model.session.add(new_k)
@@ -198,7 +212,7 @@ def show_analytics():
         user_id=None
     
     return render_template("test.html", trigrams=trigrams, dwelltimes=dwelltimes, flighttimes=flighttimes, fastflights=fastflights, fastdwell=fastdwell,
-        slowdwell=slowdwell, slowflights=slowflights, keyboard=keyboard, bigrams=bigrams, keytimes=keytimes, strokes=strokes, keystrokes=keystrokes, text=text, 
+        slowdwell=slowdwell, slowflights=slowflights, keyboard=keyboard, bigrams=bigrams, keytimes=keytimes, keystrokes=keystrokes, 
         freq=freq, mistakes=mistakes)
 
 @app.route("/pekl/<user_id>")
@@ -245,9 +259,9 @@ def all_keyboards():
 #     return render_template("display_keyboard.html", keyboard=keyboard, values=values, session_id=session_id, date=date, rename_success=True,
 #         jsonKeyboard = jsonKeyboard)
 
-def json_keyboard(keyboard):
+def json_keyboard(keys):
     l = []
-    for key in keyboard.keys:
+    for key in keys:
         values = key.values.split()
         sublist = []
         sublist.append(key.location)
@@ -276,10 +290,9 @@ def display_keyboard(keyboard_id):
             values.append([tokens[1],tokens[0]])
         else:
             values.append([tokens[1]])
-    jsonKeyboard = json_keyboard(keyboard)
+    jsonKeyboard = json_keyboard(keyboard.keys)
     text = "The quick brown fox jumps over the lazy dog."
-    return render_template("display_keyboard.html", keyboard=keyboard, values=values, session_id=session_id, date=date, jsonKeyboard = jsonKeyboard, 
-        add_success=False, rename_success=False, text=text)
+    return render_template("wtf.html", keyboard=keyboard, values=values, session_id=session_id, date=date, jsonKeyboard = jsonKeyboard, text=text)
 
 @app.route("/user/<user_id>")
 def display_user(user_id):

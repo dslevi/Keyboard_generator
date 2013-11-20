@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+{% block body %}
+    <form method="POST", id="typing_data" action="">
+        <input type="hidden" id="layout" name="layout" value="">
+        <input type="hidden" id="input1" name="input1" value="">
+        <input type="hidden" id="input2" name="input2" value="">
+        <input type="hidden" id="input3" name="input3" value="">
+        <input type="submit" id="button" value="Process">
+        <span id="text_timer"></span>
+    </form>
+        <input type="submit" id="start" value="Start">
+
+<div class="keyboard">
+    <div class="keyboard_row">
+        <div class="key" id="A01"></div>
+        <div class="key" id="A02"></div>
+        <div class="key" id="A03"></div>
+        <div class="key" id="A04"></div>
+        <div class="key" id="A05"></div>
+        <div class="key" id="A06"></div>
+        <div class="key" id="A07"></div>
+        <div class="key" id="A08"></div>
+        <div class="key" id="A09"></div>
+        <div class="key" id="A10"></div>
+        <div class="key" id="A11"></div>
+        <div class="key" id="A12"></div>
+        <div class="key" id="A13"></div>
+        <div class="key" id="A14"></div>
+    </div>
+    <div class="keyboard_row">
+        <div class="key" id="B01"></div>
+        <div class="key" id="B02"></div>
+        <div class="key" id="B03"></div>
+        <div class="key" id="B04"></div>
+        <div class="key" id="B05"></div>
+        <div class="key" id="B06"></div>
+        <div class="key" id="B07"></div>
+        <div class="key" id="B08"></div>
+        <div class="key" id="B09"></div>
+        <div class="key" id="B10"></div>
+        <div class="key" id="B11"></div>
+        <div class="key" id="B12"></div>
+        <div class="key" id="B13"></div>
+        <div class="key" id="B14"></div>
+    </div>
+    <div class="keyboard_row">
+        <div class="key" id="C01"></div>
+        <div class="key" id="C02"></div>
+        <div class="key" id="C03"></div>
+        <div class="key" id="C04"></div>
+        <div class="key" id="C05"></div>
+        <div class="key" id="C06"></div>
+        <div class="key" id="C07"></div>
+        <div class="key" id="C08"></div>
+        <div class="key" id="C09"></div>
+        <div class="key" id="C10"></div>
+        <div class="key" id="C11"></div>
+        <div class="key" id="C12"></div>
+        <div class="key" id="C13"></div>
+    </div>
+    <div class="keyboard_row">
+        <div class="key" id="D01"></div>
+        <div class="key" id="D02"></div>
+        <div class="key" id="D03"></div>
+        <div class="key" id="D04"></div>
+        <div class="key" id="D05"></div>
+        <div class="key" id="D06"></div>
+        <div class="key" id="D07"></div>
+        <div class="key" id="D08"></div>
+        <div class="key" id="D09"></div>
+        <div class="key" id="D10"></div>
+        <div class="key" id="D11"></div>
+        <div class="key" id="D12"></div>
+    </div>
+    <div class="keyboard_row">
+        <div class="key" id="E01"></div>
+        <div class="key" id="E02"></div>
+        <div class="key" id="E03"></div>
+        <div class="key" id="E04"></div>
+        <div class="key" id="E05"></div>
+        <div class="key" id="E06"></div>
+        <div class="key" id="E07"></div>
+        <div class="key" id="E08"></div>
+    </div>
+</div>
+<br><br>
+
+<script type="text/javascript">
+    //SECTION 1: visual timer -- set for two minutes
+    
+    var Timer;
+    var TotalSeconds;
+
+    function CreateTimer(TimerID, Time) {
+        Timer = document.getElementById(TimerID);
+        TotalSeconds = Time;
+
+        UpdateTimer();
+        window.setTimeout("Tick()", 1000);
+    }
+
+    function Tick() {
+        if (TotalSeconds <= 0) {
+            Timer.innerHTML = "Proceed!";
+            return;
+        }
+
+        TotalSeconds -= 1;
+        UpdateTimer()
+        window.setTimeout("Tick()", 1000);
+    }
+
+    function UpdateTimer() {
+        var Seconds = TotalSeconds;
+        var Minutes = Math.floor(Seconds/60);
+        Seconds -= (Minutes * 60);
+
+        var TimeStr = Minutes + ":" + LeadingZero(Seconds);
+        Timer.innerHTML = TimeStr;
+    }
+
+    function LeadingZero(Time) {
+        return (Time < 10) ? "0" + Time : Time;
+    }
+
+    //SECTION 2: keyboard typing animations
+
+    var keys = {192:"A01", 49:"A02", 50:"A03", 51:"A04", 52:"A05", 53:"A06", 54:"A07", 55:"A08", 56:"A09", 57:"A10", 48:"A11", 189:"A12", 187:"A13", 8:"A14", 
+            9:"B01", 81:"B02", 87:"B03", 69:"B04", 82:"B05", 84:"B06", 89:"B07", 85:"B08", 73:"B09", 79:"B10", 80:"B11", 219:"B12", 221:"B13", 220:"B14", 
+            20:"C01", 65:"C02", 83:"C03", 68:"C04", 70:"C05", 71:"C06", 72:'C07', 74:'C08', 75:'C09', 76:'C10',  186:"C11", 222:'C12', 13:"C13", 
+            16:"D01", 90:"D02", 88:"D03", 67:"D04", 86:"D05", 66:"D06", 78:"D07", 77:'D08', 188:"D09", 190:"D10", 191:"D11", 
+            17:"E01", 18:"E03", 32:"E04"}
+    
+    var pattern = {{pattern|tojson|safe}};
+    var mistakes = 0;
+    var gameOn = false;
+    var gameKey = null;
+    var i = 0;
+
+    $('#start').click(function (event) {
+        CreateTimer("text_timer", 60);
+        gameOn = true;
+        var highlighted = document.getElementById(pattern[0]);
+        highlighted.style.backgroundColor = "yellow";
+    });
+
+    //makes assumption that caps lock default state is off
+    var caps_down = null;
+
+    var input1 = {{input1|tojson|safe}};
+    var input2 = {{input2|tojson|safe}};
+    var input3 = "";
+
+    function keyCount(eType, key, timestamp) {
+        input3 += eType + " " + key + " " + timestamp + " ";
+    }
+
+    function startGame(event, i) {
+        var highlighted = document.getElementById(pattern[i]);
+        highlighted.style.backgroundColor = "yellow";
+        if (keys[event.which] == pattern[i]) {
+            highlighted.style.backgroundColor = "black";
+        } else if (event.which != 8) {
+            mistakes++;
+        }
+    }
+
+//do both key animations for control and alt
+    $('body').keydown(function (event) {
+        if (gameOn) {
+            startGame(event, i);
+            i++;
+        }
+
+        keyCount("D", event.which, JSON.stringify(new Date().getTime()));
+
+        if (event.which == 16) {
+            document.getElementById('D01').style.backgroundColor="orange";
+            document.getElementById('D12').style.backgroundColor="orange";
+        } else if ((event.which == 20) && (caps_down != null)) {
+            caps_down.style.backgroundColor="212121";
+            caps_down = null;
+        } else if (event.which == 20) {
+            var key = document.getElementById(keys[event.which]);
+            key.style.backgroundColor="orange";
+            caps_down = key;
+        } else {
+            var key = document.getElementById(keys[event.which]);
+            key.style.backgroundColor="orange";
+        }
+    });
+
+    $('body').keyup(function (event) {
+
+        keyCount("U", event.which, JSON.stringify(new Date().getTime()));
+        
+        if (event.which == 16) {
+            document.getElementById('D01').style.backgroundColor="212121";
+            document.getElementById('D12').style.backgroundColor="212121";
+        } else if (event.which != 20) {
+            var key = document.getElementById(keys[event.which]);
+            key.style.backgroundColor="212121";
+        }
+    });
+
+    //SECITON 3: submitting form values
+
+    function updateValues(){
+        document.getElementById('input1').value += input1;
+        document.getElementById('input2').value += input2;
+        document.getElementById('input3').value += input3;
+    }
+
+    function submitForm(action) {
+        document.getElementById("typing_data").action = action;
+        document.getElementById("typing_data").submit();
+    }
+
+    $('#button').click(function(event) {
+        updateValues();
+        submitForm("/analytics");
+    });
+
+</script>
+{% endblock %}

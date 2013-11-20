@@ -45,8 +45,9 @@ class Analytics(Base):
     __tablename__ = "analytics"
 
     id = Column(Integer, primary_key=True)
-    text = Column(Text, nullable=False)
-    strokes = Column(Text, nullable=False)
+    input1 = Column(Text, nullable=False)
+    input2 = Column(Text, nullable=False)
+    input3 = Column(Text, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.now)
     user_id = Column(Integer, ForeignKey("users.id"))
 
@@ -63,7 +64,9 @@ class Keyboard(Base):
     name = Column(Text, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     created_at = Column(DateTime, nullable=False, default=datetime.now)
+    rating = Column(Integer, nullable=True, default=0)
     keys = relationship("Key", uselist=True)
+    favorite = Column(Boolean, nullable=True, default=False)
 
     user = relationship("User")
 
@@ -77,10 +80,12 @@ class Key(Base):
 
     keyboard = relationship("Keyboard")
 
-class textSamples(Base):
+class Text(Base):
     __tablename__="text"
     id = Column(Integer, primary_key=True)
-    text = Column(Text, nullable=False)
+    content = Column(Text, nullable=False)
+    author = Column(Text, nullable=False)
+    title = Column(Text, nullable=False)
 
 
 
@@ -91,7 +96,10 @@ def create_tables():
     u = User(name="Guest", email="test@test.com", occupation="programmer", age=23)
     u.set_password("guest")
     session.add(u)
-    a = Analytics(text="This is a test post", strokes="test", user_id=u.id)
+    d = User(name="Danielle", email="d@hba.com", occupation="Programmer", age=23)
+    d.set_password("python")
+    session.add(d)
+    a = Analytics(input1="input1", input2="input2", input3="input3", user_id=u.id)
     u.analytics.append(a)
     session.commit()
 
@@ -131,18 +139,19 @@ def create_prompts(filename):
     session.commit()
     print "Prompts: ", count
 
-# def create_textSamples(filename):
-#     count = 0
-#     f = open(filename)
-
-#         text=unicode(f.readline())
-#         book=unicode(f.readline())
-#         session.add(p)
-#         count += 1
-#     session.commit()
-#     print "Prompts: ", count
+def create_texts(filename):
+    count = 0
+    f = open(filename)
+    for line in f:
+        tokens = line.strip().split("|")
+        t = Text(content=tokens[0], title=tokens[1], author=tokens[2])
+        session.add(t)
+        count += 1
+    session.commit()
+    print "Prompts: ", count
 
 if __name__ == "__main__":
     create_tables()
     create_QWERTY()
     create_prompts("prompts.txt")
+    create_texts("textsamples.txt")
