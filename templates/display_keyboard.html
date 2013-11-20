@@ -22,118 +22,181 @@
         <h3 id="keyboard_display">{{date}}</h3>
     </div>
     <div id="typing_test1">
-            <span id="text_sample">{{text}}</span>
+            <span id="text_sample">{{text.content}}</span><span id="text_sample2"><br><b>{{text.title}}</b> -{{text.author}}</span>
     </div>
-<!--     <pre><div id="keyboard_text1"></div></pre>
+
+        <pre><div id="keyboard_text1"></div></pre>
     <div class='newKeyboard'>
-        {% for key in visualKeyboard %}
-            <div class="block" id="{{key[0]}}">
-                {% for values in key %}
-                    {% if loop.index == 2 %}
-                        {% if values|length == 2%}
-                            {% for value in values %}
-                                {{value}} <br>
-                            {% endfor %}
-                        {% else %}
-                            {{values}}
-                        {% endif %}
-                    {% endif %}
-                {% endfor %}
+        {% for key in jsonKeyboard %}
+            <div class="display_key" id="{{key[0]}}">
+                {% if key[1][0] == "~" or key[1][0] == "!" or key[1][0] == "@" or key[1][0] == "#" or key[1][0] == "$" or key[1][0] == "%" 
+                or key[1][0] == "^" or key[1][0] == "&" or key[1][0] == "*" or key[1][0] == "(" or key[1][0] == ")"or key[1][0] == "_" 
+                or key[1][0] == "+" or key[1][0] == "{" or key[1][0] == "}" or key[1][0] == "|" or key[1][0] == ":" or key[1][0] == '"' 
+                or key[1][0] == "<"or key[1][0] == ">"or key[1][0] == "?" %}
+                    {% for value in key[1] %}
+                        {{value}}<br>
+                    {% endfor %}
+                {% else %}
+                    {{key[1][0]}}
+                {% endif %}
             </div>
             {% if key[0]=="B14" %}
-                <div class="block" id="C01">CAPS</div>
+                <div class="display_key" id="C01">CAPS</div>
             {% elif key[0]=="C13"%}
-                <div class="block" id="D01">SHIFT</div>
+                <div class="display_key" id="D01">SHIFT</div>
             {% elif key[0]=="D11"%}
-                <div class="block" id="D12">SHIFT</div>
-                <div class="block" id="E01">CONTROL</div>
-                <div class="block" id="E02">SUPER</div>
-                <div class="block" id="E03">ALT</div>
+                <div class="display_key" id="D12">SHIFT</div>
+                <div class="display_key" id="E01">CONTROL</div>
+                <div class="display_key" id="E02">SUPER</div>
+                <div class="display_key" id="E03">ALT</div>
             {% elif key[0]=="E04" %}
-                <div class="block" id="E05">ALT</div>
-                <div class="block" id="E06">SUPER</div>
-                <div class="block" id="E07">META</div>
-                <div class="block" id="E08">CONTROL</div>
+                <div class="display_key" id="E05">ALT</div>
+                <div class="display_key" id="E06">SUPER</div>
+                <div class="display_key" id="E07">META</div>
+                <div class="display_key" id="E08">CONTROL</div>
             {% endif %}
         {% endfor %}
     </div>
- -->
 
-// <script>
-//     // //KEYPRESS ANIMATIONS
-//     var keys = {192:"A01", 49:"A02", 50:"A03", 51:"A04", 52:"A05", 53:"A06", 54:"A07", 55:"A08", 56:"A09", 57:"A10", 48:"A11", 189:"A12", 187:"A13", 8:"A14", 
-//             9:"B01", 81:"B02", 87:"B03", 69:"B04", 82:"B05", 84:"B06", 89:"B07", 85:"B08", 73:"B09", 79:"B10", 80:"B11", 219:"B12", 221:"B13", 220:"B14", 
-//             20:"C01", 65:"C02", 83:"C03", 68:"C04", 70:"C05", 71:"C06", 72:'C07', 74:'C08', 75:'C09', 76:'C10',  186:"C11", 222:'C12', 13:"C13", 
-//             16:"D01", 90:"D02", 88:"D03", 67:"D04", 86:"D05", 66:"D06", 78:"D07", 77:'D08', 188:"D09", 190:"D10", 191:"D11", 
-//             17:"E01", 18:"E03", 32:"E04"};
+<script>
+        //KEYPRESS ANIMATIONS
+    var keys = { 126:'A01', 96:'A01', 33:'A02', 49:'A02', 64:'A03', 50:'A03', 35:'A04', 51:'A04', 36:'A05', 52:'A05', 37:'A06', 53:'A06', 94:'A07', 
+                54:'A07', 38:'A08', 55:'A08', 42:'A09', 56:'A09', 40:'A10', 57:'A10', 41:'A11', 48:'A11', 95:'A12', 45:'A12', 43:'A13', 61:'A13', 8:'A14', 
+                9:'B01', 81:'B02', 113:'B02', 87:'B03', 119:'B03', 69:'B04', 101:'B04', 82:'B05', 114:'B05', 84:'B06', 116:'B06', 89:'B07', 121:'B07', 
+                85:'B08', 117:'B08', 73:'B09', 105:'B09', 79:'B10', 111:'B10', 80:'B11', 112:'B11', 123:'B12', 91:'B12', 125:'B13', 93:'B13', 124:'B14', 
+                92:'B14', 20:'C01', 65:'C02', 97:'C02', 83:'C03', 115:'C03', 68:'C04', 100:'C04', 70:'C05', 102:'C05', 71:'C06', 103:'C06', 72:'C07', 
+                104:'C07', 74:'C08', 106:'C08', 75:'C09', 107:'C09', 76:'C10', 108:'C10', 58:'C11', 59:'C11', 34:'C12', 39:'C12', 13:'C13', 16:'D01', 
+                90:'D02', 122:'D02', 88:'D03', 120:'D03', 67:'D04', 99:'D04', 86:'D05', 118:'D05', 66:'D06', 98:'D06', 78:'D07', 110:'D07', 77:'D08', 
+                109:'D08', 60:'D09', 44:'D09', 62:'D10', 46:'D10', 63:'D11', 47:'D11', 17:'E01', 18:'E03', 32:'E04'}
 
-//     //makes assumption that caps lock default state is off
-//     var caps_on = false;
-//     var shift_on = false;
+    var key_specific = { 
+        126:['A01',true], 96:['A01',false], 33:['A02',true], 49:['A02',false], 
+        64:['A03',true], 50:['A03',false], 35:['A04',true], 51:['A04',false], 
+        36:['A05',true], 52:['A05',false], 37:['A06',true], 53:['A06',false], 
+        94:['A07',true], 54:['A07',false], 38:['A08',true], 55:['A08',false], 
+        42:['A09',true], 56:['A09',false], 40:['A10',true], 57:['A10',false], 
+        41:['A11',true], 48:['A11',false], 95:['A12',true], 45:['A12',false], 
+        43:['A13',true], 61:['A13',false], 8:['A14',false], 
+        9:['B01',false], 81:['B02',true], 113:['B02',false], 87:['B03',true], 119:['B03',false], 
+        69:['B04',true], 101:['B04',false], 82:['B05',true], 114:['B05',false], 
+        84:['B06',true], 116:['B06',false], 89:['B07',true], 121:['B07',false], 
+        85:['B08',true], 117:['B08',false], 73:['B09',true], 105:['B09',false], 
+        79:['B10',true], 111:['B10',false], 80:['B11',true], 112:['B11',false], 
+        123:['B12',true], 91:['B12',false], 125:['B13',true], 93:['B13',false], 
+        124:['B14',true], 92:['B14',false], 20:['C01',false], 
+        65:['C02',true], 97:['C02',false], 83:['C03',true], 115:['C03',false], 
+        68:['C04',true], 100:['C04',false], 70:['C05',true], 102:['C05',false], 
+        71:['C06',true], 103:['C06',false], 72:['C07',true], 104:['C07',false], 
+        74:['C08',true], 106:['C08',false], 75:['C09',true], 107:['C09',false], 
+        76:['C10',true], 108:['C10',false], 58:['C11',true], 59:['C11',false], 
+        34:['C12',true], 39:['C12',false], 13:['C13',false], 
+        16:['D01',false], 90:['D02',true], 122:['D02',false], 88:['D03',true], 120:['D03',false], 
+        67:['D04',true], 99:['D04',false], 86:['D05',true], 118:['D05',false], 
+        66:['D06',true], 98:['D06',false], 78:['D07',true], 110:['D07',false], 
+        77:['D08',true], 109:['D08',false], 60:['D09',true], 44:['D09',false], 
+        62:['D10',true], 46:['D10',false], 63:['D11',true], 47:['D11',false], 
+        17:['E01',false], 18:['E03',false], 32:['E04',false]};
 
-    // var keyboard = {{keyboard|tojson|safe}};
-    // var visual_value = {};
 
-    // for (var i =0; i < keyboard.length; i++) {
-    //     for (var h=0; h < keyboard[i].length; h++) {
-    //         if (h % 3 == 0) {
-    //             visual_value[keyboard[i][h]] = [];
-    //             var value1 = keyboard[i][h + 1][0];
-    //             var value2 = keyboard[i][h + 1][1];
-    //             if (value1 == "SPACE") {
-    //                 value1 = " ";
-    //                 value2 = value1;
-    //             } else if (value1 == "TAB") {
-    //                 value1 = "    ";
-    //                 value2 = value1;
-    //             } else if (value1 == "ENTER") {
-    //                 value1 = "<br>";
-    //                 value2 = value1;
-    //             }
-    //             visual_value[keyboard[i][h]].push(value1);
-    //             visual_value[keyboard[i][h]].push(value2);
-    //         }
-    //     }
-    // }
+    //makes assumption that caps lock default state is off
+    var caps_on = false;
+    var shift_on = false;
+    var prev_key = null;
+    var new_keys = {}
+    var keyboard = {{jsonKeyboard|tojson|safe}};
+
+    //creates dictionary from passed in keyboard var for remapping process
+    for (var i =0; i<keyboard.length;i++) {
+        for (var h in keyboard[i]) {
+            if (h == 0) {
+                new_keys[keyboard[i][h]] = [];
+            } else {
+                var value1 = keyboard[i][1][1]
+                var value2 = keyboard[i][1][0]
+                if (value1 == "SPACE") {
+                    value1 = " ";
+                    value2 = value1;
+                } else if (value1 == "TAB") {
+                    value1 = "    ";
+                    value2 = value1;
+                } else if (value1 == "ENTER") {
+                    value1 = "<br>";
+                    value2 = value1;
+                }
+                new_keys[keyboard[i][0]].push(value1);
+                new_keys[keyboard[i][0]].push(value2);
+            }
+        }
+    }
+
+    function keyDisplays(event) {
+        //remaps key values
+        var textarea = document.getElementById('keyboard_text1');
+        var k = key_specific[event.which];
+        var possible_values = new_keys[k[0]];
+
+        //if shift, return shifted value
+        if (event.which == 20) {
+            if (caps_on) {
+                document.getElementById('C01').style.backgroundColor="212121";
+            } else {
+                document.getElementById('C01').style.backgroundColor="gray"; 
+            }
+            caps_on = !caps_on;
+        } else if (event.which == 16) {
+            shift_on = true;
+            document.getElementById('D01').style.backgroundColor="gray";
+            document.getElementById('D12').style.backgroundColor="gray";
+        } else {
+            var key = document.getElementById(keys[event.which]);
+            key.style.backgroundColor="gray";
+            prev_key = key;
+            if (possible_values[0] == 'DELETE') {
+                textarea.innerHTML = textarea.innerHTML.slice(0, -1);
+            } else if ((caps_on) || (shift_on)) {
+                if (possible_values[1]) {
+                    var chr = possible_values[1];
+                } else {
+                    var chr = possible_values[0];   
+                }
+                textarea.innerHTML += chr;
+            } else {
+                var chr = possible_values[0];
+                textarea.innerHTML += chr;
+            }
+        }
+    }
+
+    //does visual keypress animations, displays remapped text for non-meta (qwerty location) keys
+    $('body').keypress(function (event) { 
+        if ((event.which > 32) && (event.which <= 127)) {
+            keyDisplays(event);
+        }
+    });
     
-    // $('body').keydown(function (event) {
-    //     var textarea = document.getElementById('remapped_text');
-    //     //if shift, return shifted value
-    //     if (event.which == 20) {
-    //         if (caps_on) {
-    //             document.getElementById('C01').style.backgroundColor="212121";
-    //         } else {
-    //             document.getElementById('C01').style.backgroundColor="orange"; 
-    //         }
-    //         caps_on = !caps_on;
-    //     } else if (event.which == 16) {
-    //         shift_on = true;
-    //         document.getElementById('D01').style.backgroundColor="orange";
-    //         document.getElementById('D12').style.backgroundColor="orange";
-    //     } else {
-    //         var key = document.getElementById(keys[event.which]);
-    //         key.style.backgroundColor="orange";
-    //         if (visual_value[keys[event.which]][0] == 'DELETE') {
-    //             textarea.innerHTML = textarea.innerHTML.slice(0, -1);
-    //         } else if ((caps_on) || (shift_on)) {
-    //             textarea.innerHTML += visual_value[keys[event.which]][1];
-    //         } else {
-    //             textarea.innerHTML += visual_value[keys[event.which]][0];
-    //         }
-    //     }
-    // });
+    //does key animations for both left/right key pairs for control and alt
+    $('body').keydown(function (event) {
+        if (event.which <= 32) {
+            keyDisplays(event);
+        }
+    });
 
-    // $('body').keyup(function (event) {
-    //     if (event.which == 16) {
-    //         shift_on = false;
-    //         document.getElementById('D01').style.backgroundColor="212121";
-    //         document.getElementById('D12').style.backgroundColor="212121";
-    //     } else if (event.which != 20) {
-    //         var key = document.getElementById(keys[event.which]);
-    //         key.style.backgroundColor="212121";
-    //     }
-    // });
+var keyup_divs = {192:"A01", 49:"A02",50:"A03", 51:"A04", 52:"A05", 53:"A06", 54:"A07", 55:"A08", 56:"A09", 57:"A10", 48:"A11", 189:"A12", 187:"A13", 8:"A14", 
+        9:"B01", 13:"C13", 16:"D01", 17:"E01", 18:"E03", 20:"C01", 32:"E04", 20:"C01", 65:"C02", 81:"B02", 87:"B03", 69:"B04", 82:"B05", 
+        84:"B06", 89:"B07", 85:"B08", 73:"B09", 80:"B11", 219:"B12",  221:"B13", 220:"B14", 79:"B10", 66:"D06", 83:"C03", 68:"C04", 70:"C05", 71:"C06", 72:'C07', 
+        74:'C08', 75:'C09', 76:'C10', 77:'D08', 186:"C11", 222:'C12', 90:"D02", 88:"D03", 67:"D04", 86:"D05", 78:"D07", 188:"D09", 190:"D10", 191:"D11"};
+
+    $('body').keyup(function (event) {
+        if (event.which == 16) {
+            shift_on = false;
+            document.getElementById('D01').style.backgroundColor="212121";
+            document.getElementById('D12').style.backgroundColor="212121";
+        } else if (event.which != 20) {
+            var key = document.getElementById(keyup_divs[event.which]);
+            key.style.backgroundColor="212121";
+        }
+    });
 
 
-    // </script>
+    </script>
 {% endblock %}
