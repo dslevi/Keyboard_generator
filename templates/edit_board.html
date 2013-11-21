@@ -7,13 +7,11 @@
     var old_kb = {{jsonkeyboard|tojson|safe}};
     console.log(old_kb[0][1]);
     
-    var k = {"A01", "A02", "A03", "A04", "A05", "A06", "A07", "A08", "A09", "A10", "A11", "A12", "A13", "A14",
-            "B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B09", "B10", "B11", "B12", "B13", "B14",
-            "C01", "C02", "C03", "C04", "C05", "C06", "C07", "C08", "C09", "C10", "C11", "C12", "C13", "C14",
-            "D01", "D02", "D03", "D04", "D05", "D06", "D07", "D08", "D09", "D10", "D11", "D12", "D13", "D14",
-            "E01", "E02", "E03", "E04", "E05", "E06", "E07", "E08", "E09", "E10", "E11", "E12", "E13", "E14"}
+    // var k = {'D10': 'D10', 'D11': 'D11', 'B14': 'B14', 'B12': 'B12', 'B13': 'B13', 'B10': 'B10', 'B11': 'B11', 'C13': 'C13', 'C12': 'C12', 'C11': 'C11', 'C10': 'C10', 'A14': 'A14', 'A11': 'A11', 'A10': 'A10', 'A13': 'A13', 'A12': 'A12', 'D07': 'D07', 'D06': 'D06', 'D05': 'D05', 'D04': 'D04', 'D03': 'D03', 'D02': 'D02', 'E04': 'E04', 'D09': 'D09', 'D08': 'D08', 'B01': 'B01', 'C09': 'C09', 'B03': 'B03', 'B02': 'B02', 'B05': 'B05', 'B04': 'B04', 'B07': 'B07', 'B06': 'B06', 'B09': 'B09', 'B08': 'B08', 'C02': 'C02', 'C03': 'C03', 'C04': 'C04', 'C05': 'C05', 'C06': 'C06', 'C07': 'C07', 'C08': 'C08', 'A08': 'A08', 'A09': 'A09', 'A02': 'A02', 'A03': 'A03', 'A01': 'A01', 'A06': 'A06', 'A07': 'A07', 'A04': 'A04', 'A05': 'A05', 'C01': 'C01'};
 
+    var k = {'D10': 49, 'D11': 50, 'B14': 27, 'B12': 25, 'B13': 26, 'B10': 23, 'B11': 24, 'C13': 40, 'C12': 39, 'C11': 38, 'C10': 37, 'A14': 13, 'A11': 10, 'A10': 9, 'A13': 12, 'A12': 11, 'D07': 46, 'D06': 45, 'D05': 44, 'D04': 43, 'D03': 42, 'D02': 41, 'E04': 51, 'D09': 48, 'D08': 47, 'B01': 14, 'C09': 36, 'B03': 16, 'B02': 15, 'B05': 18, 'B04': 17, 'B07': 20, 'B06': 19, 'B09': 22, 'B08': 21, 'C02': 29, 'C03': 30, 'C04': 31, 'C05': 32, 'C06': 33, 'C07': 34, 'C08': 35, 'A08': 7, 'A09': 8, 'A02': 1, 'A03': 2, 'A01': 0, 'A06': 5, 'A07': 6, 'A04': 3, 'A05': 4, 'C01': 28};
 
+    var k_list = ['A01', 'A02', 'A03', 'A04', 'A05', 'A06', 'A07', 'A08', 'A09', 'A10', 'A11', 'A12', 'A13', 'A14', 'B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B09', 'B10', 'B11', 'B12', 'B13', 'B14', 'C01', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C08', 'C09', 'C10', 'C11', 'C12', 'C13', 'D02', 'D03', 'D04', 'D05', 'D06', 'D07', 'D08', 'D09', 'D10', 'D11', 'E04'];
 
 
     $('#save').click( function(event) {
@@ -21,19 +19,74 @@
     });
     
     $(function() {
-        $('.display_key').draggable({distance:30, snap:".ui-widget-header"});
-        $('.location').droppable({
+
+        $('.display_key').draggable({distance:30, containment:"body", cursorAt:{top:25, left:25}, 
+            stack: ".edit div", start:function(event) {
+                document.getElementById(event.target.id).style.backgroundColor = "gray";
+                k_list[k[event.target.id]] = null;
+                if (event.target.id == "E04") {
+                    document.getElementById(event.target.id).style.width = "45px";
+                    document.getElementById("s" + event.target.id).style.width = "339px";
+                } else if (event.target.id == "C01") {
+                    document.getElementById(event.target.id).style.width = "45px";
+                    document.getElementById("s" + event.target.id).style.width = "54px";
+                } else if (event.target.id == "B01") {
+                    document.getElementById(event.target.id).style.width = "45px";
+                    document.getElementById("s" + event.target.id).style.width = "25px";
+                } else if (event.target.id == "A14") {
+                    document.getElementById(event.target.id).style.width = "45px";
+                    document.getElementById("s" + event.target.id).style.width = "46px";
+                } else if (event.target.id == "B14") {
+                    document.getElementById(event.target.id).style.width = "45px";
+                    document.getElementById("s" + event.target.id).style.width = "22px";
+                } else if (event.target.id == "C13") {
+                    document.getElementById(event.target.id).style.width = "45px";
+                    document.getElementById("s" + event.target.id).style.width = "54px";
+                }                 
+            },
+        });
+
+        function updateCounterStatus( $event_counter, new_count ) {
+          // first update the status visually...
+          if ( !$event_counter.hasClass( "ui-state-hover" ) ) {
+            $event_counter.addClass( "ui-state-hover" )
+              .siblings().removeClass( "ui-state-hover" );
+          }
+          // ...then update the numbers
+          $( "span.count", $event_counter ).text( new_count );
+        }
+
+        $('.location').droppable({ hoverClass: 'hovered',
             drop: function(event, ui) {
-                document.getElementById(event.toElement.id).style.backgroundColor = "gray";
-                console.log("Key: " + event.toElement.id);
-                console.log("Location: " + event.target.id);
+                if (k_list[k[event.target.id]] == null) {
+                    k_list[k[event.target.id]] = event.toElement.id;
+                    document.getElementById(event.toElement.id).style.backgroundColor = "black";
+                    ui.draggable.position( { of: $(this), my: 'left top', at: 'left top' } );
+                    if (event.target.id == "E04") {
+                        document.getElementById(event.toElement.id).style.border = "none";
+                        document.getElementById("sE04").style.backgroundColor = "black";
+                    } else if (event.target.id == "C01") {
+                        document.getElementById(event.target.id).style.width = "45px";
+                        document.getElementById("s" + event.target.id).style.width = "52px";
+                    } else if (event.target.id == "B01") {
+                        document.getElementById(event.target.id).style.width = "45px";
+                        document.getElementById("s" + event.target.id).style.width = "23px";
+                    } else if (event.target.id == "A14") {
+                        document.getElementById(event.target.id).style.width = "45px";
+                        document.getElementById("s" + event.target.id).style.width = "44px";
+                    } else if (event.target.id == "B14") {
+                        document.getElementById(event.target.id).style.width = "45px";
+                        document.getElementById("s" + event.target.id).style.width = "20px";
+                    } else if (event.target.id == "C13") {
+                        document.getElementById(event.target.id).style.width = "45px";
+                        document.getElementById("s" + event.target.id).style.width = "52px";
+                    } 
+                }
+                console.log(k_list);
             }
         });
-        $('#snaptarget').droppable({
-            drop: function(event, ui) {
-                $(this).find("p").html(event.toElement.id);
-            }
-        });
+
+        $(".location2").draggable({revert:true, helper:"clone"});
     });
     
 
@@ -45,7 +98,9 @@
 <button type="button" id="save">Save</button>
 <br>
 <br>
+<div class="edit">
 {% for key in jsonkeyboard %}
+    <div id="edit_key">
     <div class="display_key" id="{{key[0]}}">
         {% if key[1][0] == "~" or key[1][0] == "!" or key[1][0] == "@" or key[1][0] == "#" or key[1][0] == "$" or key[1][0] == "%" 
         or key[1][0] == "^" or key[1][0] == "&" or key[1][0] == "*" or key[1][0] == "(" or key[1][0] == ")"or key[1][0] == "_" 
@@ -58,8 +113,13 @@
             {{key[1][0]}}
         {% endif %}
     </div>
+    <div class="modify" id="s{{key[0]}}"></div>
+    </div>
     {% if key[0]=="B14" %}
+    <div id="edit_key">
         <div class="display_key" id="C01">CAPS</div>
+        <div class="modify" id="sC01"></div>
+    </div>
     {% elif key[0]=="C13"%}
         <div class="location2" id="D01">SHIFT</div>
     {% elif key[0]=="D11"%}
@@ -74,28 +134,26 @@
         <div class="location2" id="E08">CONTROL</div>
     {% endif %}
 {% endfor %}
-
+</div>
 <div class="drop_keys">
 {% for key in jsonkeyboard %}
-    <div class="location" class="ui-widget-header" id="{{key[0]}}"></div>
+    <div class="location" id="{{key[0]}}"></div>
     {% if key[0]=="B14" %}
-        <div class="location2" class="ui-widget-header" id="C01"></div>
+        <div class="location" id="C01"></div>
     {% elif key[0]=="C13"%}
-        <div class="location2" class="ui-widget-header" id="D01"></div>
+        <div class="location2" id="D01"></div>
     {% elif key[0]=="D11"%}
-        <div class="location2" class="ui-widget-header" id="D12"><p></p></div>
-        <div class="location2" class="ui-widget-header" id="E01"></div>
-        <div class="location2" class="ui-widget-header" id="E02"></div>
-        <div class="location2" class="ui-widget-header" id="E03"></div>
+        <div class="location2" id="D12"><p></p></div>
+        <div class="location2" id="E01"></div>
+        <div class="location2" id="E02"></div>
+        <div class="location2" id="E03"></div>
     {% elif key[0]=="E04" %}
-        <div class="location2" class="ui-widget-header" id="E05"></div>
-        <div class="location2" class="ui-widget-header" id="E06"></div>
-        <div class="location2" class="ui-widget-header" id="E07"></div>
-        <div class="location2" class="ui-widget-header" id="E08"></div>
+        <div class="location2" id="E05"></div>
+        <div class="location2" id="E06"></div>
+        <div class="location2" id="E07"></div>
+        <div class="location2" id="E08"></div>
     {% endif %}
 {% endfor %}
 </div>
-
-<div id="snaptarget" class="ui-widget-header"><p>DROPPABLE AREA</p></div>
 
 {% endblock %}
