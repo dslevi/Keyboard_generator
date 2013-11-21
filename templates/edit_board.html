@@ -18,10 +18,43 @@
         console.log("saved!");
     });
     
+    var space = null;
+    var tab = null;
+    var caps = null;
+    var enter = null;
+    var del = null;
+    var punct = null;
+
     $(function() {
 
         $('.display_key').draggable({distance:30, containment:"body", cursorAt:{top:25, left:25}, 
             stack: ".edit div", start:function(event) {
+                if (space) {
+                    document.getElementById("sE04").style.backgroundColor = "white";
+                    space = !space;
+                }
+                if (tab) {
+                    document.getElementById("sB01").style.backgroundColor = "white";
+                    tab = !tab;
+                }
+                if (caps) {
+                    document.getElementById("sB01").style.backgroundColor = "white";
+                    caps = !caps;
+                }
+                if (enter) {
+                    document.getElementById("sB01").style.backgroundColor = "white";
+                    enter = !enter;
+                }
+                if (del) {
+                    document.getElementById("sB01").style.backgroundColor = "white";
+                    del = !del;
+                }
+                if (punct) {
+                    document.getElementById("sB01").style.backgroundColor = "white";
+                    punct = !punct;
+                }
+
+
                 document.getElementById(event.target.id).style.backgroundColor = "gray";
                 k_list[k[event.target.id]] = null;
                 if (event.target.id == "E04") {
@@ -43,18 +76,8 @@
                     document.getElementById(event.target.id).style.width = "45px";
                     document.getElementById("s" + event.target.id).style.width = "54px";
                 }                 
-            },
+            }
         });
-
-        function updateCounterStatus( $event_counter, new_count ) {
-          // first update the status visually...
-          if ( !$event_counter.hasClass( "ui-state-hover" ) ) {
-            $event_counter.addClass( "ui-state-hover" )
-              .siblings().removeClass( "ui-state-hover" );
-          }
-          // ...then update the numbers
-          $( "span.count", $event_counter ).text( new_count );
-        }
 
         $('.location').droppable({ hoverClass: 'hovered',
             drop: function(event, ui) {
@@ -65,27 +88,31 @@
                     if (event.target.id == "E04") {
                         document.getElementById(event.toElement.id).style.border = "none";
                         document.getElementById("sE04").style.backgroundColor = "black";
+                        space = true;
                     } else if (event.target.id == "C01") {
-                        document.getElementById(event.target.id).style.width = "45px";
-                        document.getElementById("s" + event.target.id).style.width = "52px";
+                        document.getElementById(event.toElement.id).style.border = "none";
+                        document.getElementById("sC01").style.backgroundColor = "black";
+                        caps=true;
                     } else if (event.target.id == "B01") {
-                        document.getElementById(event.target.id).style.width = "45px";
-                        document.getElementById("s" + event.target.id).style.width = "23px";
+                        document.getElementById(event.toElement.id).style.border = "none";
+                        document.getElementById("sB01").style.backgroundColor = "black";
+                        tab=true;
                     } else if (event.target.id == "A14") {
-                        document.getElementById(event.target.id).style.width = "45px";
-                        document.getElementById("s" + event.target.id).style.width = "44px";
+                        document.getElementById(event.toElement.id).style.border = "none";
+                        document.getElementById("sA14").style.backgroundColor = "black";
+                        del=true;
                     } else if (event.target.id == "B14") {
-                        document.getElementById(event.target.id).style.width = "45px";
-                        document.getElementById("s" + event.target.id).style.width = "20px";
+                        document.getElementById(event.toElement.id).style.border = "none";
+                        document.getElementById("sB14").style.backgroundColor = "black";
+                        punct=true;
                     } else if (event.target.id == "C13") {
-                        document.getElementById(event.target.id).style.width = "45px";
-                        document.getElementById("s" + event.target.id).style.width = "52px";
+                        document.getElementById(event.toElement.id).style.border = "none";
+                        document.getElementById("sC13").style.backgroundColor = "black";
+                        enter=true;
                     } 
                 }
-                console.log(k_list);
-            }
+            },
         });
-
         $(".location2").draggable({revert:true, helper:"clone"});
     });
     
