@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block body %}
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script>
+
+    var old_kb = {{jsonkeyboard|tojson|safe}};
+    console.log(old_kb[0][1]);
+    
+    var k = {"A01", "A02", "A03", "A04", "A05", "A06", "A07", "A08", "A09", "A10", "A11", "A12", "A13", "A14",
+            "B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B09", "B10", "B11", "B12", "B13", "B14",
+            "C01", "C02", "C03", "C04", "C05", "C06", "C07", "C08", "C09", "C10", "C11", "C12", "C13", "C14",
+            "D01", "D02", "D03", "D04", "D05", "D06", "D07", "D08", "D09", "D10", "D11", "D12", "D13", "D14",
+            "E01", "E02", "E03", "E04", "E05", "E06", "E07", "E08", "E09", "E10", "E11", "E12", "E13", "E14"}
+
+
+
+
+    $('#save').click( function(event) {
+        console.log("saved!");
+    });
+    
+    $(function() {
+        $('.display_key').draggable({distance:30, snap:".ui-widget-header"});
+        $('.location').droppable({
+            drop: function(event, ui) {
+                document.getElementById(event.toElement.id).style.backgroundColor = "gray";
+                console.log("Key: " + event.toElement.id);
+                console.log("Location: " + event.target.id);
+            }
+        });
+        $('#snaptarget').droppable({
+            drop: function(event, ui) {
+                $(this).find("p").html(event.toElement.id);
+            }
+        });
+    });
+    
+
+
+</script>
+
+
+<h1>{{keyboard.name}}</h1>
+<button type="button" id="save">Save</button>
+<br>
+<br>
+{% for key in jsonkeyboard %}
+    <div class="display_key" id="{{key[0]}}">
+        {% if key[1][0] == "~" or key[1][0] == "!" or key[1][0] == "@" or key[1][0] == "#" or key[1][0] == "$" or key[1][0] == "%" 
+        or key[1][0] == "^" or key[1][0] == "&" or key[1][0] == "*" or key[1][0] == "(" or key[1][0] == ")"or key[1][0] == "_" 
+        or key[1][0] == "+" or key[1][0] == "{" or key[1][0] == "}" or key[1][0] == "|" or key[1][0] == ":" or key[1][0] == '"' 
+        or key[1][0] == "<"or key[1][0] == ">"or key[1][0] == "?" %}
+            {% for value in key[1] %}
+                {{value}}<br>
+            {% endfor %}
+        {% else %}
+            {{key[1][0]}}
+        {% endif %}
+    </div>
+    {% if key[0]=="B14" %}
+        <div class="display_key" id="C01">CAPS</div>
+    {% elif key[0]=="C13"%}
+        <div class="location2" id="D01">SHIFT</div>
+    {% elif key[0]=="D11"%}
+        <div class="location2" id="D12">SHIFT<p></p></div>
+        <div class="location2" id="E01">CONTROL</div>
+        <div class="location2" id="E02">SUPER</div>
+        <div class="location2" id="E03">ALT</div>
+    {% elif key[0]=="E04" %}
+        <div class="location2" id="E05">ALT</div>
+        <div class="location2" id="E06">SUPER</div>
+        <div class="location2" id="E07">META</div>
+        <div class="location2" id="E08">CONTROL</div>
+    {% endif %}
+{% endfor %}
+
+<div class="drop_keys">
+{% for key in jsonkeyboard %}
+    <div class="location" class="ui-widget-header" id="{{key[0]}}"></div>
+    {% if key[0]=="B14" %}
+        <div class="location2" class="ui-widget-header" id="C01"></div>
+    {% elif key[0]=="C13"%}
+        <div class="location2" class="ui-widget-header" id="D01"></div>
+    {% elif key[0]=="D11"%}
+        <div class="location2" class="ui-widget-header" id="D12"><p></p></div>
+        <div class="location2" class="ui-widget-header" id="E01"></div>
+        <div class="location2" class="ui-widget-header" id="E02"></div>
+        <div class="location2" class="ui-widget-header" id="E03"></div>
+    {% elif key[0]=="E04" %}
+        <div class="location2" class="ui-widget-header" id="E05"></div>
+        <div class="location2" class="ui-widget-header" id="E06"></div>
+        <div class="location2" class="ui-widget-header" id="E07"></div>
+        <div class="location2" class="ui-widget-header" id="E08"></div>
+    {% endif %}
+{% endfor %}
+</div>
+
+<div id="snaptarget" class="ui-widget-header"><p>DROPPABLE AREA</p></div>
+
+{% endblock %}

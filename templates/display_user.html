@@ -14,7 +14,7 @@
         <b>Keyboards: </b>
         <ul>
         {% for board in user.keyboard %}
-            <li><a href="/keyboard/{{board.id}}">{{board.name}}</a></li>
+            <li><a href="/keyboard/{{board.id}}">{{board.name}}</a> <b><a href="/edit/{{board.id}}">Edit<a></b></li>
         {% endfor %}
         </ul>
     {% else %}
