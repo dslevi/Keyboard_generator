@@ -14,7 +14,7 @@ def create_pool(size):
     return pool
 
 def fitness(layout):
-    return random.randint(0, 100)
+    return random.randint(0, 10)
 
 def score_pool(pool, existing):
     scored = []
@@ -52,23 +52,35 @@ def mutate(pool, m):
 
 def find_optimal(pool):
     for p in pool:
-        if p[1] == 100:
+        if p[1] == 10:
             return p
     return False
+
+def rand_selection(s):
+    p = []
+    weighted = [0, 1, 2, 3, 4, 5, 5, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9]
+    for i in range(len(s)/2):
+        x = weighted[random.randint(0, len(weighted) - 1)]
+        p.append(s[x])
+        for n in weighted:
+            if n == x:
+                del n
+    return p
 
 def main():
     loop = True
     p = 10
     m = 3
     g = 0
+
     pool = create_pool(p)
     scored = score_pool(pool, False)
     #think about subsituting a for loop if while takes too long, force an "optimal" --best available layout
     while loop:
-        optimal = find_optimal(pool)
+        optimal = find_optimal(scored)
         if optimal:
             break
-        pool = scored[:(p/2)]
+        pool = rand_selection(scored)
         pool = mutate(pool, m)
         g += 1
         scored = score_pool(pool, True)
