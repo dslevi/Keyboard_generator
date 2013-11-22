@@ -152,6 +152,46 @@ def definingTimes(n, times, fast):
             defining.append(keytimes[-(1 + i)])
     return defining
 
+def ngramTimes(ngrams):
+    times = {}
+    for n in ngrams:
+        start = n[0][0][2]
+        end = n[-1][0][2]
+        key = ""
+        for i in range(len(n)):
+            if n[i][0][3]:
+                ch = visual_value[n[i][0][1]][1]
+            else:
+                ch = visual_value[n[i][0][1]][0]
+            key += ch + ":"
+        if times.get(key[:-1]):
+            times[key[:-1]].append((end - start))
+        else:
+            times[key[:-1]] = [(end - start)]
+    final = {}
+    for time in times:
+        total = 0
+        for t in times[time]:
+            total += t
+        avg = (total/len(times[time]))
+        final[time] = avg 
+    return final
+
+def bestBigrams(bigramTimes):
+    pass
+
+def trigramTimes(keystrokes):
+    pass
+
+def bestTrigrams(trigramTimes):
+    pass
+
+
+
+
+
+
+
 #KEYBOARD GENERATION
 
 def bigramFreq(keystrokes):
@@ -221,5 +261,5 @@ dvorak_map = ['C06', 'C05', 'C07', 'C04', 'C08', 'C03', 'C09', 'C02', 'C10', 'C1
 def makePattern():
     pattern = []
     for i in range(10):
-        pattern.append(dvorak_map[random.randint(0, len(dvorak_map))])
+        pattern.append(dvorak_map[random.randint(0, len(dvorak_map) -1)])
     return pattern

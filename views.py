@@ -191,6 +191,12 @@ def show_analytics():
     slowflights = genData.definingTimes(3, flighttimes, False)
     slowdwell = genData.definingTimes(3, dwelltimes, False)
     visualKeyboard, keyboard = genData.createKeyboard(keystrokes)
+    bigramtimes = genData.ngramTimes(bigrams)
+    trigramtimes = genData.ngramTimes(trigrams)
+    fastbigrams = genData.definingTimes(4, bigramtimes, True)
+    slowbigrams = genData.definingTimes(4, bigramtimes, False)
+    fasttrigrams = genData.definingTimes(4, trigramtimes, True)
+    slowtrigrams = genData.definingTimes(4, trigramtimes, False)
     session['keyboard'] = keyboard
     session['visualKeyboard'] = visualKeyboard
     if session.get("user_id"):
@@ -206,14 +212,14 @@ def show_analytics():
             qwerty_key = Key.query.get(i + 1)
             key.code = qwerty_key.code
             new_k.keys.append(key)
-            print key.location, key.values, key.code
         model.session.commit()
     else:
         user_id=None
     
     return render_template("test.html", trigrams=trigrams, dwelltimes=dwelltimes, flighttimes=flighttimes, fastflights=fastflights, fastdwell=fastdwell,
         slowdwell=slowdwell, slowflights=slowflights, keyboard=keyboard, bigrams=bigrams, keytimes=keytimes, keystrokes=keystrokes, 
-        freq=freq, mistakes=mistakes)
+        freq=freq, mistakes=mistakes, bigramtimes=bigramtimes, trigramtimes=trigramtimes, fastbigrams=fastbigrams, slowbigrams=slowbigrams,
+        fasttrigrams=fasttrigrams, slowtrigrams=slowtrigrams)
 
 @app.route("/pekl/<user_id>")
 def view_pekl(user_id):
