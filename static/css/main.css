@@ -429,17 +429,19 @@ pre{
     background-color: black;
     color:white;
     position:absolute;
+    top:300px;
 }
 
 .droparea{
-    width:43px;
-    height:43px;
+    width:42px;
+    height:42px;
     padding:5px;
     z-index: -1;
     background-color: white;
     border: 1px gray dotted;
     color:white;
     position:absolute;
+    top: 225px;
 }
 
 .uneditable{
@@ -450,6 +452,7 @@ pre{
     background-color: orange;
     color:white;
     position:absolute;
+    top: 150px;
 
 }
 
