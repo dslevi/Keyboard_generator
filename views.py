@@ -264,9 +264,9 @@ def json_keyboard(keys):
     for key in keys:
         values = key.values.split()
         sublist = []
-        sublist.append(key.location)
+        sublist.append(key.location.encode('ascii', 'ignore'))
         if len(values) > 1:
-            sublist.append([values[1], values[0]])
+            sublist.append([values[1].encode('ascii', 'ignore'), values[0].encode('ascii', 'ignore')])
         else:
             sublist.append(values)
         l.append(sublist)
@@ -292,17 +292,22 @@ def display_keyboard(keyboard_id):
             values.append([tokens[1]])
     jsonKeyboard = json_keyboard(keyboard.keys)
     text = Text.query.get(random.randint(1, 11))
-    return render_template("wtf.html", keyboard=keyboard, values=values, session_id=session_id, date=date, jsonKeyboard = jsonKeyboard, text=text)
+    return render_template("display_keyboard.html", keyboard=keyboard, values=values, session_id=session_id, date=date, jsonKeyboard = jsonKeyboard, text=text)
 
 @app.route("/user/<user_id>")
 def display_user(user_id):
     user = User.query.get(user_id)
     return render_template("display_user.html", user=user)
 
+@app.route("/edit/<board_id>")
+def edit_board(board_id):
+    keyboard = Keyboard.query.get(board_id)
+    jsonKeyboard = json_keyboard(keyboard.keys)
+    return render_template("edit_board2.html", keyboard=keyboard, jsonkeyboard=jsonKeyboard)
+
+
+
 #still under construction...
-@app.route("/typingtest")
-def typing_test():
-    return render_template("construction.html")
 
 @app.route("/remap")
 def remap_keys():

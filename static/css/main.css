@@ -128,6 +128,11 @@
     padding:10px;
 }
 
+#text_sample2{
+    font-size: 17px;
+    color:gray;
+}
+
 #keyboard_text2{
     resize: none;
     width: 910px;
@@ -158,6 +163,18 @@
     margin: 2px;
     color: white;
     opacity:0;
+}
+
+.display_key{
+    padding: 5px;
+    width: 45px;
+    height: 45px;
+    float: left;
+    background-color: black;
+    border: 1px solid white;
+    margin: 2px;
+    color: white;
+    z-index: 1;
 }
 
 .title_block{
@@ -211,7 +228,6 @@
 
 #E08{
     width:70px;
-    margin-bottom: 150px;
 }
 
 #E02{
@@ -321,7 +337,90 @@ pre{
     color:red;
 }
 
+#snaptarget{
+    width:800px;
+    height:180px;
+    margin-top:400px;
+    margin-left: 50px;
+    padding-left: 30px;
+    background-color: gray;
+}
 
+.droppedel{
+    background-color: orange;
+}
 
+.drop_keys{
+    width:910px;
+    height:500px;
+    z-index: -1;
+    position: absolute;
+}
 
+.display_key2{
+    padding: 5px;
+    width: 44px;
+    height: 45px;
+    float: left;
+    background-color: black;
+    border: 1px solid white;
+    border-right: 1px black solid;
+    margin: 2px;
+    margin-right: 3px;
+    color: white;
+    z-index: 1;
+}
 
+.location{
+    border: 1px gray dotted;
+    width:45px;
+    height:45px;
+    padding:5px;
+    margin:2px;
+    z-index: -1;
+    position:relative;
+    float:left;
+}
+
+.location2{
+    border: 1px white solid;
+    
+    width:45px;
+    height:45px;
+    padding:5px;
+    margin:2px;
+    position:relative;
+    float:left;
+    background-color: orange;
+    color:white;
+}
+
+.hovered{
+    background-color: #E6E6E6;
+}
+
+.modify{
+    float:left;
+    width:0px;
+    height:56px;
+    margin-left:-5px;
+    z-index: 1;
+    margin-top: 2px;
+    margin-right: 1px;
+}
+
+.edit{
+    width:917px;
+}
+
+#sE04{
+    margin-top:3px;
+}
+
+.test_key{
+    width:50px;
+    height:50px;
+    background-color:purple;
+    color:white;
+    padding: 5px;
+}

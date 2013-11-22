@@ -27,30 +27,30 @@
 
     $(function() {
 
-        $('.display_key').draggable({distance:30, containment:"body", cursorAt:{top:25, left:25}, 
+        $('.display_key2').draggable({distance:30, containment:"body", cursorAt:{top:25, left:25}, 
             stack: ".edit div", start:function(event) {
                 if (space) {
-                    document.getElementById("sE04").style.backgroundColor = "white";
+                    document.getElementById("sE04").style.visibility = "hidden";
                     space = !space;
                 }
                 if (tab) {
-                    document.getElementById("sB01").style.backgroundColor = "white";
+                    document.getElementById("sB01").style.visibility = "hidden";
                     tab = !tab;
                 }
                 if (caps) {
-                    document.getElementById("sB01").style.backgroundColor = "white";
+                    document.getElementById("sB01").style.visibility = "hidden";
                     caps = !caps;
                 }
                 if (enter) {
-                    document.getElementById("sB01").style.backgroundColor = "white";
+                    document.getElementById("sB01").style.visibility = "hidden";
                     enter = !enter;
                 }
                 if (del) {
-                    document.getElementById("sB01").style.backgroundColor = "white";
+                    document.getElementById("sB01").style.visibility = "hidden";
                     del = !del;
                 }
                 if (punct) {
-                    document.getElementById("sB01").style.backgroundColor = "white";
+                    document.getElementById("sB01").style.visibility = "hidden";
                     punct = !punct;
                 }
 
@@ -62,19 +62,19 @@
                     document.getElementById("s" + event.target.id).style.width = "339px";
                 } else if (event.target.id == "C01") {
                     document.getElementById(event.target.id).style.width = "45px";
-                    document.getElementById("s" + event.target.id).style.width = "54px";
+                    document.getElementById("s" + event.target.id).style.width = "57px";
                 } else if (event.target.id == "B01") {
                     document.getElementById(event.target.id).style.width = "45px";
-                    document.getElementById("s" + event.target.id).style.width = "25px";
+                    document.getElementById("s" + event.target.id).style.width = "28px";
                 } else if (event.target.id == "A14") {
                     document.getElementById(event.target.id).style.width = "45px";
-                    document.getElementById("s" + event.target.id).style.width = "46px";
+                    document.getElementById("s" + event.target.id).style.width = "47px";
                 } else if (event.target.id == "B14") {
                     document.getElementById(event.target.id).style.width = "45px";
-                    document.getElementById("s" + event.target.id).style.width = "22px";
+                    document.getElementById("s" + event.target.id).style.width = "27px";
                 } else if (event.target.id == "C13") {
                     document.getElementById(event.target.id).style.width = "45px";
-                    document.getElementById("s" + event.target.id).style.width = "54px";
+                    document.getElementById("s" + event.target.id).style.width = "58px";
                 }                 
             }
         });
@@ -86,7 +86,6 @@
                     document.getElementById(event.toElement.id).style.backgroundColor = "black";
                     ui.draggable.position( { of: $(this), my: 'left top', at: 'left top' } );
                     if (event.target.id == "E04") {
-                        document.getElementById(event.toElement.id).style.border = "none";
                         document.getElementById("sE04").style.backgroundColor = "black";
                         space = true;
                     } else if (event.target.id == "C01") {
@@ -128,7 +127,7 @@
 <div class="edit">
 {% for key in jsonkeyboard %}
     <div id="edit_key">
-    <div class="display_key" id="{{key[0]}}">
+    <div class="display_key2" id="{{key[0]}}">
         {% if key[1][0] == "~" or key[1][0] == "!" or key[1][0] == "@" or key[1][0] == "#" or key[1][0] == "$" or key[1][0] == "%" 
         or key[1][0] == "^" or key[1][0] == "&" or key[1][0] == "*" or key[1][0] == "(" or key[1][0] == ")"or key[1][0] == "_" 
         or key[1][0] == "+" or key[1][0] == "{" or key[1][0] == "}" or key[1][0] == "|" or key[1][0] == ":" or key[1][0] == '"' 
@@ -144,7 +143,7 @@
     </div>
     {% if key[0]=="B14" %}
     <div id="edit_key">
-        <div class="display_key" id="C01">CAPS</div>
+        <div class="display_key2" id="C01">CAPS</div>
         <div class="modify" id="sC01"></div>
     </div>
     {% elif key[0]=="C13"%}
