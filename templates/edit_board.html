@@ -58,6 +58,7 @@
                 document.getElementById(event.target.id).style.backgroundColor = "gray";
                 k_list[k[event.target.id]] = null;
                 if (event.target.id == "E04") {
+                    document.getElementById("E04").style.backgroundColor = "black";
                     document.getElementById(event.target.id).style.width = "45px";
                     document.getElementById("s" + event.target.id).style.width = "339px";
                 } else if (event.target.id == "C01") {
@@ -89,6 +90,7 @@
                         document.getElementById("sE04").style.backgroundColor = "black";
                         space = true;
                     } else if (event.target.id == "C01") {
+                        document.getElementById("eC01").style.backgroundColor = "black";
                         document.getElementById(event.toElement.id).style.border = "none";
                         document.getElementById("sC01").style.backgroundColor = "black";
                         caps=true;
@@ -165,7 +167,7 @@
 {% for key in jsonkeyboard %}
     <div class="location" id="{{key[0]}}"></div>
     {% if key[0]=="B14" %}
-        <div class="location" id="C01"></div>
+        <div class="location" id="C01" id="eC01"></div>
     {% elif key[0]=="C13"%}
         <div class="location2" id="D01"></div>
     {% elif key[0]=="D11"%}

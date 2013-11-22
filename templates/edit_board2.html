@@ -1,17 +1,64 @@
 {% extends "base.html" %}
 {% block body %}
-
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script>
-    var y = ["A01", "A02", "B01", "B02"];
-    for (var x in y) {
-        //create a div
-    }
+    
+    // var k = {'D10': 'D10', 'D11': 'D11', 'B14': 'B14', 'B12': 'B12', 'B13': 'B13', 'B10': 'B10', 'B11': 'B11', 'C13': 'C13', 'C12': 'C12', 'C11': 'C11', 'C10': 'C10', 'A14': 'A14', 'A11': 'A11', 'A10': 'A10', 'A13': 'A13', 'A12': 'A12', 'D07': 'D07', 'D06': 'D06', 'D05': 'D05', 'D04': 'D04', 'D03': 'D03', 'D02': 'D02', 'E04': 'E04', 'D09': 'D09', 'D08': 'D08', 'B01': 'B01', 'C09': 'C09', 'B03': 'B03', 'B02': 'B02', 'B05': 'B05', 'B04': 'B04', 'B07': 'B07', 'B06': 'B06', 'B09': 'B09', 'B08': 'B08', 'C02': 'C02', 'C03': 'C03', 'C04': 'C04', 'C05': 'C05', 'C06': 'C06', 'C07': 'C07', 'C08': 'C08', 'A08': 'A08', 'A09': 'A09', 'A02': 'A02', 'A03': 'A03', 'A01': 'A01', 'A06': 'A06', 'A07': 'A07', 'A04': 'A04', 'A05': 'A05', 'C01': 'C01'};
+
+    var k = {'D10': 49, 'D11': 50, 'B14': 27, 'B12': 25, 'B13': 26, 'B10': 23, 'B11': 24, 'C13': 40, 'C12': 39, 'C11': 38, 'C10': 37, 'A14': 13, 'A11': 10, 'A10': 9, 'A13': 12, 'A12': 11, 'D07': 46, 'D06': 45, 'D05': 44, 'D04': 43, 'D03': 42, 'D02': 41, 'E04': 51, 'D09': 48, 'D08': 47, 'B01': 14, 'C09': 36, 'B03': 16, 'B02': 15, 'B05': 18, 'B04': 17, 'B07': 20, 'B06': 19, 'B09': 22, 'B08': 21, 'C02': 29, 'C03': 30, 'C04': 31, 'C05': 32, 'C06': 33, 'C07': 34, 'C08': 35, 'A08': 7, 'A09': 8, 'A02': 1, 'A03': 2, 'A01': 0, 'A06': 5, 'A07': 6, 'A04': 3, 'A05': 4, 'C01': 28};
+
+    var k_list = ['A01', 'A02', 'A03', 'A04', 'A05', 'A06', 'A07', 'A08', 'A09', 'A10', 'A11', 'A12', 'A13', 'A14', 'B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B09', 'B10', 'B11', 'B12', 'B13', 'B14', 'C01', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C08', 'C09', 'C10', 'C11', 'C12', 'C13', 'D02', 'D03', 'D04', 'D05', 'D06', 'D07', 'D08', 'D09', 'D10', 'D11', 'E04'];
+
+
+    $('#save').click( function(event) {
+        alert("saved!");
+    });
+
+    $(function() {
+        $('.editable').draggable({distance:30, containment:"body", cursorAt:{top:25, left:25}, 
+        });
+
+        $('.droparea').droppable({ hoverClass: 'hovered',
+            drop: function(event, ui) {}
+        });
+        $('.uneditable').draggable({revert:true, helper:"clone"});
+    });
+    
+
 </script>
 
-<div class="test_key">sup</div>
 
+<h1>{{keyboard.name}}</h1>
+<button type="button" id="save">Save</button>
+<br>
+<br>
+<div id="edit_keyboard">
+<!--         {% if key[1][0] == "~" or key[1][0] == "!" or key[1][0] == "@" or key[1][0] == "#" or key[1][0] == "$" or key[1][0] == "%" 
+        or key[1][0] == "^" or key[1][0] == "&" or key[1][0] == "*" or key[1][0] == "(" or key[1][0] == ")"or key[1][0] == "_" 
+        or key[1][0] == "+" or key[1][0] == "{" or key[1][0] == "}" or key[1][0] == "|" or key[1][0] == ":" or key[1][0] == '"' 
+        or key[1][0] == "<"or key[1][0] == ">"or key[1][0] == "?" %} -->
+</div>
 
-
+<script>
+    var old_kb = {{jsonkeyboard|tojson|safe}};
+    for (var i = 0; i < old_kb.length; i ++) {
+        var keyid = old_kb[i][0];
+        var val1 = old_kb[i][1][0];
+        var editid = "k" + String(keyid);
+        var val2 = old_kb[i][1][1]
+        $('#edit_keyboard').append("<div class='editable' id=" + keyid + ">" + val1 + "<br>" + val2 + "</div>");
+        $('#edit_keyboard').append("<div class='droparea' id=" + keyid + "></div>");
+    }
+    $('#edit_keyboard').append("<div class='uneditable' id='C01'>CAPS</div>");
+    $('#edit_keyboard').append("<div class='uneditable' id='D01'>SHIFT</div>");
+    $('#edit_keyboard').append("<div class='uneditable' id='D12'>SHIFT</div>");
+    $('#edit_keyboard').append("<div class='uneditable' id='E01'>CONTROL</div>");
+    $('#edit_keyboard').append("<div class='uneditable' id='E02'>SUPER</div>");
+    $('#edit_keyboard').append("<div class='uneditable' id='E03'>ALT</div>");
+    $('#edit_keyboard').append("<div class='uneditable' id='E05'>ALT</div>");
+    $('#edit_keyboard').append("<div class='uneditable' id='E06'>SUPER</div>");
+    $('#edit_keyboard').append("<div class='uneditable' id='E07'>META</div>");
+    $('#edit_keyboard').append("<div class='uneditable' id='E08'>CONTROL</div>");
+</script>
 {% endblock %}
