@@ -15,6 +15,7 @@
             <li><a href="/keyboard/{{board.id}}">{{board.name}}</a> 
                 {% if user.id == user_id %}
                     <b><a href="/edit/{{board.id}}">Edit<a></b>
+                    <input type="submit" id="save" value="Save">
                 {% endif %}
             </li>
         {% endfor %}
@@ -22,5 +23,12 @@
     {% else %}
         None available<br>
     {% endif %}
+<script>
+    $('#save').onClick(function(e) {
+        e.preventDefault();
+        $.post($('#save_edits').attr('action'), $('#save_edits').serialize(), function(data){
+        });
+    });
+</script>
 
 {% endblock %}

@@ -309,7 +309,9 @@ def save_edits(board_id):
         d[k[0][1:]] = k[1][1:]
     for key in keyboard.keys:
         prev = key.location
+        print prev, d[prev]
         key.location = d[prev]
+        print key.location
     model.session.commit()
     return jsonify(result="edited")
 

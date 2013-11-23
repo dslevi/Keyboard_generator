@@ -88,6 +88,7 @@
 
     $('#save').click(function(event) {
         if (isDone(drop)) {
+            console.log(drop);
             document.getElementById('new_layout').value = makeString(drop);
         } else {
             document.getElementById('new_layout').value = "";
