@@ -413,13 +413,11 @@ pre{
     width:917px;
 }
 
-#sE04{
-    margin-top:3px;
+#edit_keyboard{
+    position:relative;
+    margin-top: -140px;
+    margin-left: -20px;
 }
-
-
-
-
 
 .editable{
     width:45px;
@@ -429,19 +427,16 @@ pre{
     background-color: black;
     color:white;
     position:absolute;
-    top:300px;
 }
 
 .droparea{
     width:42px;
-    height:42px;
+    height:43px;
     padding:5px;
     z-index: -1;
-    background-color: white;
     border: 1px gray dotted;
     color:white;
     position:absolute;
-    top: 225px;
 }
 
 .uneditable{
@@ -452,13 +447,84 @@ pre{
     background-color: orange;
     color:white;
     position:absolute;
-    top: 150px;
-
 }
 
+#eE04{
+    width: 380px;
+}
 
+#dE04{
+    width: 378px;
+}
 
+#eC13{
+    width: 99px;
+}
 
+#dC13{
+    width: 97px;
+}
 
+#eB01{
+    width: 70px;
+}
 
+#dB01{
+    width: 67px;
+}
 
+#eA14{
+    width: 90px;
+}
+
+#dA14{
+    width: 88px;
+}
+
+#eB14{
+    width: 69px;
+}
+
+#dB14{
+    width: 67px;
+}
+
+#eC01{
+    width: 97px;
+}
+
+#eD01{
+    width: 128px;
+}
+
+#eD12{
+    width: 129px;
+}
+
+#eE01{
+    width: 70px;
+}
+
+#eE02{
+    width: 52px;
+}
+
+#eE06{
+    width: 52px;
+}
+
+#eE07{
+    width: 49px;
+}
+
+#eE08{
+    width: 70px;
+}
+
+#eE03{
+    width: 46px;
+}
+
+#eE05{
+    width: 46px;
+}

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, g, session, url_for, flash
+from flask import Flask, render_template, redirect, request, g, session, url_for, flash, jsonify
 from model import User, Analytics, Prompts, Keyboard, Key, Text
 from flask.ext.login import LoginManager, login_required, login_user, current_user
 from flaskext.markdown import Markdown
@@ -239,32 +239,6 @@ def all_keyboards():
     keyboards = Keyboard.query.all()
     return render_template("all_keyboards.html", keyboards=keyboards)
 
-# @app.route("/keyboard/<keyboard_id>", methods=["POST"])
-# def rename_keyboard(keyboard_id):
-#     id = request.form.get('board_id')
-#     keyboard = Keyboard.query.get(id)
-#     keyboard.name = request.form.get('new_name')
-#     model.session.commit()
-#     date = time.strftime('%b %d, %Y %I:%M%p', keyboard.created_at.timetuple())
-#     keys = keyboard.keys
-#     values = []
-#     if session.get('user_id'):
-#         session_id = session['user_id']
-#     else:
-#         session_id = None
-#     for key in keys:
-#         key_values = key.values
-#         tokens = key_values.split()
-#         print tokens[0]
-#         if tokens[0] != "DELETE" and tokens[0] != "TAB" and tokens[0] != "SPACE" and tokens[0] != "ENTER":
-#             values.append([tokens[1],tokens[0]])
-#         else:
-#             values.append([tokens[0]])
-
-#     jsonKeyboard = json_keyboard(keyboard)
-#     return render_template("display_keyboard.html", keyboard=keyboard, values=values, session_id=session_id, date=date, rename_success=True,
-#         jsonKeyboard = jsonKeyboard)
-
 def json_keyboard(keys):
     l = []
     for key in keys:
@@ -300,10 +274,44 @@ def display_keyboard(keyboard_id):
     text = Text.query.get(random.randint(1, 11))
     return render_template("display_keyboard.html", keyboard=keyboard, values=values, session_id=session_id, date=date, jsonKeyboard = jsonKeyboard, text=text)
 
+@app.route("/keyboard/<keyboard_id>", methods=["POST"])
+def rename_keyboard(keyboard_id):
+    id = request.form.get('board_id')
+    keyboard = Keyboard.query.get(id)
+    if request.form.get('new_name'):
+        keyboard.name = request.form.get('new_name')
+        model.session.commit()
+        return jsonify(result="name")
+    user = User.query.get(session['user_id'])
+    user.keyboard.append(keyboard)
+    model.session.commit()
+    return jsonify(result="add")
+
 @app.route("/user/<user_id>")
 def display_user(user_id):
     user = User.query.get(user_id)
-    return render_template("display_user.html", user=user)
+    if session.get('user_id'):
+        user_id = session['user_id']
+    else:
+        user_id = None
+    return render_template("display_user.html", user=user, user_id=user_id)
+
+@app.route("/edit/<board_id>", methods=['POST'])
+def save_edits(board_id):
+    keyboard = Keyboard.query.get(board_id)
+    new = request.form.get('new_layout')
+    if new == "":
+        return jsonify(result="fail")
+    d = {}
+    tokens = new.encode('ascii', 'ignore').split()
+    for token in tokens:
+        k = token.split(":")
+        d[k[0][1:]] = k[1][1:]
+    for key in keyboard.keys:
+        prev = key.location
+        key.location = d[prev]
+    model.session.commit()
+    return jsonify(result="edited")
 
 @app.route("/edit/<board_id>")
 def edit_board(board_id):

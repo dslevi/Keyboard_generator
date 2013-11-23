@@ -8,13 +8,15 @@
         {% else %}
             Left
         {% endif %}<br><br>
-    <b>Current keyboard: </b>
+    <b>Keyboards: </b><br>
     {% if user.keyboard %}
-        <a href="/keyboard/{{user.keyboard[-1].id}}">{{user.keyboard[-1].name}}</a><br>
-        <b>Keyboards: </b>
         <ul>
         {% for board in user.keyboard %}
-            <li><a href="/keyboard/{{board.id}}">{{board.name}}</a> <b><a href="/edit/{{board.id}}">Edit<a></b></li>
+            <li><a href="/keyboard/{{board.id}}">{{board.name}}</a> 
+                {% if user.id == user_id %}
+                    <b><a href="/edit/{{board.id}}">Edit<a></b>
+                {% endif %}
+            </li>
         {% endfor %}
         </ul>
     {% else %}

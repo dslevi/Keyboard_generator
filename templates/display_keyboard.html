@@ -2,14 +2,15 @@
 {% block body %}
     <div id="user_info">
         {% if session_id == keyboard.user.id %}
-            <form method="POST" id="rename form" action="/keyboard/{{keyboard.id}}">
+            <form method="POST" id="rename_form" action="/keyboard/{{keyboard.id}}">
                 <input type="hidden" name="board_id" value="{{keyboard.id}}">
                 <textarea id="keyboard_name" name="new_name">{{keyboard.name}}</textarea>
                 <input type="submit" id="rename_keyboard" value="Rename keyboard">
             </form>
-        {% else %}
+        {% elif session_id %}
             <h2>{{keyboard.name}}</h2>
             <form method="POST" id="add_form" action="/keyboard/{{keyboard.id}}">
+                <input type="hidden" name="board_id" value="{{keyboard.id}}">
                 <input type="submit" id="add_keyboard" value="Add to Inventory">
             </form>
         {% endif %}
@@ -59,6 +60,24 @@
     </div>
 
 <script>
+    $(document).ready(function(){
+        $('#rename_form').submit(function(e) {
+            e.preventDefault();
+            $.post($('#rename_form').attr('action'), $('#rename_form').serialize(), function(data){
+                    alert("Keyboard name changed.");
+            });
+        });
+
+        $('#add_form').submit(function(e) {
+            e.preventDefault();
+            $.post($('#add_form').attr('action'), $('#add_form').serialize(), function(data){
+                alert("Keyboard added to inventory.");
+            });
+        });
+    });
+
+
+
         //KEYPRESS ANIMATIONS
     var keys = { 126:'A01', 96:'A01', 33:'A02', 49:'A02', 64:'A03', 50:'A03', 35:'A04', 51:'A04', 36:'A05', 52:'A05', 37:'A06', 53:'A06', 94:'A07', 
                 54:'A07', 38:'A08', 55:'A08', 42:'A09', 56:'A09', 40:'A10', 57:'A10', 41:'A11', 48:'A11', 95:'A12', 45:'A12', 43:'A13', 61:'A13', 8:'A14', 

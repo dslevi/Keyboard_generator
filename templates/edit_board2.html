@@ -4,24 +4,40 @@
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script>
     
-    // var k = {'D10': 'D10', 'D11': 'D11', 'B14': 'B14', 'B12': 'B12', 'B13': 'B13', 'B10': 'B10', 'B11': 'B11', 'C13': 'C13', 'C12': 'C12', 'C11': 'C11', 'C10': 'C10', 'A14': 'A14', 'A11': 'A11', 'A10': 'A10', 'A13': 'A13', 'A12': 'A12', 'D07': 'D07', 'D06': 'D06', 'D05': 'D05', 'D04': 'D04', 'D03': 'D03', 'D02': 'D02', 'E04': 'E04', 'D09': 'D09', 'D08': 'D08', 'B01': 'B01', 'C09': 'C09', 'B03': 'B03', 'B02': 'B02', 'B05': 'B05', 'B04': 'B04', 'B07': 'B07', 'B06': 'B06', 'B09': 'B09', 'B08': 'B08', 'C02': 'C02', 'C03': 'C03', 'C04': 'C04', 'C05': 'C05', 'C06': 'C06', 'C07': 'C07', 'C08': 'C08', 'A08': 'A08', 'A09': 'A09', 'A02': 'A02', 'A03': 'A03', 'A01': 'A01', 'A06': 'A06', 'A07': 'A07', 'A04': 'A04', 'A05': 'A05', 'C01': 'C01'};
-
-    var k = {'D10': 49, 'D11': 50, 'B14': 27, 'B12': 25, 'B13': 26, 'B10': 23, 'B11': 24, 'C13': 40, 'C12': 39, 'C11': 38, 'C10': 37, 'A14': 13, 'A11': 10, 'A10': 9, 'A13': 12, 'A12': 11, 'D07': 46, 'D06': 45, 'D05': 44, 'D04': 43, 'D03': 42, 'D02': 41, 'E04': 51, 'D09': 48, 'D08': 47, 'B01': 14, 'C09': 36, 'B03': 16, 'B02': 15, 'B05': 18, 'B04': 17, 'B07': 20, 'B06': 19, 'B09': 22, 'B08': 21, 'C02': 29, 'C03': 30, 'C04': 31, 'C05': 32, 'C06': 33, 'C07': 34, 'C08': 35, 'A08': 7, 'A09': 8, 'A02': 1, 'A03': 2, 'A01': 0, 'A06': 5, 'A07': 6, 'A04': 3, 'A05': 4, 'C01': 28};
-
-    var k_list = ['A01', 'A02', 'A03', 'A04', 'A05', 'A06', 'A07', 'A08', 'A09', 'A10', 'A11', 'A12', 'A13', 'A14', 'B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B09', 'B10', 'B11', 'B12', 'B13', 'B14', 'C01', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C08', 'C09', 'C10', 'C11', 'C12', 'C13', 'D02', 'D03', 'D04', 'D05', 'D06', 'D07', 'D08', 'D09', 'D10', 'D11', 'E04'];
-
-
-    $('#save').click( function(event) {
-        alert("saved!");
-    });
+    var edit_d = {'eD10': 'dD10', 'eD11': 'dD11', 'eB14': 'dB14', 'eB12': 'dB12', 'eB13': 'dB13', 'eB10': 'dB10', 'eB11': 'dB11', 'eC13': 'dC13',
+     'eC12': 'dC12', 'eC11': 'dC11', 'eC10': 'dC10', 'eA14': 'dA14', 'eA11': 'dA11', 'eA10': 'dA10', 'eA13': 'dA13', 'eA12': 'dA12', 
+     'eD07': 'dD07', 'eD06': 'dD06', 'eD05': 'dD05', 'eD04': 'dD04', 'eD03': 'dD03', 'eD02': 'dD02', 'eE04': 'dE04', 'eD09': 'dD09', 
+     'eD08': 'dD08', 'eB01': 'dB01', 'eC09': 'dC09', 'eB03': 'dB03', 'eB02': 'dB02', 'eB05': 'dB05', 'eB04': 'dB04', 'eB07': 'dB07', 
+     'eB06': 'dB06', 'eB09': 'dB09', 'eB08': 'dB08', 'eC02': 'dC02', 'eC03': 'dC03', 'eC04': 'dC04', 'eC05': 'dC05', 'eC06': 'dC06', 
+     'eC07': 'dC07', 'eC08': 'dC08', 'eA08': 'dA08', 'eA09': 'dA09', 'eA02': 'dA02', 'eA03': 'dA03', 'eA01': 'dA01', 'eA06': 'dA06', 
+     'eA07': 'dA07', 'eA04': 'dA04', 'eA05': 'dA05', 'eC01': 'dC01'};
+     var drop = {'dC10': 'eC10', 'dB14': 'eB14', 'dC12': 'eC12', 'dC13': 'eC13', 'dB11': 'eB11', 'dB10': 'eB10', 'dB13': 'eB13', 'dB12': 'eB12', 'dC11': 'eC11', 'dA09': 'eA09', 'dA14': 'eA14', 'dA12': 'eA12', 'dA13': 'eA13', 'dA10': 'eA10', 'dA11': 'eA11', 'dD08': 'eD08', 'dD09': 'eD09', 'dD04': 'eD04', 'dD05': 'eD05', 'dD06': 'eD06', 'dD07': 'eD07', 'dD02': 'eD02', 'dD03': 'eD03', 'dC03': 'eC03', 'dC02': 'eC02', 'dC01': 'eC01', 'dC07': 'eC07', 'dC06': 'eC06', 'dC05': 'eC05', 'dC04': 'eC04', 'dC09': 'eC09', 'dC08': 'eC08', 'dA01': 'eA01', 'dB08': 'eB08', 'dA02': 'eA02', 'dA05': 'eA05', 'dA04': 'eA04', 'dA07': 'eA07', 'dA06': 'eA06', 'dB02': 'eB02', 'dA08': 'eA08', 'dB01': 'eB01', 'dB06': 'eB06', 'dB07': 'eB07', 'dB04': 'eB04', 'dB05': 'eB05', 'dE04': 'eE04', 'dA03': 'eA03', 'dD11': 'eD11', 'dD10': 'eD10', 'dB09': 'eB09', 'dB03': 'eB03'}
 
     $(function() {
-        $('.editable').draggable({distance:30, containment:"body", cursorAt:{top:25, left:25}, 
+        $('.editable').draggable({distance:30, containment:"body", cursorAt:{top:25, left:25}, stack: "#edit_keyboard div", 
+            start:function(event) {
+                document.getElementById(event.target.id).style.width = "46px";
+                document.getElementById(event.target.id).style.backgroundColor = "gray";
+                document.getElementById(event.target.id).style.border = "1px white solid";
+
+                var prev = edit_d[event.target.id];
+                if (prev != null) {
+                    edit_d[event.target.id] = null;
+                    drop[prev] = null;
+                }
+            } 
         });
 
         $('.droparea').droppable({ hoverClass: 'hovered',
             drop: function(event, ui) {
-                console.log(event.toElement.id);
+                if (drop[event.target.id] == null) {
+                    ui.draggable.position( { of: $(this), my: 'left top', at: 'left top' } );
+                    document.getElementById(event.toElement.id).style.border = "None";
+                    document.getElementById(event.toElement.id).style.backgroundColor = "black";
+                    document.getElementById(event.toElement.id).style.width = $(this).width() + 3;
+                    edit_d[event.toElement.id] = event.target.id;
+                    drop[event.target.id] = event.toElement.id;
+                }
             }
         });
         $('.uneditable').draggable({revert:true, helper:"clone"});
@@ -32,37 +48,99 @@
 
 
 <h1>{{keyboard.name}}</h1>
-<button type="button" id="save">Save</button>
+<form method="POST" id="save_edits" action="/edit/{{keyboard.id}}">
+    <input type="hidden" id="new_layout" name="new_layout" value="">
+    <input type="submit" id="save" value="Save">
+</form>
 <br>
 <br>
 <div id="edit_keyboard"></div>
 
 <script>
+
+    function isDone(d) {
+        for (var v in d) {
+            if (d[v] == null) {
+                return false
+            }
+        }
+        return true
+    }
+
+    $('#save_edits').submit(function(e) {
+        e.preventDefault();
+        $.post($('#save_edits').attr('action'), $('#save_edits').serialize(), function(data){
+            if (data.result == "fail") {
+                alert("Could not update. Please place all keys.");
+            } else {
+                alert("Success! Layout saved.");
+            }
+        });
+    });
+
+    function makeString(d){
+        var s = "";
+        for (var v in d) {
+            s += v + ":" + d[v] + " ";
+        }
+        return s;
+    }
+
+    $('#save').click(function(event) {
+        if (isDone(drop)) {
+            document.getElementById('new_layout').value = makeString(drop);
+        } else {
+            document.getElementById('new_layout').value = "";
+        }
+    });
+
     var old_kb = {{jsonkeyboard|tojson|safe}};
     for (var i = 0; i < old_kb.length; i ++) {
-        var keyid = old_kb[i][0];
+        var keyid = "e" + old_kb[i][0];
+        var keyid2 = "d" + old_kb[i][0];
         var val1 = old_kb[i][1][0];
         var editid = "k" + String(keyid);
-        if ((keyid == "A01") || (keyid == "A02") || (keyid == "A03") || (keyid == "A04") || (keyid == "A05") || (keyid == "A06") ||
-            (keyid == "A07") || (keyid == "A08") || (keyid == "A09") || (keyid == "A10") || (keyid == "A11") || (keyid == "A12") ||
-            (keyid == "A13") || (keyid == "B12") || (keyid == "B13") || (keyid == "B14") || (keyid == "C11") || (keyid == "C12") ||
-            (keyid == "D09") || (keyid == "D10") || (keyid == "D11")) {
+        if ((val1 == "`") || (val1 == "!") || (val1 == "@") || (val1 == "#") || (val1 == "$") || (val1 == "%") ||
+            (val1 == "^") || (val1 == "&") || (val1 == "*") || (val1 == "(") || (val1 == ")") || (val1 == "_") ||
+            (val1 == "+") || (val1 == "{") || (val1 == "}") || (val1 == "|") || (val1 == ":") || (val1 == '"') ||
+            (val1 == "<") || (val1 == ">") || (val1 == "?")) {
             var val2 = "<br>" + old_kb[i][1][1]  
         } else {
             var val2 = ""
         }
         $('#edit_keyboard').append("<div class='editable' id=" + keyid + ">" + val1 + val2 + "</div>");
-        $('#edit_keyboard').append("<div class='droparea' id=" + keyid + "></div>");
+        $('#edit_keyboard').append("<div class='droparea' id=" + keyid2 + "></div>");
     }
-    $('#edit_keyboard').append("<div class='uneditable' id='C01'>CAPS</div>");
-    $('#edit_keyboard').append("<div class='uneditable' id='D01'>SHIFT</div>");
-    $('#edit_keyboard').append("<div class='uneditable' id='D12'>SHIFT</div>");
-    $('#edit_keyboard').append("<div class='uneditable' id='E01'>CONTROL</div>");
-    $('#edit_keyboard').append("<div class='uneditable' id='E02'>SUPER</div>");
-    $('#edit_keyboard').append("<div class='uneditable' id='E03'>ALT</div>");
-    $('#edit_keyboard').append("<div class='uneditable' id='E05'>ALT</div>");
-    $('#edit_keyboard').append("<div class='uneditable' id='E06'>SUPER</div>");
-    $('#edit_keyboard').append("<div class='uneditable' id='E07'>META</div>");
-    $('#edit_keyboard').append("<div class='uneditable' id='E08'>CONTROL</div>");
-</script>
+    $('#edit_keyboard').append("<div class='uneditable' id='eC01'>CAPS</div>");
+    $('#edit_keyboard').append("<div class='uneditable' id='eD01'>SHIFT</div>");
+    $('#edit_keyboard').append("<div class='uneditable' id='eD12'>SHIFT</div>");
+    $('#edit_keyboard').append("<div class='uneditable' id='eE01'>CONTROL</div>");
+    $('#edit_keyboard').append("<div class='uneditable' id='eE02'>SUPER</div>");
+    $('#edit_keyboard').append("<div class='uneditable' id='eE03'>ALT</div>");
+    $('#edit_keyboard').append("<div class='uneditable' id='eE05'>ALT</div>");
+    $('#edit_keyboard').append("<div class='uneditable' id='eE06'>SUPER</div>");
+    $('#edit_keyboard').append("<div class='uneditable' id='eE07'>META</div>");
+    $('#edit_keyboard').append("<div class='uneditable' id='eE08'>CONTROL</div>");
+
+    var k_list = [['A01', 'A02', 'A03', 'A04', 'A05', 'A06', 'A07', 'A08', 'A09', 'A10', 'A11', 'A12', 'A13', 'A14'], ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B09', 'B10', 'B11', 'B12', 'B13', 'B14'], ['C01', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C08', 'C09', 'C10', 'C11', 'C12', 'C13'], ['D01', 'D02', 'D03', 'D04', 'D05', 'D06', 'D07', 'D08', 'D09', 'D10', 'D11', 'D12'], 
+        ['E01', 'E02', 'E03', 'E04', 'E05', 'E06', 'E07', 'E08']];
+
+    for (var i = 0; i < k_list.length; i++) {
+        var wOffset = 0;
+        for (var h = 0; h < k_list[i].length; h++) {
+            $('#e' + k_list[i][h]).css({
+                'top': 160 + (i * 60),
+                'left': 80 + (h * 60) + (wOffset - (45 * h))
+            })
+            if ($('#d' + k_list[i][h])) {
+                $('#d' + k_list[i][h]).css({
+                    'top': 160 + (i * 60),
+                    'left': 80 + (h * 60) + (wOffset - (45 * h))
+                }) 
+            }
+            wOffset += $('#e' + k_list[i][h]).width()
+        }
+    }
+
+</script> 
 {% endblock %}
