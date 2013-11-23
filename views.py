@@ -308,11 +308,14 @@ def save_edits(board_id):
         k = token.split(":")
         d[k[0][1:]] = k[1][1:]
     for key in keyboard.keys:
+        print "1 ", key.location, key.values
         prev = key.location
-        print prev, d[prev]
         key.location = d[prev]
-        print key.location
+        print "2 ", key.location, key.values
     model.session.commit()
+    keyboard = Keyboard.query.get(board_id)
+    for key in keyboard.keys:
+        print "3 ", key.location, key.values
     return jsonify(result="edited")
 
 @app.route("/edit/<board_id>")
