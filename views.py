@@ -308,14 +308,11 @@ def save_edits(board_id):
         k = token.split(":")
         d[k[0][1:]] = k[1][1:]
     for key in keyboard.keys:
-        print "1 ", key.location, key.values
         prev = key.location
         key.location = d[prev]
-        print "2 ", key.location, key.values
+        model.session.add(key)
     model.session.commit()
     keyboard = Keyboard.query.get(board_id)
-    for key in keyboard.keys:
-        print "3 ", key.location, key.values
     return jsonify(result="edited")
 
 @app.route("/edit/<board_id>")
@@ -324,6 +321,12 @@ def edit_board(board_id):
     jsonKeyboard = json_keyboard(keyboard.keys)
     return render_template("edit_board2.html", keyboard=keyboard, jsonkeyboard=jsonKeyboard)
 
+@app.route("/delete/<board_id>")
+def delete_board(board_id):
+    keyboard = Keyboard.query.get(board_id)
+    model.session.delete(keyboard)
+    model.session.commit()
+    return redirect(url_for("display_user", user_id=session['user_id']))
 
 
 #still under construction...
