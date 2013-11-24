@@ -17,8 +17,6 @@
                         <li><a href="{{url_for("show_analytics")}}">Analytics</a></li>
                         <li><a href="{{url_for("all_keyboards")}}">All keyboards</a></li>
                         <li><a href="{{url_for("all_users")}}">All users</a></li>
-<!--                         <li><a href="{{url_for("remap_keys")}}">Remap keys</a></li>
-                        <li><a href="{{url_for("log_keys")}}">Keylogger</a></li> -->
                         {% if session_id %}
                             <li><a href="{{url_for("signout")}}">Sign out</a></li>
                         {% else %}

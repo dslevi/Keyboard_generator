@@ -528,3 +528,43 @@ pre{
 #eE05{
     width: 46px;
 }
+
+#info{
+    margin: 10px;
+    text-align: middle;
+    float:left;
+}
+
+.thumbnail{
+    width:75px;
+    height:75px;
+    background-color: black;
+    color:white;
+    font-size: 35px;
+    padding:5px;
+    text-align: middle;
+}
+
+.info{
+    color:black;
+    font-size: 14px;
+    margin-left: 4px;
+    padding-top: 2px;
+}
+
+#info{
+    width:80px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

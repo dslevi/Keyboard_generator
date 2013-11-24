@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block body %}
-    <h2>{{user.name}}</h2><br>
+    <h2>{{user.name}}</h2>
     <b>Occupation: </b> {{user.occupation}}<br>
     <b>Dominant hand: </b>
         {% if user.right_hand %}
@@ -8,18 +8,19 @@
         {% else %}
             Left
         {% endif %}<br><br>
-    <b>Keyboards: </b><br>
+    <h3>Keyboards: </h3>
     {% if user.keyboard %}
-        <ul>
         {% for board in user.keyboard %}
-            <li><a href="/keyboard/{{board.id}}">{{board.name}}</a> 
+            <div id="info">
+                <a class="info" href="/keyboard/{{board.id}}"><div class="thumbnail">{{board.keys[35].values.split()[1]}}</div></a>
+                <div class="info"><b><a href="/keyboard/{{board.id}}">{{board.name}}</a></b></div> 
                 {% if user.id == user_id %}
-                    <b><a href="/edit/{{board.id}}">Edit<a></b>
-                    <b><a href="/delete/{{board.id}}">Delete<a></b>
+                    <a class="info" href="/edit/{{board.id}}">Edit</a>
+                    <a class="info" href="/delete/{{board.id}}">Delete</a><br>
+                    <a class="info" href="/export/{{board.id}}">Export</a>
                 {% endif %}
-            </li>
+            </div>
         {% endfor %}
-        </ul>
     {% else %}
         None available<br>
     {% endif %}

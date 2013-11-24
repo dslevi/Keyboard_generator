@@ -311,8 +311,8 @@ def save_edits(board_id):
         prev = key.location
         key.location = d[prev]
         model.session.add(key)
+    model.session.add(keyboard)
     model.session.commit()
-    keyboard = Keyboard.query.get(board_id)
     return jsonify(result="edited")
 
 @app.route("/edit/<board_id>")
@@ -328,16 +328,11 @@ def delete_board(board_id):
     model.session.commit()
     return redirect(url_for("display_user", user_id=session['user_id']))
 
+@app.route("/export/<board_id>")
+def remap_keys(board_id):
+    keyboard = Keyboard.query.get(board_id)
+    return render_template("export.html", keyboard=keyboard)
 
-#still under construction...
-
-@app.route("/remap")
-def remap_keys():
-    return render_template("construction.html")
-
-@app.route("/logging")
-def log_keys():
-    return render_template("construction.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
