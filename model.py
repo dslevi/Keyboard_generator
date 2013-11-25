@@ -47,7 +47,6 @@ class Analytics(Base):
     id = Column(Integer, primary_key=True)
     input1 = Column(Text, nullable=False)
     input2 = Column(Text, nullable=False)
-    input3 = Column(Text, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.now)
     user_id = Column(Integer, ForeignKey("users.id"))
 
@@ -99,7 +98,7 @@ def create_tables():
     d = User(name="Danielle", email="d@hba.com", occupation="Programmer", age=23)
     d.set_password("python")
     session.add(d)
-    a = Analytics(input1="input1", input2="input2", input3="input3", user_id=u.id)
+    a = Analytics(input1="input1", input2="input2", user_id=u.id)
     u.analytics.append(a)
     session.commit()
 
@@ -128,6 +127,83 @@ def create_QWERTY():
     session.commit()
     print "QWERTY board created"
 
+def create_DVORAK():
+    locations = ['A01', 'A02', 'A03', 'A04', 'A05', 'A06', 'A07', 'A08', 'A09', 'A10', 'A11', 'C12', 'B13', 'A14', 
+                'B01', 'D03', 'D09', 'C04', 'B10', 'C09', 'B06', 'C05', 'C06', 'C03', 'B05', 'A12', 'A13', 'B14',
+                'C02', 'C11', 'C07', 'B07', 'B08', 'C08', 'D04', 'D05', 'B11', 'C02', 'B02', 'C13', 
+                'D11', 'D06', 'B09', 'D10', 'D07', 'C10', 'D08', 'B03', 'B04', 'B12','E04']
+
+    codes = [192, 49, 50, 51, 52, 53, 54, 55, 56, 57, 48, 189, 187, 8,
+            9, 81, 87, 69, 82, 84, 89, 85, 73, 79, 80, 219, 221, 220,
+            65, 83, 68, 70, 71, 72, 74, 75, 76, 186, 222, 13,
+            90, 88, 67, 86, 66, 78, 77, 190, 188, 190, 32]
+
+    values = ['` ~', '1 !', '2 @', '3 #', '4 $', '5 %', '6 ^', '7 &', '8 *', '9 (', '0 )', '- _', '= +', 'DELETE DELETE',
+            'TAB TAB', 'q Q', 'w W', 'e E', 'r R', 't T', 'y Y', 'u U', 'i I', 'o O', 'p P', '[ {', '] }', '\\ |',
+            'a A', 's S', 'd D', 'f F', 'g G', 'h H', 'j J', 'k K', 'l L', '; :', '\' "', 'ENTER ENTER', 'z Z', 'x X', 'c C', 'v V', 'b B', 'n N', 'm M', ', <', '. >', '/ ?','SPACE SPACE']
+
+    k = Keyboard(name="DVORAK", user_id=0)
+    session.add(k)
+    for i in range(len(locations)):
+        key = Key(kb_id=k.id)
+        key.location = locations[i]
+        key.values = values[i]
+        key.code = codes[i]
+        k.keys.append(key)
+    session.commit()
+    print "DVORAK board created"
+
+def create_COLEMAK():
+    locations = ['A01', 'A02', 'A03', 'A04', 'A05', 'A06', 'A07', 'A08', 'A09', 'A10', 'A11', 'C12', 'B13', 'A14', 
+                'B01', 'D03', 'D09', 'C04', 'B10', 'C09', 'B06', 'C05', 'C06', 'C03', 'B05', 'A12', 'A13', 'B14',
+                'C02', 'C11', 'C07', 'B07', 'B08', 'C08', 'D04', 'D05', 'B11', 'C02', 'B02', 'C13', 
+                'D11', 'D06', 'B09', 'D10', 'D07', 'C10', 'D08', 'B03', 'B04', 'B12','E04']
+
+    codes = [192, 49, 50, 51, 52, 53, 54, 55, 56, 57, 48, 189, 187, 8,
+            9, 81, 87, 69, 82, 84, 89, 85, 73, 79, 80, 219, 221, 220,
+            65, 83, 68, 70, 71, 72, 74, 75, 76, 186, 222, 13,
+            90, 88, 67, 86, 66, 78, 77, 190, 188, 190, 32]
+
+    values = ['` ~', '1 !', '2 @', '3 #', '4 $', '5 %', '6 ^', '7 &', '8 *', '9 (', '0 )', '- _', '= +', 'DELETE DELETE',
+            'TAB TAB', 'q Q', 'w W', 'e E', 'r R', 't T', 'y Y', 'u U', 'i I', 'o O', 'p P', '[ {', '] }', '\\ |',
+            'a A', 's S', 'd D', 'f F', 'g G', 'h H', 'j J', 'k K', 'l L', '; :', '\' "', 'ENTER ENTER', 'z Z', 'x X', 'c C', 'v V', 'b B', 'n N', 'm M', ', <', '. >', '/ ?','SPACE SPACE']
+
+    k = Keyboard(name="COLEMAK", user_id=0)
+    session.add(k)
+    for i in range(len(locations)):
+        key = Key(kb_id=k.id)
+        key.location = locations[i]
+        key.values = values[i]
+        key.code = codes[i]
+        k.keys.append(key)
+    session.commit()
+    print "COLEMAK board created"
+
+def create_WORKMAN():
+    locations = ['A01', 'A02', 'A03', 'A04', 'A05', 'A06', 'A07', 'A08', 'A09', 'A10', 'A11', 'A12', 'A13', 'A14', 'B01', 'B02', 'B03', 
+                'B04', 'B05', 'B06', 'B07', 'B08', 'B09', 'B10', 'B11', 'B12', 'B13', 'B14', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C08', 
+                'C09', 'C10', 'C11', 'C12', 'C13', 'D02', 'D03', 'D04', 'D05', 'D06', 'D07', 'D08', 'D09', 'D10', 'D11','E04']
+
+    codes = [192, 49, 50, 51, 52, 53, 54, 55, 56, 57, 48, 189, 187, 8,
+            9, 81, 87, 69, 82, 84, 89, 85, 73, 79, 80, 219, 221, 220,
+            65, 83, 68, 70, 71, 72, 74, 75, 76, 186, 222, 13,
+            90, 88, 67, 86, 66, 78, 77, 190, 188, 190, 32]
+
+    values = ['` ~', '1 !', '2 @', '3 #', '4 $', '5 %', '6 ^', '7 &', '8 *', '9 (', '0 )', '- _', '= +', 'DELETE DELETE',
+            'TAB TAB', 'q Q', 'w W', 'e E', 'r R', 't T', 'y Y', 'u U', 'i I', 'o O', 'p P', '[ {', '] }', '\\ |',
+            'a A', 's S', 'd D', 'f F', 'g G', 'h H', 'j J', 'k K', 'l L', '; :', '\' "', 'ENTER ENTER', 'z Z', 'x X', 'c C', 'v V', 'b B', 'n N', 'm M', ', <', '. >', '/ ?','SPACE SPACE']
+
+    k = Keyboard(name="WORKMAN", user_id=0)
+    session.add(k)
+    for i in range(len(locations)):
+        key = Key(kb_id=k.id)
+        key.location = locations[i]
+        key.values = values[i]
+        key.code = codes[i]
+        k.keys.append(key)
+    session.commit()
+    print "WORKMAN board created"
+
 def create_prompts(filename):
     count = 0
     f = open(filename)
@@ -153,5 +229,8 @@ def create_texts(filename):
 if __name__ == "__main__":
     create_tables()
     create_QWERTY()
+    # create_DVORAK()
+    # create_WORKMAN()
+    # create_COLEMAK()
     create_prompts("prompts.txt")
     create_texts("textsamples.txt")

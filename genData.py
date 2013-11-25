@@ -1,4 +1,4 @@
-import random
+import random, math
 
 #MAPS
 visual_value = {219:('[', '{'), 220:('\\', '|'), 221:(']', '}'), 192:('`','~'), 186:(';', ':'), 190:('.', '>'), 188:(',','>'), 189:('-','_'),
@@ -7,13 +7,13 @@ visual_value = {219:('[', '{'), 220:('\\', '|'), 221:(']', '}'), 192:('`','~'), 
         48:('0', ')'), 49:('1', '!'), 50:('2','@'), 51:('3','#'), 52:('4','$'), 53:('5','%'), 54:('6','^'), 55:('7','&'), 56:('8','*'), 57:('9','('),
         65:('a', 'A'), 66:('b', 'B'), 67:('c', 'C'), 68:('d', 'D'), 69:('e', 'E'), 82:('r', 'R'), 83:('s', 'S'), 80:('p', 'P'), 81:('q', 'Q'), 87:('w', 'W'), 
         84:('t', 'T'), 85:('u', 'U'), 86:('v', 'V'), 76:('l', 'L'), 75:('k', 'K'), 74:('j', 'J'), 73:('i', 'I'), 72:('h', 'H'), 71:('g', 'G'), 70:('f', 'F'), 
-        79:('o', 'O'), 78:('n', 'N'), 90:('z', 'Z'), 77:('m', 'M'), 88:('x', 'X'), 89:('y', 'Y')}
+        79:('o', 'O'), 78:('n', 'N'), 90:('z', 'Z'), 77:('m', 'M'), 88:('x', 'X'), 89:('y', 'Y'), 90:('?', '?'), 191:('?', '?')}
 
 #KEYBOARD PROFILE
 
-def parseKeystrokes(strokes):
+def parseKeystrokes(input):
     keystrokes = []
-    tokens = strokes.split()
+    tokens = input.split()
     shift_on = False
     for i in range(len(tokens)):
         if i % 3 == 0:
@@ -33,36 +33,28 @@ def keyFreq(keystrokes):
             freq[key] = freq.get(key, 0) + 1
     return freq
 
-#fix mistakes later!
-def keyMistakes(keystrokes):
-    delete = 8
-    count = 0
-    mistakes = {}
+def keyMistakes(mistakes):
+    freq = {}
+    chars = mistakes[:-1].split()
+    for ch in chars:
+        freq[ch.encode('ascii', 'ignore')] = freq.get(ch.encode('ascii', 'ignore'), 0) + 1
+    return freq
 
-    for i in range(len(keystrokes)):
-        if keystrokes[i][0] == "D":
-            if keystrokes[i][1] == delete:
-                count += 1
-            elif (count > 0):
-                for h in range(count):
-                    index = i - (count + h + 1)
-                    if index >= 0:
-                        mistake = visual_value[keystrokes[index][1]]
-                        mistakes[mistake] += 1
-                    else:
-                        mistakes[visual_value[delete]] += 1
-                count = 0
-            key = visual_value[keystrokes[i][1]]
-            mistakes[key] = mistakes.get(key, 0)
-    if (count > 0):
-        for h in range(count):
-            index = i - (count + h)
-            if index >= 0:
-                mistake = visual_value[keystrokes[index][1]]
-                mistakes[mistake] += 1
-            else:
-                mistakes[visual_value[delete]] += 1
-    return mistakes
+def keyAccuracy(mistakes, text, time):
+    chars = mistakes[:-1].split()
+    if len(text) <= 0:
+        accuracy = 0
+    else:
+        accuracy = ((len(text) - len(chars))/float(len(text)) * 100)
+        if accuracy < 0:
+            accuracy = 0
+        accuracy = "%.2f" % accuracy
+        accuracy = str(accuracy + "%")
+    if time <= 0:
+        wpm = 0
+    else:
+        wpm = ("%.1f" % (len(text.split())/(float(time)/60)))
+    return accuracy, wpm
 
 def findKeytimes(keystrokes):
     keytimes = []
@@ -177,20 +169,58 @@ def ngramTimes(ngrams):
         final[time] = avg 
     return final
 
-def bestBigrams(bigramTimes):
-    pass
+key_lhf = {192:[0, 0, 0, 0], 49:[0, 1, 0, 0], 50:[0, 2, 0, 1], 51:[0, 3, 0, 2], 52:[0, 4, 0, 3], 53:[0, 5, 0, 3], 54:[0, 6, 1, 3], 55:[0, 7, 1, 3], 56:[0, 8, 1, 2], 57:[0, 9, 1, 1], 48:[0, 10, 1, 0], 189:[0, 11, 1, 0], 187:[0, 12, 1, 0], 8:[0, 13, 1, 0], 
+        9:[1, 0, 0, 0], 81:[1, 1, 0, 0], 87:[1, 2, 0, 1], 69:[1, 3, 0, 2], 82:[1, 4, 0, 3], 84:[1, 5, 0, 3], 89:[1, 6, 1, 3], 85:[1, 7, 1, 3], 73:[1, 8, 1, 2], 79:[1, 9, 1, 1], 80:[1, 10, 1, 0], 219:[1, 11, 1, 0], 221:[1, 12, 1, 0], 220:[1, 13, 1, 0], 
+        20:[2, 0, 0, 0], 65:[2, 1, 0, 0], 83:[2, 2, 0, 1], 68:[2, 3, 0, 2], 70:[2, 4, 0, 3], 71:[2, 5, 0, 3], 72:[2, 6, 1, 3], 74:[2, 7, 1, 3], 75:[2, 8, 1, 2], 76:[2, 9, 1, 1],  186:[2, 10, 1, 0], 222:[2, 11, 1, 0], 13:[2, 12, 1, 0], 
+        16:[3, 0, 0, 0], 90:[3, 1, 0, 0], 88:[3, 2, 0, 1], 67:[3, 3, 0, 2], 86:[3, 4, 0, 3], 66:[3, 5, 0, 3], 78:[3, 6, 1, 3], 77:[3, 7, 1, 3], 188:[3, 8, 1, 2], 190:[3, 9, 1, 1], 191:[3, 10, 1, 0], 
+        17:[4, 0, 0, 0], 18:[4, 2, 2, 0], 32:[4, 3, 2, 0]}
 
-def trigramTimes(keystrokes):
-    pass
+def handFingerFreq(keytimes):
+    total = 0
+    hands = [0, 0, 0]
+    fingers = [[0, 0, 0, 0], [0, 0, 0, 0], [0]]
+    for key in keytimes:
+        for k in key:
+            if k[0] == "D":
+                hands[key_lhf[k[1]][2]] += 1
+                fingers[key_lhf[k[1]][2]][key_lhf[k[1]][3]] += 1
+                total += 1
+    if total > 0:
+        for i in range(len(hands)):
+            percentage = ((hands[i]/float(total)) * 100)
+            hands[i] = (str("%.1f" % percentage) + "%")
+        for i in range(len(fingers)):
+            for h in range(len(fingers[i])):
+                percentage = ((fingers[i][h]/float(total)) * 100)
+                fingers[i][h] = (str("%.1f" % percentage) + "%")
+    return hands, fingers
 
-def bestTrigrams(trigramTimes):
-    pass
-
-
-
-
-
-
+def distance(keytimes):
+    #measured in mm, includes gap between keys
+    length = 1.8
+    distance = 0
+    homerow = [[65, 83, 68, 70], [186, 76, 75, 74], [32]]
+    for key in keytimes:
+        for k in key:
+            if k[0] == "D":
+                row, col, hand, finger = key_lhf[k[1]]
+                hrow, hcol, hhand, hfinger = key_lhf[homerow[hand][finger]]
+                if finger == 0 or finger == 3:
+                    if hrow == row:
+                        #find diff between cols
+                        distance += (length * abs(hcol - col))
+                    elif hcol == col:
+                        #find diff between rows
+                        distance += (length * abs(hrow - row))
+                    else:
+                        #pythagorean theorem
+                        a = (length * abs(hcol - col))
+                        b = (length * abs(hrow - row))
+                        c = math.sqrt((a**2) + (b**2))
+                        distance += c
+                else:
+                    distance += (length * abs(hrow - row))
+    return (str("%.1f" % distance) + " mm")
 
 #KEYBOARD GENERATION
 

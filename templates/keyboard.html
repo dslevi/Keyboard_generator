@@ -122,8 +122,9 @@
         return (Time < 10) ? "0" + Time : Time;
     }
 
-    window.onload = CreateTimer("timer", 120);
-
+    $('body').one("keydown", function(event) {
+        CreateTimer("timer", 120);
+    });
 
     //SECTION 2: keyboard typing animations
 

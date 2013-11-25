@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 {% block body %}
+<h1>INPUT 1</h1>
+<b>Finger usage</b> {{fingers}}<br>
+<b>Hand usage</b> {{hands}}<br>
+<b>Distance</b> {{distance}}<br><br>
 <b>Keystrokes</b> {{keystrokes}}<br>
 <b>Frequencies</b> {{freq}}<br>
-<b>Mistakes</b> {{mistakes}}<br><br>
 <b>Keytimes</b> {{keytimes}}<br><br>
 <b>Dwell times</b> {{dwelltimes}}<br>
 <b>Fastest times</b> {{fastdwell}}<br>
@@ -18,6 +21,12 @@
 <b>Trigram times</b> {{trigramtimes}}<br>
 <b>Fastest times</b> {{fasttrigrams}}<br>
 <b>Slowest times</b> {{slowtrigrams}}<br><br>
+<h1>INPUT 2</h1>
+<b>Words per minute</b> {{wpm}}<br>
+<b>Accuracy</b> {{accuracy}}<br>
+<b>Mistakes</b> {{mistakes}}<br>
+<b>Least mistakes</b> {{mostmistakes}}<br>
+<b>Most mistakes</b> {{leastmistakes}}<br><br>
 <b>Map</b> {{keyboard}}<br>
     {% if not user_id %}
         <h3><a href="{{url_for('view_pekl', user_id='guest')}}">Your Keyboard</a></h3></b>

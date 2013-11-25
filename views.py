@@ -112,19 +112,18 @@ def get_input2():
     input1 = request.form.get("input1")
     return render_template("input2.html", text=text, input1=input1)
 
-@app.route("/input3", methods=["POST"])
-def get_input3():
-    pattern = genData.makePattern()
-    input1 = request.form.get("input1")
-    input2 = request.form.get("input2")
-    return render_template("input3.html", pattern=pattern, input1=input1, input2=input2)
+# @app.route("/input3", methods=["POST"])
+# def get_input3():
+#     pattern = genData.makePattern()
+#     input1 = request.form.get("input1")
+#     input2 = request.form.get("input2")
+#     return render_template("input3.html", pattern=pattern, input1=input1, input2=input2)
 
 @app.route("/analytics")
 def no_analytics():
     if session.get('input1'):
         strokes = session['input1']
         input2 = session['input2']
-        input3 = session['input3']
         keyboard = session['keyboard']
         keystrokes = genData.parseKeystrokes(strokes)
         freq = genData.keyFreq(keystrokes)
@@ -140,7 +139,7 @@ def no_analytics():
         slowdwell = genData.definingTimes(3, dwelltimes, False)
         return render_template("test.html", trigrams=trigrams, dwelltimes=dwelltimes, flighttimes=flighttimes, fastflights=fastflights, fastdwell=fastdwell,
         slowdwell=slowdwell, slowflights=slowflights, keyboard=keyboard, bigrams=bigrams, keytimes=keytimes, keystrokes=keystrokes, 
-        freq=freq, mistakes=mistakes, input2=input2, input3=input3)
+        freq=freq, mistakes=mistakes, input2=input2)
 
     if session.get('user_id'):
         user = User.query.filter_by(id=session['user_id']).first()
@@ -148,7 +147,6 @@ def no_analytics():
         if len(analytics) > 0:
             strokes = analytics[-1].input1
             input2 = analytics[-1].input2
-            input3 = analytics[-1].input3
             keystrokes = genData.parseKeystrokes(strokes)
             freq = genData.keyFreq(keystrokes)
             mistakes = genData.keyMistakes(keystrokes)
@@ -176,11 +174,12 @@ def show_analytics():
     session['strokes'] = strokes
     input2 = request.form.get("input2")
     session['input2'] = input2
-    input3 = request.form.get("input3")
-    session['input3'] = input3
     keystrokes = genData.parseKeystrokes(strokes)
     freq = genData.keyFreq(keystrokes)
-    mistakes = genData.keyMistakes(keystrokes)
+    mistakes = genData.keyMistakes(request.form.get("mistakes"))
+    mostmistakes = genData.definingTimes(3, mistakes, True)
+    leastmistakes = genData.definingTimes(3, mistakes, False)
+    accuracy, wpm = genData.keyAccuracy(request.form.get("mistakes"), request.form.get("text"), request.form.get("time"))
     keytimes = genData.findKeytimes(keystrokes)
     bigrams = genData.findngrams(2, keytimes)
     trigrams = genData.findngrams(3, keytimes)
@@ -197,11 +196,13 @@ def show_analytics():
     slowbigrams = genData.definingTimes(4, bigramtimes, False)
     fasttrigrams = genData.definingTimes(4, trigramtimes, True)
     slowtrigrams = genData.definingTimes(4, trigramtimes, False)
+    hands, fingers = genData.handFingerFreq(keytimes)
+    distance = genData.distance(keytimes)
     session['keyboard'] = keyboard
     session['visualKeyboard'] = visualKeyboard
     if session.get("user_id"):
         user_id = session['user_id']
-        new_a = Analytics(input1=strokes, input2=input2, input3=input3, user_id=user_id)
+        new_a = Analytics(input1=strokes, input2=input2, user_id=user_id)
         model.session.add(new_a)
         new_k = Keyboard(name=genName(), user_id=user_id)
         model.session.add(new_k)
@@ -219,7 +220,8 @@ def show_analytics():
     return render_template("test.html", trigrams=trigrams, dwelltimes=dwelltimes, flighttimes=flighttimes, fastflights=fastflights, fastdwell=fastdwell,
         slowdwell=slowdwell, slowflights=slowflights, keyboard=keyboard, bigrams=bigrams, keytimes=keytimes, keystrokes=keystrokes, 
         freq=freq, mistakes=mistakes, bigramtimes=bigramtimes, trigramtimes=trigramtimes, fastbigrams=fastbigrams, slowbigrams=slowbigrams,
-        fasttrigrams=fasttrigrams, slowtrigrams=slowtrigrams)
+        fasttrigrams=fasttrigrams, mostmistakes=mostmistakes, leastmistakes=leastmistakes,
+        slowtrigrams=slowtrigrams, accuracy=accuracy, wpm=wpm, hands=hands, fingers=fingers, distance=distance)
 
 @app.route("/pekl/<user_id>")
 def view_pekl(user_id):
@@ -283,7 +285,11 @@ def rename_keyboard(keyboard_id):
         model.session.commit()
         return jsonify(result="name")
     user = User.query.get(session['user_id'])
-    user.keyboard.append(keyboard)
+    new_k = Keyboard(name=keyboard.name, user_id=user.id)
+    model.session.add(new_k)
+    for key in keyboard.keys:
+        new_key = Key(kb_id=new_k.id, location=key.location, values=key.values, code=key.code)
+        new_k.keys.append(new_key)
     model.session.commit()
     return jsonify(result="add")
 
@@ -310,8 +316,7 @@ def save_edits(board_id):
     for key in keyboard.keys:
         prev = key.location
         key.location = d[prev]
-        model.session.add(key)
-    model.session.add(keyboard)
+        print prev, d[prev]
     model.session.commit()
     return jsonify(result="edited")
 
@@ -324,6 +329,8 @@ def edit_board(board_id):
 @app.route("/delete/<board_id>")
 def delete_board(board_id):
     keyboard = Keyboard.query.get(board_id)
+    for key in keyboard.keys:
+        model.session.delete(key)
     model.session.delete(keyboard)
     model.session.commit()
     return redirect(url_for("display_user", user_id=session['user_id']))

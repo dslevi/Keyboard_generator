@@ -139,9 +139,7 @@
 
     $('#start').click(function (event) {
         CreateTimer("text_timer", 60);
-        gameOn = true;
-        var highlighted = document.getElementById(pattern[0]);
-        highlighted.style.backgroundColor = "yellow";
+        // startGame();
     });
 
     //makes assumption that caps lock default state is off
@@ -155,22 +153,24 @@
         input3 += eType + " " + key + " " + timestamp + " ";
     }
 
-    function startGame(event, i) {
-        var highlighted = document.getElementById(pattern[i]);
-        highlighted.style.backgroundColor = "yellow";
-        if (keys[event.which] == pattern[i]) {
-            highlighted.style.backgroundColor = "black";
-        } else if (event.which != 8) {
-            mistakes++;
-        }
-    }
+    var code = null;
+    // function startGame() {
+    //     while true {
+    //         var highlighted = document.getElementById(pattern[i]);
+    //         highlighted.style.backgroundColor = "yellow";
+    //         $('body').keydown(function (event) {
+    //             code = event.which;
+    //         });
+    //         if (keys[code] == pattern[i]) {
+    //             highlighted.style.backgroundColor = "black";
+    //         } else if (code != 8) {
+    //             mistakes++;
+    //         }
+    //     }
+    // }
 
 //do both key animations for control and alt
     $('body').keydown(function (event) {
-        if (gameOn) {
-            startGame(event, i);
-            i++;
-        }
 
         keyCount("D", event.which, JSON.stringify(new Date().getTime()));
 
