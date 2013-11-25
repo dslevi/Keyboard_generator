@@ -186,6 +186,7 @@ def handFingerFreq(keytimes):
                 fingers[key_lhf[k[1]][2]][key_lhf[k[1]][3]] += 1
                 total += 1
     if total > 0:
+        #replace with intoPercent(hands, total)
         for i in range(len(hands)):
             percentage = ((hands[i]/float(total)) * 100)
             hands[i] = (str("%.1f" % percentage) + "%")
@@ -222,6 +223,58 @@ def distance(keytimes):
                     distance += (length * abs(hrow - row))
     return (str("%.1f" % distance) + " mm")
 
+#TYPING ATTRIBUTES
+def intoPercent(l, total):
+    for i in range(len(l)):
+            percentage = ((l[i]/float(total)) * 100)
+            l[i] = (str("%.1f" % percentage) + "%")
+    return l
+
+def altHands(ngrams):
+    total = 0
+    #same, alternated
+    alt = [0, 0]
+    times = []
+    fing = [0, 0]
+    for n in ngrams:
+        key1 = n[0][0][1]
+        key2 = n[1][0][1]
+        if key1 != 191 and key2 != 191:
+            total += 1
+            diff = n[1][0][2] - n[0][0][2]
+            h1 = key_lhf[key1][2]
+            h2 = key_lhf[key2][2]
+            f1 = key_lhf[key1][3]
+            f2 = key_lhf[key2][3]
+            
+            if h1 == h2:
+                alt[0] += 1
+                h = 0
+            else:
+                alt[1] += 1
+                h = 1
+
+            if f1 == f2:
+                fing[0] += 1
+                f = 0
+            else:
+                fing[1] += 1
+                f = 1
+            times.append([diff, key1, key2, h, f])
+    if total > 0:
+        alt = intoPercent(alt, total)
+        fing = intoPercent(fing, total)
+    return alt, fing, times
+
+def horz_vert(ngrams):
+    pass
+
+def rolls(ngrams):
+    pass
+
+
+b = [[(('D', 74, 1385352253058, False), ('U', 74, 1385352253175, False)), (('D', 74, 1385352253272, False), ('U', 74, 1385352253343, False))], [(('D', 74, 1385352253272, False), ('U', 74, 1385352253343, False)), (('D', 74, 1385352253432, False), ('U', 74, 1385352253503, False))], [(('D', 74, 1385352253432, False), ('U', 74, 1385352253503, False)), (('D', 74, 1385352253593, False), ('U', 74, 1385352253663, False))], [(('D', 74, 1385352253593, False), ('U', 74, 1385352253663, False)), (('D', 74, 1385352253768, False), ('U', 74, 1385352253847, False))], [(('D', 74, 1385352253768, False), ('U', 74, 1385352253847, False)), (('D', 74, 1385352253944, False), ('U', 74, 1385352254039, False))], [(('D', 74, 1385352253944, False), ('U', 74, 1385352254039, False)), (('D', 74, 1385352254112, False), ('U', 74, 1385352254207, False))], [(('D', 74, 1385352254112, False), ('U', 74, 1385352254207, False)), (('D', 74, 1385352254296, False), ('U', 74, 1385352254399, False))], [(('D', 74, 1385352254296, False), ('U', 74, 1385352254399, False)), (('D', 74, 1385352254472, False), ('U', 74, 1385352254583, False))], [(('D', 74, 1385352254472, False), ('U', 74, 1385352254583, False)), (('D', 74, 1385352254664, False), ('U', 74, 1385352254758, False))], [(('D', 74, 1385352254664, False), ('U', 74, 1385352254758, False)), (('D', 74, 1385352254864, False), ('U', 74, 1385352254960, False))], [(('D', 74, 1385352254864, False), ('U', 74, 1385352254960, False)), (('D', 74, 1385352255040, False), ('U', 74, 1385352255127, False))], [(('D', 74, 1385352255040, False), ('U', 74, 1385352255127, False)), (('D', 74, 1385352255224, False), ('U', 74, 1385352255295, False))], [(('D', 74, 1385352255224, False), ('U', 74, 1385352255295, False)), (('D', 74, 1385352255377, False), ('U', 74, 1385352255463, False))], [(('D', 74, 1385352255377, False), ('U', 74, 1385352255463, False)), (('D', 74, 1385352255560, False), ('U', 74, 1385352255647, False))], [(('D', 74, 1385352255560, False), ('U', 74, 1385352255647, False)), (('D', 74, 1385352255744, False), ('U', 74, 1385352255814, False))], [(('D', 74, 1385352255744, False), ('U', 74, 1385352255814, False)), (('D', 74, 1385352255928, False), ('U', 74, 1385352255983, False))], [(('D', 74, 1385352255928, False), ('U', 74, 1385352255983, False)), (('D', 74, 1385352256087, False), ('U', 74, 1385352256159, False))]]
+print altHands(b)
 #KEYBOARD GENERATION
 
 def bigramFreq(keystrokes):
