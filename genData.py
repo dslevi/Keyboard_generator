@@ -169,6 +169,7 @@ def ngramTimes(ngrams):
         final[time] = avg 
     return final
 
+#row, col, hand, finger
 key_lhf = {192:[0, 0, 0, 0], 49:[0, 1, 0, 0], 50:[0, 2, 0, 1], 51:[0, 3, 0, 2], 52:[0, 4, 0, 3], 53:[0, 5, 0, 3], 54:[0, 6, 1, 3], 55:[0, 7, 1, 3], 56:[0, 8, 1, 2], 57:[0, 9, 1, 1], 48:[0, 10, 1, 0], 189:[0, 11, 1, 0], 187:[0, 12, 1, 0], 8:[0, 13, 1, 0], 
         9:[1, 0, 0, 0], 81:[1, 1, 0, 0], 87:[1, 2, 0, 1], 69:[1, 3, 0, 2], 82:[1, 4, 0, 3], 84:[1, 5, 0, 3], 89:[1, 6, 1, 3], 85:[1, 7, 1, 3], 73:[1, 8, 1, 2], 79:[1, 9, 1, 1], 80:[1, 10, 1, 0], 219:[1, 11, 1, 0], 221:[1, 12, 1, 0], 220:[1, 13, 1, 0], 
         20:[2, 0, 0, 0], 65:[2, 1, 0, 0], 83:[2, 2, 0, 1], 68:[2, 3, 0, 2], 70:[2, 4, 0, 3], 71:[2, 5, 0, 3], 72:[2, 6, 1, 3], 74:[2, 7, 1, 3], 75:[2, 8, 1, 2], 76:[2, 9, 1, 1],  186:[2, 10, 1, 0], 222:[2, 11, 1, 0], 13:[2, 12, 1, 0], 
@@ -230,29 +231,44 @@ def intoPercent(l, total):
             l[i] = (str("%.1f" % percentage) + "%")
     return l
 
-def altHands(ngrams):
+def biAttributes(bigrams):
     total = 0
-    #same, alternated
-    alt = [0, 0]
     times = []
+
+    #same, alternated
+    hand = [0, 0]
     fing = [0, 0]
-    for n in ngrams:
+
+    #horizontal, vertical, (diagonal/hand alt)
+    motion = [0, 0, 0]
+
+    for n in bigrams:
         key1 = n[0][0][1]
         key2 = n[1][0][1]
         if key1 != 191 and key2 != 191:
             total += 1
             diff = n[1][0][2] - n[0][0][2]
-            h1 = key_lhf[key1][2]
-            h2 = key_lhf[key2][2]
-            f1 = key_lhf[key1][3]
-            f2 = key_lhf[key2][3]
-            
+            r1, c1, h1, f1 = key_lhf[key1]
+            r2, c2, h2, f2 = key_lhf[key2]
+
             if h1 == h2:
-                alt[0] += 1
+                hand[0] += 1
                 h = 0
+
+                if r1 == r2 and c1 == c2:
+                    motion[2] += 1
+                    m = 2
+                elif r1 == r2:
+                    motion[0] += 1
+                    m = 0
+                else:
+                    motion[1] += 1
+                    m = 1
             else:
-                alt[1] += 1
+                hand[1] += 1
                 h = 1
+                m = 2
+                motion[2] += 1
 
             if f1 == f2:
                 fing[0] += 1
@@ -260,21 +276,71 @@ def altHands(ngrams):
             else:
                 fing[1] += 1
                 f = 1
-            times.append([diff, key1, key2, h, f])
+
+            times.append([diff, key1, key2, h, f, m])
     if total > 0:
-        alt = intoPercent(alt, total)
+        hand = intoPercent(hand, total)
         fing = intoPercent(fing, total)
-    return alt, fing, times
+        motion = intoPercent(motion, total)
+    return hand, fing, motion, times
 
-def horz_vert(ngrams):
-    pass
+def triAttributes(trigrams):
+    total = 0
+    times = []
 
-def rolls(ngrams):
-    pass
+    #same, alternated, mix
+    hand = [0, 0, 0]
+    fing = [0, 0, 0]
 
+    #horizontal, vertical, mix, (diagonal/hand alt)
+    motion = [0, 0, 0, 0]
 
-b = [[(('D', 74, 1385352253058, False), ('U', 74, 1385352253175, False)), (('D', 74, 1385352253272, False), ('U', 74, 1385352253343, False))], [(('D', 74, 1385352253272, False), ('U', 74, 1385352253343, False)), (('D', 74, 1385352253432, False), ('U', 74, 1385352253503, False))], [(('D', 74, 1385352253432, False), ('U', 74, 1385352253503, False)), (('D', 74, 1385352253593, False), ('U', 74, 1385352253663, False))], [(('D', 74, 1385352253593, False), ('U', 74, 1385352253663, False)), (('D', 74, 1385352253768, False), ('U', 74, 1385352253847, False))], [(('D', 74, 1385352253768, False), ('U', 74, 1385352253847, False)), (('D', 74, 1385352253944, False), ('U', 74, 1385352254039, False))], [(('D', 74, 1385352253944, False), ('U', 74, 1385352254039, False)), (('D', 74, 1385352254112, False), ('U', 74, 1385352254207, False))], [(('D', 74, 1385352254112, False), ('U', 74, 1385352254207, False)), (('D', 74, 1385352254296, False), ('U', 74, 1385352254399, False))], [(('D', 74, 1385352254296, False), ('U', 74, 1385352254399, False)), (('D', 74, 1385352254472, False), ('U', 74, 1385352254583, False))], [(('D', 74, 1385352254472, False), ('U', 74, 1385352254583, False)), (('D', 74, 1385352254664, False), ('U', 74, 1385352254758, False))], [(('D', 74, 1385352254664, False), ('U', 74, 1385352254758, False)), (('D', 74, 1385352254864, False), ('U', 74, 1385352254960, False))], [(('D', 74, 1385352254864, False), ('U', 74, 1385352254960, False)), (('D', 74, 1385352255040, False), ('U', 74, 1385352255127, False))], [(('D', 74, 1385352255040, False), ('U', 74, 1385352255127, False)), (('D', 74, 1385352255224, False), ('U', 74, 1385352255295, False))], [(('D', 74, 1385352255224, False), ('U', 74, 1385352255295, False)), (('D', 74, 1385352255377, False), ('U', 74, 1385352255463, False))], [(('D', 74, 1385352255377, False), ('U', 74, 1385352255463, False)), (('D', 74, 1385352255560, False), ('U', 74, 1385352255647, False))], [(('D', 74, 1385352255560, False), ('U', 74, 1385352255647, False)), (('D', 74, 1385352255744, False), ('U', 74, 1385352255814, False))], [(('D', 74, 1385352255744, False), ('U', 74, 1385352255814, False)), (('D', 74, 1385352255928, False), ('U', 74, 1385352255983, False))], [(('D', 74, 1385352255928, False), ('U', 74, 1385352255983, False)), (('D', 74, 1385352256087, False), ('U', 74, 1385352256159, False))]]
-print altHands(b)
+    for n in trigrams:
+        key1 = n[0][0][1]
+        key2 = n[1][0][1]
+        key3 = n[2][0][1]
+        if key1 != 191 and key2 != 191 and key3 != 191:
+            total += 1
+            diff = n[1][0][2] - n[0][0][2]
+            r1, c1, h1, f1 = key_lhf[key1]
+            r2, c2, h2, f2 = key_lhf[key2]
+            r3, c3, h3, f3 = key_lhf[key3]
+            if h1 == h2:
+                hand[0] += 1
+                h = 0
+
+                if r1 == r2 and c1 == c2:
+                    motion[2] += 1
+                    m = 2
+                elif r1 == r2:
+                    motion[0] += 1
+                    m = 0
+                else:
+                    motion[1] += 1
+                    m = 1
+            else:
+                hand[1] += 1
+                h = 1
+                m = 2
+                motion[2] += 1
+
+            if f1 == f2:
+                fing[0] += 1
+                f = 0
+            else:
+                fing[1] += 1
+                f = 1
+
+            times.append([diff, key1, key2, h, f, m])
+    if total > 0:
+        hand = intoPercent(hand, total)
+        fing = intoPercent(fing, total)
+        motion = intoPercent(motion, total)
+    return hand, fing, motion, times
+
+b = [[(('D', 81, 1385352916045, False), ('U', 81, 1385352916219, False)), (('D', 65, 1385352916612, False), ('U', 65, 1385352916778, False))], [(('D', 65, 1385352916612, False), ('U', 65, 1385352916778, False)), (('D', 87, 1385352917268, False), ('U', 87, 1385352917450, False))], [(('D', 87, 1385352917268, False), ('U', 87, 1385352917450, False)), (('D', 83, 1385352917732, False), ('U', 83, 1385352917898, False))], [(('D', 83, 1385352917732, False), ('U', 83, 1385352917898, False)), (('D', 69, 1385352918388, False), ('U', 69, 1385352918570, False))], [(('D', 69, 1385352918388, False), ('U', 69, 1385352918570, False)), (('D', 68, 1385352918812, False), ('U', 68, 1385352918978, False))], [(('D', 68, 1385352918812, False), ('U', 68, 1385352918978, False)), (('D', 81, 1385352920740, False), ('U', 81, 1385352920890, False))], [(('D', 81, 1385352920740, False), ('U', 81, 1385352920890, False)), (('D', 90, 1385352922156, False), ('U', 90, 1385352922330, False))], [(('D', 90, 1385352922156, False), ('U', 90, 1385352922330, False)), (('D', 85, 1385352923092, False), ('U', 85, 1385352923266, False))], [(('D', 85, 1385352923092, False), ('U', 85, 1385352923266, False)), (('D', 74, 1385352923524, False), ('U', 74, 1385352923666, False))], [(('D', 74, 1385352923524, False), ('U', 74, 1385352923666, False)), (('D', 73, 1385352924148, False), ('U', 73, 1385352924258, False))], [(('D', 73, 1385352924148, False), ('U', 73, 1385352924258, False)), (('D', 75, 1385352924796, False), ('U', 75, 1385352925018, False))], [(('D', 75, 1385352924796, False), ('U', 75, 1385352925018, False)), (('D', 79, 1385352925556, False), ('U', 79, 1385352925690, False))], [(('D', 79, 1385352925556, False), ('U', 79, 1385352925690, False)), (('D', 76, 1385352925964, False), ('U', 76, 1385352926122, False))]]
+print triAttributes(b)
+
 #KEYBOARD GENERATION
 
 def bigramFreq(keystrokes):
