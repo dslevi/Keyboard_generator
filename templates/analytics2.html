@@ -1,48 +1,46 @@
 {% extends "base.html" %}
 {% block body %}
-<h1>INPUT 1</h1>
-<b>Finger usage</b> {{fingers}}<br>
-<b>Hand usage</b> {{hands}}<br>
-<b>Distance</b> {{distance}}<br><br>
-<b>Keystrokes</b> {{keystrokes}}<br>
-<b>Frequencies</b> {{freq}}<br>
-<b>Keytimes</b> {{keytimes}}<br><br>
+<h1>TYPING PROFILE</h1>
+<b>Words per minute</b> {{wpm}}<br>
 <b>Dwell times</b> {{dwelltimes}}<br>
 <b>Fastest times</b> {{fastdwell}}<br>
 <b>Slowest times</b> {{slowdwell}}<br><br>
 <b>Flight times</b> {{flighttimes}}<br>
 <b>Fastest times</b> {{fastflights}}<br>
 <b>Slowest times</b> {{slowflights}}<br><br>
-<b>Bigrams</b> {{bigrams}}<br><br>
-<b>Bigram times</b> {{bigramtimes}}<br>
-<b>Fastest times</b> {{fastbigrams}}<br>
-<b>Slowest times</b> {{slowbigrams}}<br><br>
-<b>Trigrams</b> {{trigrams}}<br><br>
-<b>Trigram times</b> {{trigramtimes}}<br>
-<b>Fastest times</b> {{fasttrigrams}}<br>
-<b>Slowest times</b> {{slowtrigrams}}<br><br>
-<b>Bigram attributes</b><br>
-Hand alteration {{biAtt[0]}}<br>
-Same finger use {{biAtt[1]}}<br>
-Horizontal/vertial movement {{biAtt[2]}}<br>
-Fastest bigram attributes<br>
-{{att[3][0][0]}},
-{{att[3][0][1]}},
-{{att[3][0][2]}}<br>
-Average bigram attributes<br>
-{{att[3][1][0]}},
-{{att[3][1][1]}},
-{{att[3][1][2]}}<br>
-Slowest bigram atributes<br>
-{{att[3][2][0]}},
-{{att[3][2][1]}},
-{{att[3][2][2]}}<br>
-<h1>INPUT 2</h1>
-<b>Words per minute</b> {{wpm}}<br>
+
+<h1>INPUT ANALYSIS</h1>
+<b>Finger usage</b> {{fingers}}<br>
+<b>Hand usage</b> {{hands}}<br>
+<b>Distance</b> {{distance}}<br><br>
+<b>Frequencies</b> {{freq}}<br>
 <b>Accuracy</b> {{accuracy}}<br>
 <b>Mistakes</b> {{mistakes}}<br>
 <b>Least mistakes</b> {{mostmistakes}}<br>
 <b>Most mistakes</b> {{leastmistakes}}<br><br>
+
+<b>Bigrams</b> {{bigrams}}<br><br>
+<b>Bigram attributes</b><br>
+Hand alteration {{biAtt[0]}}<br>
+Same finger use {{biAtt[1]}}<br>
+Horizontal/vertial movement {{biAtt[2]}}<br>
+<b>Fastest times</b> {{fastbigrams}}<br>
+Fastest bigram attributes<br>
+{{att[3][0][0]}},
+{{att[3][0][1]}},
+{{att[3][0][2]}}<br>
+<b>Slowest times</b> {{slowbigrams}}<br>
+Slowest bigram atributes<br>
+{{att[3][2][0]}},
+{{att[3][2][1]}},
+{{att[3][2][2]}}<br><br>
+
+<b>Trigrams</b> {{trigrams}}<br><br>
+<b>Fastest times</b> {{fasttrigrams}}<br>
+<b>Slowest times</b> {{slowtrigrams}}<br><br>
+
+
+
 {% if not user_id %}
     <h3><a href="{{url_for('view_pekl', user_id='guest')}}">Your Keyboard</a></h3></b>
 {% else %}

@@ -1,14 +1,8 @@
 {% extends "base.html" %}
 {% block body %}
     <div id="user_info">
-        {% if session_id == keyboard.user.id %}
-            <form method="POST" id="rename_form" action="/keyboard/{{keyboard.id}}">
-                <input type="hidden" name="board_id" value="{{keyboard.id}}">
-                <textarea id="keyboard_name" name="new_name">{{keyboard.name}}</textarea>
-                <input type="submit" id="rename_keyboard" value="Rename keyboard">
-            </form>
-        {% elif session_id %}
-            <h2>{{keyboard.name}}</h2>
+        <h2>{{keyboard.name}}</h2>
+        {% if session_id and session_id != keyboard.user.id %}
             <form method="POST" id="add_form" action="/keyboard/{{keyboard.id}}">
                 <input type="hidden" name="board_id" value="{{keyboard.id}}">
                 <input type="submit" id="add_keyboard" value="Add to Inventory">
@@ -61,13 +55,6 @@
 
 <script>
     $(document).ready(function(){
-        $('#rename_form').submit(function(e) {
-            e.preventDefault();
-            $.post($('#rename_form').attr('action'), $('#rename_form').serialize(), function(data){
-                    alert("Keyboard name changed.");
-            });
-        });
-
         $('#add_form').submit(function(e) {
             e.preventDefault();
             $.post($('#add_form').attr('action'), $('#add_form').serialize(), function(data){

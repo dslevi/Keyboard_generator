@@ -12,7 +12,7 @@
     {% if user.keyboard %}
         {% for board in user.keyboard %}
             <div id="info">
-                <a class="info" href="/keyboard/{{board.id}}"><div class="thumbnail">{{board.keys[35].values.split()[1]}}</div></a>
+                <a class="info" href="/keyboard/{{board.id}}"><div class="thumbnail">{{board.keys[35].values.split()[1][0]}}</div></a>
                 <div class="info"><b><a href="/keyboard/{{board.id}}">{{board.name}}</a></b></div> 
                 {% if user.id == user_id %}
                     <a class="info" href="/edit/{{board.id}}">Edit</a>
@@ -25,11 +25,6 @@
         None available<br>
     {% endif %}
 <script>
-    $('#save').onClick(function(e) {
-        e.preventDefault();
-        $.post($('#save_edits').attr('action'), $('#save_edits').serialize(), function(data){
-        });
-    });
 </script>
 
 {% endblock %}

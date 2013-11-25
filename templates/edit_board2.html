@@ -46,9 +46,12 @@
 
 </script>
 
-
-<h1>{{keyboard.name}}</h1>
-<form method="POST" id="save_edits" action="/edit/{{keyboard.id}}">
+<form method="POST" id="rename_form" action="/edit/{{keyboard.id}}">
+    <input type="hidden" name="board_id" value="{{keyboard.id}}">
+    <textarea id="keyboard_name" name="new_name">{{keyboard.name}}</textarea>
+    <input type="submit" id="rename_keyboard" value="Rename keyboard">
+</form>
+<form method="POST" id="save_edits" action="/savelayout/{{keyboard.id}}">
     <input type="hidden" id="new_layout" name="new_layout" value="">
     <input type="submit" id="save" value="Save">
 </form>
@@ -57,6 +60,14 @@
 <div id="edit_keyboard"></div>
 
 <script>
+    $(document).ready(function(){
+        $('#rename_form').submit(function(e) {
+            e.preventDefault();
+            $.post($('#rename_form').attr('action'), $('#rename_form').serialize(), function(data){
+                    alert("Keyboard name changed.");
+            });
+        });
+    });
 
     function isDone(d) {
         for (var v in d) {
@@ -66,17 +77,6 @@
         }
         return true
     }
-
-    $('#save_edits').submit(function(e) {
-        e.preventDefault();
-        $.post($('#save_edits').attr('action'), $('#save_edits').serialize(), function(data){
-            if (data.result == "fail") {
-                alert("Could not update. Please place all keys.");
-            } else {
-                alert("Success! Layout saved.");
-            }
-        });
-    });
 
     function makeString(d){
         var s = "";

@@ -42,18 +42,19 @@ def keyMistakes(mistakes):
 
 def keyAccuracy(mistakes, text, time):
     chars = mistakes[:-1].split()
-    if len(text) <= 0:
-        accuracy = 0
-    else:
+    if len(text) > 0:
         accuracy = ((len(text) - len(chars))/float(len(text)) * 100)
         if accuracy < 0:
             accuracy = 0
         accuracy = "%.2f" % accuracy
         accuracy = str(accuracy + "%")
-    if time <= 0:
-        wpm = 0
     else:
+        accuracy = 0
+    print type(time)
+    if time > 0 and type(time) == unicode:
         wpm = ("%.1f" % (len(text.split())/(float(time)/60)))
+    else:
+        wpm = 0
     return accuracy, wpm
 
 def findKeytimes(keystrokes):
@@ -284,62 +285,58 @@ def biAttributes(bigrams):
         motion = intoPercent(motion, total)
     return hand, fing, motion, times
 
-def triAttributes(trigrams):
-    total = 0
-    times = []
+def definingAtt(times):
+    times.sort()
+    fastest = times[:(len(times)/3)]
+    middle = times[len(times)/3:((2*len(times))/3)]
+    slowest = times[(2*len(times))/3:]
+    fastest = findAtt(fastest)
+    middle = findAtt(middle)
+    slowest = findAtt(slowest)
+    att = wordAtt([fastest, middle, slowest])
+    return fastest, middle, slowest, att
 
-    #same, alternated, mix
-    hand = [0, 0, 0]
-    fing = [0, 0, 0]
-
-    #horizontal, vertical, mix, (diagonal/hand alt)
-    motion = [0, 0, 0, 0]
-
-    for n in trigrams:
-        key1 = n[0][0][1]
-        key2 = n[1][0][1]
-        key3 = n[2][0][1]
-        if key1 != 191 and key2 != 191 and key3 != 191:
-            total += 1
-            diff = n[1][0][2] - n[0][0][2]
-            r1, c1, h1, f1 = key_lhf[key1]
-            r2, c2, h2, f2 = key_lhf[key2]
-            r3, c3, h3, f3 = key_lhf[key3]
-            if h1 == h2:
-                hand[0] += 1
-                h = 0
-
-                if r1 == r2 and c1 == c2:
-                    motion[2] += 1
-                    m = 2
-                elif r1 == r2:
-                    motion[0] += 1
-                    m = 0
-                else:
-                    motion[1] += 1
-                    m = 1
-            else:
-                hand[1] += 1
-                h = 1
-                m = 2
-                motion[2] += 1
-
-            if f1 == f2:
-                fing[0] += 1
-                f = 0
-            else:
-                fing[1] += 1
-                f = 1
-
-            times.append([diff, key1, key2, h, f, m])
+def findAtt(l):
+    total = len(l)
+    att = [[0, 0], [0, 0], [0, 0, 0]]
+    for e in l:
+        att[0][e[3]] += 1
+        att[1][e[4]] += 1
+        att[2][e[5]] += 1
     if total > 0:
-        hand = intoPercent(hand, total)
-        fing = intoPercent(fing, total)
-        motion = intoPercent(motion, total)
-    return hand, fing, motion, times
+        for i in range(len(att[0])):
+            att[0][i] = "%.2f" % ((att[0][i]/float(total)) * 100)
+        for i in range(len(att[1])):
+            att[1][i] = "%.2f" % ((att[1][i]/float(total)) * 100)
+        for i in range(len(att[2])):
+            att[2][i] = "%.2f" % ((att[2][i]/float(total)) * 100)
+    return att
 
-b = [[(('D', 81, 1385352916045, False), ('U', 81, 1385352916219, False)), (('D', 65, 1385352916612, False), ('U', 65, 1385352916778, False))], [(('D', 65, 1385352916612, False), ('U', 65, 1385352916778, False)), (('D', 87, 1385352917268, False), ('U', 87, 1385352917450, False))], [(('D', 87, 1385352917268, False), ('U', 87, 1385352917450, False)), (('D', 83, 1385352917732, False), ('U', 83, 1385352917898, False))], [(('D', 83, 1385352917732, False), ('U', 83, 1385352917898, False)), (('D', 69, 1385352918388, False), ('U', 69, 1385352918570, False))], [(('D', 69, 1385352918388, False), ('U', 69, 1385352918570, False)), (('D', 68, 1385352918812, False), ('U', 68, 1385352918978, False))], [(('D', 68, 1385352918812, False), ('U', 68, 1385352918978, False)), (('D', 81, 1385352920740, False), ('U', 81, 1385352920890, False))], [(('D', 81, 1385352920740, False), ('U', 81, 1385352920890, False)), (('D', 90, 1385352922156, False), ('U', 90, 1385352922330, False))], [(('D', 90, 1385352922156, False), ('U', 90, 1385352922330, False)), (('D', 85, 1385352923092, False), ('U', 85, 1385352923266, False))], [(('D', 85, 1385352923092, False), ('U', 85, 1385352923266, False)), (('D', 74, 1385352923524, False), ('U', 74, 1385352923666, False))], [(('D', 74, 1385352923524, False), ('U', 74, 1385352923666, False)), (('D', 73, 1385352924148, False), ('U', 73, 1385352924258, False))], [(('D', 73, 1385352924148, False), ('U', 73, 1385352924258, False)), (('D', 75, 1385352924796, False), ('U', 75, 1385352925018, False))], [(('D', 75, 1385352924796, False), ('U', 75, 1385352925018, False)), (('D', 79, 1385352925556, False), ('U', 79, 1385352925690, False))], [(('D', 79, 1385352925556, False), ('U', 79, 1385352925690, False)), (('D', 76, 1385352925964, False), ('U', 76, 1385352926122, False))]]
-print triAttributes(b)
+def wordAtt(l):
+    d = [[], [], []]
+    for i in range(len(l)):
+        print l[i]
+        if l[i][0][0] > l[i][0][1]:
+            d[i].append("Same hand")
+        elif l[i][0][0] < l[i][0][1]:
+            d[i].append("Hand alternation")
+        else:
+            d[i].append("Equal alternation and same hand usage")
+
+        if l[i][1][0] > l[i][1][1]:
+            d[i].append("Same finger")
+        elif l[i][1][0] < l[i][1][1]:
+            d[i].append("Finger alteration")
+        else:
+            d[i].append("Equal alternation and same finger usage")
+
+        if l[i][2][0] > l[i][2][1]:
+            d[i].append("Horizontal movement")
+        elif l[i][2][0] < l[i][2][1]:
+            d[i].append("Vertical movement")
+        else:
+            d[i].append("Horizontal, vertical, diagonal movement")
+    return d 
 
 #KEYBOARD GENERATION
 

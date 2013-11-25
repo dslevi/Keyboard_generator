@@ -112,13 +112,6 @@ def get_input2():
     input1 = request.form.get("input1")
     return render_template("input2.html", text=text, input1=input1)
 
-# @app.route("/input3", methods=["POST"])
-# def get_input3():
-#     pattern = genData.makePattern()
-#     input1 = request.form.get("input1")
-#     input2 = request.form.get("input2")
-#     return render_template("input3.html", pattern=pattern, input1=input1, input2=input2)
-
 @app.route("/analytics")
 def no_analytics():
     if session.get('input1'):
@@ -189,7 +182,6 @@ def show_analytics():
     fastdwell = genData.definingTimes(3, dwelltimes, True)
     slowflights = genData.definingTimes(3, flighttimes, False)
     slowdwell = genData.definingTimes(3, dwelltimes, False)
-    visualKeyboard, keyboard = genData.createKeyboard(keystrokes)
     bigramtimes = genData.ngramTimes(bigrams)
     trigramtimes = genData.ngramTimes(trigrams)
     fastbigrams = genData.definingTimes(4, bigramtimes, True)
@@ -198,12 +190,28 @@ def show_analytics():
     slowtrigrams = genData.definingTimes(4, trigramtimes, False)
     hands, fingers = genData.handFingerFreq(keytimes)
     distance = genData.distance(keytimes)
-    session['keyboard'] = keyboard
-    session['visualKeyboard'] = visualKeyboard
+    biAtt = genData.biAttributes(bigrams)
+    att = genData.definingAtt(biAtt[3])
     if session.get("user_id"):
         user_id = session['user_id']
         new_a = Analytics(input1=strokes, input2=input2, user_id=user_id)
         model.session.add(new_a)
+        model.session.commit()
+    else:
+        user_id=None
+    
+    return render_template("analytics2.html", trigrams=trigrams, dwelltimes=dwelltimes, flighttimes=flighttimes, fastflights=fastflights, fastdwell=fastdwell,
+        slowdwell=slowdwell, slowflights=slowflights,bigrams=bigrams, keytimes=keytimes, keystrokes=keystrokes, 
+        freq=freq, mistakes=mistakes, bigramtimes=bigramtimes, trigramtimes=trigramtimes, fastbigrams=fastbigrams, slowbigrams=slowbigrams,
+        fasttrigrams=fasttrigrams, mostmistakes=mostmistakes, leastmistakes=leastmistakes, biAtt=biAtt, att=att,
+        slowtrigrams=slowtrigrams, accuracy=accuracy, wpm=wpm, hands=hands, fingers=fingers, distance=distance)
+
+@app.route("/pekl/<user_id>")
+def view_pekl(user_id):
+    keystrokes = genData.parseKeystrokes(session['strokes'])
+    visualKeyboard, keyboard = genData.createKeyboard(keystrokes)
+    if session.get("user_id"):
+        user_id = session['user_id']
         new_k = Keyboard(name=genName(), user_id=user_id)
         model.session.add(new_k)
         for i in range(len(keyboard)):
@@ -214,22 +222,7 @@ def show_analytics():
             key.code = qwerty_key.code
             new_k.keys.append(key)
         model.session.commit()
-    else:
-        user_id=None
-    
-    return render_template("test.html", trigrams=trigrams, dwelltimes=dwelltimes, flighttimes=flighttimes, fastflights=fastflights, fastdwell=fastdwell,
-        slowdwell=slowdwell, slowflights=slowflights, keyboard=keyboard, bigrams=bigrams, keytimes=keytimes, keystrokes=keystrokes, 
-        freq=freq, mistakes=mistakes, bigramtimes=bigramtimes, trigramtimes=trigramtimes, fastbigrams=fastbigrams, slowbigrams=slowbigrams,
-        fasttrigrams=fasttrigrams, mostmistakes=mostmistakes, leastmistakes=leastmistakes,
-        slowtrigrams=slowtrigrams, accuracy=accuracy, wpm=wpm, hands=hands, fingers=fingers, distance=distance)
-
-@app.route("/pekl/<user_id>")
-def view_pekl(user_id):
-    if session.get('keyboard'):
-        keyboard=session['keyboard']
-        visualKeyboard = session['visualKeyboard']
-        return render_template("pekl.html", keyboard=keyboard, visualKeyboard=visualKeyboard)
-    return render_template("no_keyboard.html")
+    return render_template("pekl.html", keyboard=keyboard, visualKeyboard=visualKeyboard)
 
 @app.route("/allusers")
 def all_users():
@@ -278,12 +271,7 @@ def display_keyboard(keyboard_id):
 
 @app.route("/keyboard/<keyboard_id>", methods=["POST"])
 def rename_keyboard(keyboard_id):
-    id = request.form.get('board_id')
-    keyboard = Keyboard.query.get(id)
-    if request.form.get('new_name'):
-        keyboard.name = request.form.get('new_name')
-        model.session.commit()
-        return jsonify(result="name")
+    keyboard = Keyboard.query.get(keyboard_id)
     user = User.query.get(session['user_id'])
     new_k = Keyboard(name=keyboard.name, user_id=user.id)
     model.session.add(new_k)
@@ -303,11 +291,16 @@ def display_user(user_id):
     return render_template("display_user.html", user=user, user_id=user_id)
 
 @app.route("/edit/<board_id>", methods=['POST'])
+def save_name(board_id):
+    keyboard = Keyboard.query.get(board_id)
+    keyboard.name = request.form.get('new_name')
+    model.session.commit()
+    return jsonify(result="name")
+
+@app.route("/savelayout/<board_id>", methods=['POST'])
 def save_edits(board_id):
     keyboard = Keyboard.query.get(board_id)
     new = request.form.get('new_layout')
-    if new == "":
-        return jsonify(result="fail")
     d = {}
     tokens = new.encode('ascii', 'ignore').split()
     for token in tokens:
@@ -318,7 +311,7 @@ def save_edits(board_id):
         key.location = d[prev]
         print prev, d[prev]
     model.session.commit()
-    return jsonify(result="edited")
+    return redirect(url_for("edit_board", board_id=board_id))
 
 @app.route("/edit/<board_id>")
 def edit_board(board_id):
