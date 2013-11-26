@@ -300,19 +300,17 @@ def save_name(board_id):
 
 @app.route("/savelayout/<board_id>", methods=['POST'])
 def save_edits(board_id):
-    keyboard = Keyboard.query.get(board_id)
     new = json.loads(request.form['new_layout'])
-    print new
-    # for key in keyboard.keys:
-    #     prev = key.location
-        
-    #     if prev != new[prev][1:].encode("unicode", "ignore"):
-    #         print prev, new["d" +prev]
-    #         key.location = new["d" +prev][1:]
+    for key in new:
+        k = Key.query.get(int(key))
+        prev = k.location
+            
+        if prev != new[key][1:]:
+            k.location = new[key][1:]
 
-    # import pprint
-    # pprint.pprint(model.session.dirty)
-    # model.session.commit()
+    import pprint
+    pprint.pprint(model.session.dirty)
+    model.session.commit()
     return redirect(url_for("edit_board", board_id=board_id))
 
 def json_keyboard2(keys):

@@ -41,10 +41,8 @@
                     document.getElementById(event.toElement.id).style.width = $(this).width() + 3;
                     edit_d[event.toElement.id] = event.target.id;
                     drop[event.target.id] = event.toElement.id;
-                    var keyId = $(event.target).attr("#data-keyid");
-                    var location = $(event.toElement).attr("#data-location");
-                    console.log(keyId);
-                    changes[keyId] = location;
+                    var location = document.getElementById(event.target.id).dataset.location;
+                    changes[location] = event.toElement.id;
                     console.info("set", event.target.id, drop[event.target.id]);
                     console.log(JSON.stringify(changes));
                 }
@@ -90,7 +88,7 @@
 
     $('#save').click(function(event) {
         if (isDone(drop)) {
-            document.getElementById('new_layout').value = JSON.stringify(drop);
+            document.getElementById('new_layout').value = JSON.stringify(changes);
         } else {
             document.getElementById('new_layout').value = "";
         }
@@ -110,8 +108,8 @@
         } else {
             var val2 = ""
         }
-        $('#edit_keyboard').append("<div class='editable' data-keyid='" + old_kb[i].id + "' id=" + keyid + ">" + val1 + val2 + "</div>");
-        $('#edit_keyboard').append("<div class='droparea' id=" + keyid2 + "></div>");
+        $('#edit_keyboard').append("<div class='editable' id=" + keyid + ">" + val1 + val2 + "</div>");
+        $('#edit_keyboard').append("<div class='droparea' data-location=" + String(old_kb[i].id) + " id=" + keyid2 + "></div>");
     }
     $('#edit_keyboard').append("<div class='uneditable' id='eC01'>CAPS</div>");
     $('#edit_keyboard').append("<div class='uneditable' id='eD01'>SHIFT</div>");
