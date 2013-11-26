@@ -8,7 +8,7 @@ import model
 import random
 import genData
 import time
-
+import json
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -200,7 +200,7 @@ def show_analytics():
     else:
         user_id=None
     
-    return render_template("analytics2.html", trigrams=trigrams, dwelltimes=dwelltimes, flighttimes=flighttimes, fastflights=fastflights, fastdwell=fastdwell,
+    return render_template("test.html", trigrams=trigrams, dwelltimes=dwelltimes, flighttimes=flighttimes, fastflights=fastflights, fastdwell=fastdwell,
         slowdwell=slowdwell, slowflights=slowflights,bigrams=bigrams, keytimes=keytimes, keystrokes=keystrokes, 
         freq=freq, mistakes=mistakes, bigramtimes=bigramtimes, trigramtimes=trigramtimes, fastbigrams=fastbigrams, slowbigrams=slowbigrams,
         fasttrigrams=fasttrigrams, mostmistakes=mostmistakes, leastmistakes=leastmistakes, biAtt=biAtt, att=att,
@@ -246,6 +246,7 @@ def json_keyboard(keys):
             sublist.append(values)
         l.append(sublist)
     return l
+
 
 @app.route("/keyboard/<keyboard_id>")
 def display_keyboard(keyboard_id):
@@ -300,23 +301,35 @@ def save_name(board_id):
 @app.route("/savelayout/<board_id>", methods=['POST'])
 def save_edits(board_id):
     keyboard = Keyboard.query.get(board_id)
-    new = request.form.get('new_layout')
-    d = {}
-    tokens = new.encode('ascii', 'ignore').split()
-    for token in tokens:
-        k = token.split(":")
-        d[k[0][1:]] = k[1][1:]
-    for key in keyboard.keys:
-        prev = key.location
-        key.location = d[prev]
-        print prev, d[prev]
-    model.session.commit()
+    new = json.loads(request.form['new_layout'])
+    print new
+    # for key in keyboard.keys:
+    #     prev = key.location
+        
+    #     if prev != new[prev][1:].encode("unicode", "ignore"):
+    #         print prev, new["d" +prev]
+    #         key.location = new["d" +prev][1:]
+
+    # import pprint
+    # pprint.pprint(model.session.dirty)
+    # model.session.commit()
     return redirect(url_for("edit_board", board_id=board_id))
+
+def json_keyboard2(keys):
+    l = []
+    for key in keys:
+        l.append({
+            'id': key.id,
+            'location': key.location,
+            'val1': key.values.split()[1],
+            'val2': key.values.split()[0]
+        })
+    return l
 
 @app.route("/edit/<board_id>")
 def edit_board(board_id):
     keyboard = Keyboard.query.get(board_id)
-    jsonKeyboard = json_keyboard(keyboard.keys)
+    jsonKeyboard = json_keyboard2(keyboard.keys)
     return render_template("edit_board2.html", keyboard=keyboard, jsonkeyboard=jsonKeyboard)
 
 @app.route("/delete/<board_id>")

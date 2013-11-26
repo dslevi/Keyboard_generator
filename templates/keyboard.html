@@ -146,7 +146,7 @@
 
 //do both key animations for control and alt
     $('#keyboard_text').keydown(function (event) {
-
+        console.log(event.which);
         keyCount("D", event.which, JSON.stringify(new Date().getTime()));
 
         if (event.which == 16) {

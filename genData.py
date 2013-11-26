@@ -1,8 +1,8 @@
 import random, math
 
 #MAPS
-visual_value = {219:('[', '{'), 220:('\\', '|'), 221:(']', '}'), 192:('`','~'), 186:(';', ':'), 190:('.', '>'), 188:(',','>'), 189:('-','_'),
-        222:("'",'"'), 187:('=','+'), 190:("/", '?'), 9:('TAB','TAB'), 13:('ENTER','ENTER'), 17:('CTRL','CTRL'), 16:('SHIFT','SHIFT'), 
+visual_value = {219:('[', '{'), 220:('\\', '|'), 221:(']', '}'), 192:('`','~'), 186:(';', ':'), 190:('.', '>'), 188:(',','<'), 189:('-','_'),
+        222:("'",'"'), 187:('=','+'), 191:("/", '?'), 9:('TAB','TAB'), 13:('ENTER','ENTER'), 17:('CTRL','CTRL'), 16:('SHIFT','SHIFT'), 
         18:('ALT','ALT'), 32:('SPACE','SPACE'), 20:('CAPS','CAPS'), 8:('DELETE','DELETE'),
         48:('0', ')'), 49:('1', '!'), 50:('2','@'), 51:('3','#'), 52:('4','$'), 53:('5','%'), 54:('6','^'), 55:('7','&'), 56:('8','*'), 57:('9','('),
         65:('a', 'A'), 66:('b', 'B'), 67:('c', 'C'), 68:('d', 'D'), 69:('e', 'E'), 82:('r', 'R'), 83:('s', 'S'), 80:('p', 'P'), 81:('q', 'Q'), 87:('w', 'W'), 
@@ -50,9 +50,9 @@ def keyAccuracy(mistakes, text, time):
         accuracy = str(accuracy + "%")
     else:
         accuracy = 0
-    print type(time)
-    if time > 0 and type(time) == unicode:
-        wpm = ("%.1f" % (len(text.split())/(float(time)/60)))
+    time = float(time)
+    if time > 0:
+        wpm = ("%.1f" % (len(text.split())/(time/60)))
     else:
         wpm = 0
     return accuracy, wpm
@@ -293,8 +293,8 @@ def definingAtt(times):
     fastest = findAtt(fastest)
     middle = findAtt(middle)
     slowest = findAtt(slowest)
-    att = wordAtt([fastest, middle, slowest])
-    return fastest, middle, slowest, att
+    vatt, att = wordAtt([fastest, middle, slowest])
+    return fastest, middle, slowest, vatt, att 
 
 def findAtt(l):
     total = len(l)
@@ -314,29 +314,47 @@ def findAtt(l):
 
 def wordAtt(l):
     d = [[], [], []]
+    a = [[], [], []]
     for i in range(len(l)):
-        print l[i]
         if l[i][0][0] > l[i][0][1]:
             d[i].append("Same hand")
+            a[0].append(0)
+            a[0].append(l[i][0][0])
         elif l[i][0][0] < l[i][0][1]:
             d[i].append("Hand alternation")
+            a[0].append(1)
+            a[0].append(l[i][0][1])
         else:
             d[i].append("Equal alternation and same hand usage")
+            a[0].append(2)
+            a[0].append(l[i][0][1])
 
         if l[i][1][0] > l[i][1][1]:
             d[i].append("Same finger")
+            a[1].append(0)
+            a[1].append(l[i][1][0])
         elif l[i][1][0] < l[i][1][1]:
             d[i].append("Finger alteration")
+            a[1].append(1)
+            a[1].append(l[i][1][1])
         else:
             d[i].append("Equal alternation and same finger usage")
+            a[1].append(2)
+            a[1].append(l[i][1][1])
 
         if l[i][2][0] > l[i][2][1]:
             d[i].append("Horizontal movement")
+            a[2].append(0)
+            a[2].append(l[i][2][0])
         elif l[i][2][0] < l[i][2][1]:
             d[i].append("Vertical movement")
+            a[2].append(1)
+            a[2].append(l[i][2][1])
         else:
             d[i].append("Horizontal, vertical, diagonal movement")
-    return d 
+            a[2].append(2)
+            a[2].append(l[i][2][2])
+    return d, a 
 
 #KEYBOARD GENERATION
 
@@ -351,7 +369,7 @@ def createKeyboard(strokes):
     #key values ordered from most frequently typed to least
     common_keys = [('SPACE'), ('E'), ('T'), ('A'), ('O'), ('I'), ('N'), ('S'), ('R'), ('H'), ('DELETE'), 
         ('L'), ('D'), ('C'), ('U'), ('ENTER'), ('M'), ('F'), ('P'), ('G'), ('W'), ('Y'), ('B'), (',', '<'), ('.', '>'), 
-        ('V'), ('K'), ('9', '('), ('0', '1'), ('-', '_'), (';',':'), ("'", '"'), ('=', '+'), ('TAB'), ('X'), ('/','?'), ('4','$'), ('8', '*'), 
+        ('V'), ('K'), ('9', '('), ('0', ')'), ('-', '_'), (';',':'), ("'", '"'), ('=', '+'), ('TAB'), ('X'), ('/','?'), ('4','$'), ('8', '*'), 
         ('1', '!'), ('J'), ('[', '{'), (']', '}'), ('Q'), ("2", '@'), ('Z'), ('5', '%'), ('3', '#'), ('\\', '|'), ('6','^'), ('7','&'), ('`', '~')]
 
     common_keys2 = [('SPACE', 'SPACE'), ('e', 'E'), ('t', 'T'), ('a', 'A'), ('o', 'O'), ('i', 'I'), ('n', 'N'), ('s', 'S'), ('r', 'R'), ('h', 'H'), ('DELETE', 'DELETE'), 
@@ -409,3 +427,21 @@ def makePattern():
     for i in range(10):
         pattern.append(dvorak_map[random.randint(0, len(dvorak_map) -1)])
     return pattern
+
+def makeKeys(strokes):
+    common_val = [32, 69, 84, 65, 79, 73, 78, 83, 82, 72, 8, 
+        76, 68, 67, 85, 13, 77, 70, 80, 71, 87, 89, 66, 188, 190, 
+        86, 75, 57, 48, 189, 186, 222, 187, 9, 88, 191, 52, 56, 
+        49, 74, 219, 221, 81, 50, 90, 53, 51, 220, 54, 55, 192]
+    keys = []
+    bigram_freq = bigramFreq(strokes)
+    reversed_bigrams = []
+    for x in bigram_freq:
+        reversed_bigrams.append((bigram_freq[x], x))
+    sorted_bigrams = sorted(reversed_bigrams, reverse=True)
+    for key in sorted_bigrams:
+        keys.append(key[1])
+    for key in common_val:
+        if key not in keys:
+            keys.append(key)
+    return keys

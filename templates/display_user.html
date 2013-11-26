@@ -15,6 +15,7 @@
                 <a class="info" href="/keyboard/{{board.id}}"><div class="thumbnail">{{board.keys[35].values.split()[1][0]}}</div></a>
                 <div class="info"><b><a href="/keyboard/{{board.id}}">{{board.name}}</a></b></div> 
                 {% if user.id == user_id %}
+                    <span class="info">Rating</span><br>
                     <a class="info" href="/edit/{{board.id}}">Edit</a>
                     <a class="info" href="/delete/{{board.id}}">Delete</a><br>
                     <a class="info" href="/export/{{board.id}}">Export</a>
