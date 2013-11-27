@@ -151,7 +151,7 @@ def mutate(pool, m):
     copies = makeCopies(pool)
     for k in copies:
         for i in range(m):
-            keys = random.sample(range(52), 2)
+            keys = random.sample(range(51), 2)
             k1 = keys[0]
             k2 = keys[1]
             temp = k[0][k1]
@@ -172,22 +172,22 @@ def find_best(pool, b, prev):
         b = 0
     return prev, b
 
-def rand_selection(s):
-    p = []
-    weighted = [0, 1, 2, 3, 4, 5, 5, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9]
-    for i in range(len(s)/2):
-        x = weighted[random.randint(0, len(weighted) - 1)]
-        p.append(s[x])
-        for n in weighted:
-            if n == x:
-                del n
-    return p
+# def rand_selection(s):
+#     p = []
+#     weighted = [0, 1, 2, 3, 4, 5, 5, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9]
+#     for i in range(len(s)/2):
+#         x = weighted[random.randint(0, len(weighted) - 1)]
+#         p.append(s[x])
+#         for n in weighted:
+#             if n == x:
+#                 del n
+#     return p
 
 def createKeyboard(opt):
     final = []
-    opt = opt.sorted(reverse=True)
-    for k in opt:
+    for k in opt[0]:
         final.append(toCode[k])
+    print opt[1]
     return final
 
 def getbest(p):
@@ -199,12 +199,12 @@ def getbest(p):
 
 def main(bigrams, att, freq):
     loop = True
-    p = 5
+    p = 300
     m = 3
     g = 0
     b = 0
     n = 3
-    q = 4
+    q = 20
     prev = [0, 0]
     o_pool = []
 
@@ -219,11 +219,11 @@ def main(bigrams, att, freq):
         if len(o_pool) > q:
             best = getbest(o_pool)
             break
-        pool = rand_selection(scored)
+        pool = scored[len(scored)/2:]
         pool = mutate(pool, m)
         g += 1
         scored = score_pool(pool, True, bigrams, att, freq)
-    #run through process again and return best from optimal keyboard
+    print g
     return createKeyboard(best)
 
 bigrams = [[82, 186], [73, 186], [73, 186], [65, 186], [84, 186], [79, 186], [83, 186], [84, 186], [83, 72], [73, 186], [69, 186], [82, 186], [69, 186], [72, 186], [84, 186], [72, 186], [84, 186], [79, 186], [80, 186]]
