@@ -187,8 +187,7 @@ def createKeyboard(opt):
     final = []
     for k in opt[0]:
         final.append(toCode[k])
-    print opt[1]
-    return final
+    return final, opt[1]
 
 def getbest(p):
     m = p[0]
@@ -199,7 +198,7 @@ def getbest(p):
 
 def main(bigrams, att, freq):
     loop = True
-    p = 300
+    p = 200
     m = 3
     g = 0
     b = 0
@@ -223,10 +222,4 @@ def main(bigrams, att, freq):
         pool = mutate(pool, m)
         g += 1
         scored = score_pool(pool, True, bigrams, att, freq)
-    print g
-    return createKeyboard(best)
-
-bigrams = [[82, 186], [73, 186], [73, 186], [65, 186], [84, 186], [79, 186], [83, 186], [84, 186], [83, 72], [73, 186], [69, 186], [82, 186], [69, 186], [72, 186], [84, 186], [72, 186], [84, 186], [79, 186], [80, 186]]
-freq = [71, 75, 74, 72, 70, 68, 83, 32, 69, 84, 65, 79, 73, 78, 82, 8, 76, 67, 85, 13, 77, 80, 87, 89, 66, 188, 190, 86, 57, 48, 189, 186, 222, 187, 9, 88, 191, 52, 56, 49, 219, 221, 81, 50, 90, 53, 51, 220, 54, 55, 192]
-att = [[1, '66.67', 1, '68.75', 2, '50.00'], [1, '86.67', 1, '81.25', 1, '56.25'], [1, '6.67', 1, '25.00', 1, '31.25']]
-print main(bigrams, att, freq)
+    return createKeyboard(best), g

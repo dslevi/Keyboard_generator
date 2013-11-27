@@ -6,7 +6,7 @@ import config
 import forms
 import model
 import random
-import genData
+import genData, genetic2
 import time
 import json
 
@@ -194,6 +194,8 @@ def show_analytics():
     distance = genData.distance(keytimes)
     biAtt = genData.biAttributes(bigrams)
     att = genData.definingAtt(biAtt[3])
+    keys = genData.makeKeys(keystrokes)
+    layout = genetic2.main(fast, att[4], keys)
     if session.get("user_id"):
         user_id = session['user_id']
         new_a = Analytics(input1=strokes, input2=input2, user_id=user_id)
@@ -203,9 +205,9 @@ def show_analytics():
         user_id=None
     
     return render_template("test.html", trigrams=trigrams, dwelltimes=dwelltimes, flighttimes=flighttimes, fastflights=fastflights, fastdwell=fastdwell,
-        slowdwell=slowdwell, slowflights=slowflights,bigrams=bigrams, keytimes=keytimes, keystrokes=keystrokes, 
+        slowdwell=slowdwell, slowflights=slowflights,bigrams=bigrams, keytimes=keytimes, keystrokes=keystrokes, layout=layout,
         freq=freq, mistakes=mistakes, bigramtimes=bigramtimes, trigramtimes=trigramtimes, fastbigrams=fastbigrams, slowbigrams=slowbigrams,
-        fasttrigrams=fasttrigrams, mostmistakes=mostmistakes, leastmistakes=leastmistakes, biAtt=biAtt, att=att, fast=fast,
+        fasttrigrams=fasttrigrams, mostmistakes=mostmistakes, leastmistakes=leastmistakes, biAtt=biAtt, att=att,
         slowtrigrams=slowtrigrams, accuracy=accuracy, wpm=wpm, hands=hands, fingers=fingers, distance=distance)
 
 @app.route("/pekl/<user_id>")
