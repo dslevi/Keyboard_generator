@@ -178,11 +178,13 @@ def show_analytics():
     trigrams = genData.findngrams(3, keytimes)
     dwelltimes = genData.dwellTime(keytimes)
     flighttimes = genData.flightTime(bigrams)
+    
     fastflights = genData.definingTimes(3, flighttimes, True)
     fastdwell = genData.definingTimes(3, dwelltimes, True)
     slowflights = genData.definingTimes(3, flighttimes, False)
     slowdwell = genData.definingTimes(3, dwelltimes, False)
     bigramtimes = genData.ngramTimes(bigrams)
+    fast = genData.fastestTimes(len(bigramtimes)/2, bigramtimes)
     trigramtimes = genData.ngramTimes(trigrams)
     fastbigrams = genData.definingTimes(4, bigramtimes, True)
     slowbigrams = genData.definingTimes(4, bigramtimes, False)
@@ -203,7 +205,7 @@ def show_analytics():
     return render_template("test.html", trigrams=trigrams, dwelltimes=dwelltimes, flighttimes=flighttimes, fastflights=fastflights, fastdwell=fastdwell,
         slowdwell=slowdwell, slowflights=slowflights,bigrams=bigrams, keytimes=keytimes, keystrokes=keystrokes, 
         freq=freq, mistakes=mistakes, bigramtimes=bigramtimes, trigramtimes=trigramtimes, fastbigrams=fastbigrams, slowbigrams=slowbigrams,
-        fasttrigrams=fasttrigrams, mostmistakes=mostmistakes, leastmistakes=leastmistakes, biAtt=biAtt, att=att,
+        fasttrigrams=fasttrigrams, mostmistakes=mostmistakes, leastmistakes=leastmistakes, biAtt=biAtt, att=att, fast=fast,
         slowtrigrams=slowtrigrams, accuracy=accuracy, wpm=wpm, hands=hands, fingers=fingers, distance=distance)
 
 @app.route("/pekl/<user_id>")
