@@ -13,6 +13,7 @@
      'eA07': 'dA07', 'eA04': 'dA04', 'eA05': 'dA05', 'eC01': 'dC01'};
      var drop = {'dC10': 'eC10', 'dB14': 'eB14', 'dC12': 'eC12', 'dC13': 'eC13', 'dB11': 'eB11', 'dB10': 'eB10', 'dB13': 'eB13', 'dB12': 'eB12', 'dC11': 'eC11', 'dA09': 'eA09', 'dA14': 'eA14', 'dA12': 'eA12', 'dA13': 'eA13', 'dA10': 'eA10', 'dA11': 'eA11', 'dD08': 'eD08', 'dD09': 'eD09', 'dD04': 'eD04', 'dD05': 'eD05', 'dD06': 'eD06', 'dD07': 'eD07', 'dD02': 'eD02', 'dD03': 'eD03', 'dC03': 'eC03', 'dC02': 'eC02', 'dC01': 'eC01', 'dC07': 'eC07', 'dC06': 'eC06', 'dC05': 'eC05', 'dC04': 'eC04', 'dC09': 'eC09', 'dC08': 'eC08', 'dA01': 'eA01', 'dB08': 'eB08', 'dA02': 'eA02', 'dA05': 'eA05', 'dA04': 'eA04', 'dA07': 'eA07', 'dA06': 'eA06', 'dB02': 'eB02', 'dA08': 'eA08', 'dB01': 'eB01', 'dB06': 'eB06', 'dB07': 'eB07', 'dB04': 'eB04', 'dB05': 'eB05', 'dE04': 'eE04', 'dA03': 'eA03', 'dD11': 'eD11', 'dD10': 'eD10', 'dB09': 'eB09', 'dB03': 'eB03'};
      var changes = {};
+     var visChanges = {};
 
     $(function() {
         $('.editable').draggable({distance:30, containment:"body", cursorAt:{top:25, left:25}, stack: "#edit_keyboard div", 
@@ -21,8 +22,6 @@
                 document.getElementById(event.target.id).style.backgroundColor = "gray";
                 document.getElementById(event.target.id).style.border = "1px white solid";
                 var prev = edit_d[event.target.id];
-
-                console.info("drag start", event.target.id, prev);
                 if (prev != null) {
                     edit_d[event.target.id] = null;
                     drop[prev] = null;
@@ -32,19 +31,15 @@
 
         $('.droparea').droppable({ hoverClass: 'hovered',
             drop: function(event, ui) {
-                console.info("drop", event.target.id, drop[event.target.id]);
                 if (drop[event.target.id] == null) {
-                    console.log(edit_d);
                     ui.draggable.position( { of: $(this), my: 'left top', at: 'left top' } );
                     document.getElementById(event.toElement.id).style.border = "None";
                     document.getElementById(event.toElement.id).style.backgroundColor = "black";
                     document.getElementById(event.toElement.id).style.width = $(this).width() + 3;
                     edit_d[event.toElement.id] = event.target.id;
                     drop[event.target.id] = event.toElement.id;
-                    var location = document.getElementById(event.target.id).dataset.location;
-                    changes[location] = event.toElement.id;
-                    console.info("set", event.target.id, drop[event.target.id]);
-                    console.log(JSON.stringify(changes));
+                    var keyid = document.getElementById(event.toElement.id).dataset.keyid;
+                    changes[keyid] = event.target.id;
                 }
             }
         });
@@ -108,7 +103,7 @@
         } else {
             var val2 = ""
         }
-        $('#edit_keyboard').append("<div class='editable' id=" + keyid + ">" + val1 + val2 + "</div>");
+        $('#edit_keyboard').append("<div class='editable' data-keyid=" + String(old_kb[i].id) + " id=" + keyid + ">" + val1 + val2 + "</div>");
         $('#edit_keyboard').append("<div class='droparea' data-location=" + String(old_kb[i].id) + " id=" + keyid2 + "></div>");
     }
     $('#edit_keyboard').append("<div class='uneditable' id='eC01'>CAPS</div>");

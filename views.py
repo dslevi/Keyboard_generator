@@ -247,12 +247,24 @@ def json_keyboard(keys):
         l.append(sublist)
     return l
 
+def sortKeys(k):
+    sorted_k = []
+    h = []
+    for j in k:
+        h.append(j.location)
+    h = sorted(h)
+    for i in range(len(h)):
+        for j in range(len(k)):
+            if k[j].location == h[i]:
+                sorted_k.append(k[j])
+    return sorted_k
 
 @app.route("/keyboard/<keyboard_id>")
 def display_keyboard(keyboard_id):
     keyboard = Keyboard.query.get(keyboard_id)
     date = time.strftime('%b %d, %Y %I:%M%p', keyboard.created_at.timetuple())
-    keys = keyboard.keys
+    k = keyboard.keys
+    keys = sortKeys(k)
     values = []
     word_list = ["DELETE","TAB","SPACE","ENTER", "A", "B", "C", "O", "D", "E", 'F', 'G', 'H', 'J', 'I', 'L', 'K', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
     if session.get('user_id'):
@@ -266,7 +278,7 @@ def display_keyboard(keyboard_id):
             values.append([tokens[1],tokens[0]])
         else:
             values.append([tokens[1]])
-    jsonKeyboard = json_keyboard(keyboard.keys)
+    jsonKeyboard = json_keyboard(keys)
     text = Text.query.get(random.randint(1, 11))
     return render_template("display_keyboard.html", keyboard=keyboard, values=values, session_id=session_id, date=date, jsonKeyboard = jsonKeyboard, text=text)
 
@@ -301,13 +313,17 @@ def save_name(board_id):
 @app.route("/savelayout/<board_id>", methods=['POST'])
 def save_edits(board_id):
     new = json.loads(request.form['new_layout'])
+    t = {}
     for key in new:
         k = Key.query.get(int(key))
         prev = k.location
             
         if prev != new[key][1:]:
             k.location = new[key][1:]
+        t[k.id] = [k.location, k.values]
+        model.session.add(k)
 
+    print new, t
     import pprint
     pprint.pprint(model.session.dirty)
     model.session.commit()

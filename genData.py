@@ -80,6 +80,11 @@ def findngrams(n, keytimes):
             ngrams.append(ngram)
     return ngrams
 
+def ngramFreq(n, input1, input2):
+    freq = []
+    
+    return freq
+
 #key press and release
 def dwellTime(keytimes):
     times = {}
