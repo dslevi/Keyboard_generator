@@ -208,7 +208,6 @@ def handFingerFreq(keytimes):
                 fingers[key_lhf[k[1]][2]][key_lhf[k[1]][3]] += 1
                 total += 1
     if total > 0:
-        #replace with intoPercent(hands, total)
         for i in range(len(hands)):
             percentage = ((hands[i]/float(total)) * 100)
             hands[i] = (str("%.1f" % percentage) + "%")
@@ -451,7 +450,7 @@ def makePattern():
 def makeKeys(strokes):
     common_val = [32, 69, 84, 65, 79, 73, 78, 83, 82, 72, 8, 
         76, 68, 67, 85, 13, 77, 70, 80, 71, 87, 89, 66, 188, 190, 
-        86, 75, 57, 48, 189, 186, 222, 187, 9, 88, 191, 52, 56, 
+        86, 75, 57, 48, 189, 186, 222, 187, 9, 88, 52, 56, 
         49, 74, 219, 221, 81, 50, 90, 53, 51, 220, 54, 55, 192]
     keys = []
     bigram_freq = bigramFreq(strokes)
@@ -460,7 +459,8 @@ def makeKeys(strokes):
         reversed_bigrams.append((bigram_freq[x], x))
     sorted_bigrams = sorted(reversed_bigrams, reverse=True)
     for key in sorted_bigrams:
-        keys.append(key[1])
+        if key != 16:
+            keys.append(key[1])
     for key in common_val:
         if key not in keys:
             keys.append(key)

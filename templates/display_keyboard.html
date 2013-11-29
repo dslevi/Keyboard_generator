@@ -17,7 +17,7 @@
         <h3 id="keyboard_display">{{date}}</h3>
     </div>
     <div id="typing_test1">
-            <span id="text_sample">{{text.content}}</span><span id="text_sample2"><br><b>{{text.title}}</b> -{{text.author}}</span>
+            <span id="text_sample"><span class="texts" id="new_text"></span><span class="texts" id="old_text"></span></span><span id="text_sample2"><br><b>{{text.title}}</b> -{{text.author}}</span>
     </div>
 
         <pre><div id="keyboard_text1"></div></pre>
@@ -63,7 +63,49 @@
         });
     });
 
-
+    var text = {{text.content|tojson|safe}};
+    var j = 0;
+    var d = 0;
+    var mistakes = "";
+    document.getElementById('old_text').innerHTML = {{text.content|tojson|safe}};
+    var new_text = document.getElementById('new_text');
+    
+    function animateTyping(key, chr) {
+        if ((chr=="DEL") & (d > 0)) {
+            var ch = new_text.innerHTML.slice(-8, -7);
+            if (ch == " ") {
+                mistakes += "SPACE" + " ";
+            } else {
+                mistakes += new_text.innerHTML.slice(-8, -7) + " ";
+            }
+            
+            new_text.innerHTML = new_text.innerHTML.slice(0, -30);
+            d--;
+        } else if ((d == 0) & (chr == "DEL")) {
+            if (j > 0) {
+                var ch = new_text.innerHTML.slice(-1);
+                if (ch == " "){
+                    mistakes += "SPACE" + " ";
+                } else {
+                    mistakes += new_text.innerHTML.slice(-1) + " ";
+                }
+                
+                old_text.innerHTML = text.slice(j - 1);
+                new_text.innerHTML = new_text.innerHTML.slice(0, -1);
+                j--;
+            }
+        } else if ((chr == text[j]) & (d==0)){
+            console.log(chr + " " + text[j]);
+            new_text.innerHTML += text[j];
+            old_text.innerHTML = old_text.innerHTML.slice(1);
+            j++;
+        } else if (key == 16) {
+            console.log("shift");
+        } else {
+            d++;
+            new_text.innerHTML += "<span class='mistake'>"+chr+"</span>";
+        }
+    } 
 
         //KEYPRESS ANIMATIONS
     var keys = { 126:'A01', 96:'A01', 33:'A02', 49:'A02', 64:'A03', 50:'A03', 35:'A04', 51:'A04', 36:'A05', 52:'A05', 37:'A06', 53:'A06', 94:'A07', 
@@ -140,7 +182,7 @@
         var textarea = document.getElementById('keyboard_text1');
         var k = key_specific[event.which];
         var possible_values = new_keys[k[0]];
-
+        var chr = "";
         //if shift, return shifted value
         if (event.which == 20) {
             if (caps_on) {
@@ -158,21 +200,29 @@
             key.style.backgroundColor="gray";
             prev_key = key;
             if (possible_values[0] == 'DELETE') {
+                chr = "DEL";
                 textarea.innerHTML = textarea.innerHTML.slice(0, -1);
+               
             } else if ((caps_on) || (shift_on)) {
                 if (possible_values[1]) {
-                    var chr = possible_values[1];
+                    chr = possible_values[1];
                 } else {
-                    var chr = possible_values[0];   
+                    chr = possible_values[0];   
                 }
                 textarea.innerHTML += chr;
+                
             } else {
-                var chr = possible_values[0];
+                chr = possible_values[0];
                 textarea.innerHTML += chr;
             }
         }
+        animateTyping(event.which, chr);
     }
 
+    $('body').ready(function() {
+        $('#textarea').focus();
+    });
+    
     //does visual keypress animations, displays remapped text for non-meta (qwerty location) keys
     $('body').keypress(function (event) { 
         if ((event.which > 32) && (event.which <= 127)) {
@@ -184,6 +234,9 @@
     $('body').keydown(function (event) {
         if (event.which <= 32) {
             keyDisplays(event);
+        }
+        if ((event.which == 32) || (event.which == 8)) {
+            return false;
         }
     });
 

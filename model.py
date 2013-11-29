@@ -29,7 +29,7 @@ class User(Base, UserMixin):
     analytics = relationship("Analytics", uselist=True)
     right_hand = Column(Boolean, default=True)
     occupation = Column(String(64), nullable=False)
-    age = Column(Integer)
+    age = Column(Integer, nullable=True)
     keyboard = relationship("Keyboard", uselist=True)
 
     def set_password(self, password):
@@ -65,7 +65,6 @@ class Keyboard(Base):
     created_at = Column(DateTime, nullable=False, default=datetime.now)
     rating = Column(Integer, nullable=True, default=0)
     keys = relationship("Key", uselist=True)
-    favorite = Column(Boolean, nullable=True, default=False)
 
     user = relationship("User")
 
@@ -92,10 +91,10 @@ class Text(Base):
 
 def create_tables():
     Base.metadata.create_all(engine)
-    u = User(name="Guest", email="test@test.com", occupation="programmer", age=23)
+    u = User(name="Guest", email="test@test.com", occupation="programmer")
     u.set_password("guest")
     session.add(u)
-    d = User(name="Danielle", email="d@hba.com", occupation="Programmer", age=23)
+    d = User(name="Danielle", email="d@hba.com", occupation="Programmer")
     d.set_password("python")
     session.add(d)
     a = Analytics(input1="input1", input2="input2", user_id=u.id)

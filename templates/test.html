@@ -1,6 +1,17 @@
 {% extends "base.html" %}
 {% block body %}
-{{layout}}
+<script>
+fast = {{fast|tojson|safe}};
+console.log(fast);
+</script>
+
+<form method="POST" id="rename_form" action="/pekl/{{user_id}}">
+    <input type="hidden" name="fast" value="{{fast|tojson|safe}}">
+    <input type="hidden" name="att" value="{{att[4]}}">
+    <input type="hidden" name="keys" value="{{keys|tojson|safe}}">
+    <input type="submit" id="view_keyboard" value="Generate Your Keyboard">
+</form>
+
 <h1>INPUT 1</h1>
 <b>Finger usage</b> {{fingers}}<br>
 <b>Hand usage</b> {{hands}}<br>
@@ -47,9 +58,6 @@ Slowest bigram atributes<br>
 <b>Mistakes</b> {{mistakes}}<br>
 <b>Least mistakes</b> {{mostmistakes}}<br>
 <b>Most mistakes</b> {{leastmistakes}}<br><br>
-{% if not user_id %}
-    <h3><a href="{{url_for('view_pekl', user_id='guest')}}">Your Keyboard</a></h3></b>
-{% else %}
-    <h3><a href="{{url_for('view_pekl', user_id=user_id)}}">Your Keyboard</a></h3></b>
-{% endif %}<br>
+
+<br><br>
 {% endblock %}

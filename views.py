@@ -184,7 +184,6 @@ def show_analytics():
     slowflights = genData.definingTimes(3, flighttimes, False)
     slowdwell = genData.definingTimes(3, dwelltimes, False)
     bigramtimes = genData.ngramTimes(bigrams)
-    fast = genData.fastestTimes(len(bigramtimes)/2, bigramtimes)
     trigramtimes = genData.ngramTimes(trigrams)
     fastbigrams = genData.definingTimes(4, bigramtimes, True)
     slowbigrams = genData.definingTimes(4, bigramtimes, False)
@@ -193,25 +192,35 @@ def show_analytics():
     hands, fingers = genData.handFingerFreq(keytimes)
     distance = genData.distance(keytimes)
     biAtt = genData.biAttributes(bigrams)
+
+    fast = genData.fastestTimes(len(bigramtimes)/2, bigramtimes)
     att = genData.definingAtt(biAtt[3])
     keys = genData.makeKeys(keystrokes)
-    layout = genetic2.main(fast, att[4], keys)
+
     if session.get("user_id"):
         user_id = session['user_id']
-        new_a = Analytics(input1=strokes, input2=input2, user_id=user_id)
-        model.session.add(new_a)
-        model.session.commit()
+        # new_a = Analytics(input1=strokes, input2=input2, user_id=user_id)
+        # model.session.add(new_a)
+        # model.session.commit()
     else:
-        user_id=None
-    
+        user_id=0
     return render_template("test.html", trigrams=trigrams, dwelltimes=dwelltimes, flighttimes=flighttimes, fastflights=fastflights, fastdwell=fastdwell,
-        slowdwell=slowdwell, slowflights=slowflights,bigrams=bigrams, keytimes=keytimes, keystrokes=keystrokes, layout=layout,
+        slowdwell=slowdwell, slowflights=slowflights,bigrams=bigrams, keytimes=keytimes, keystrokes=keystrokes,
         freq=freq, mistakes=mistakes, bigramtimes=bigramtimes, trigramtimes=trigramtimes, fastbigrams=fastbigrams, slowbigrams=slowbigrams,
-        fasttrigrams=fasttrigrams, mostmistakes=mostmistakes, leastmistakes=leastmistakes, biAtt=biAtt, att=att,
-        slowtrigrams=slowtrigrams, accuracy=accuracy, wpm=wpm, hands=hands, fingers=fingers, distance=distance)
+        fasttrigrams=fasttrigrams, mostmistakes=mostmistakes, leastmistakes=leastmistakes, biAtt=biAtt, att=att, keys=keys, fast=fast,
+        slowtrigrams=slowtrigrams, accuracy=accuracy, wpm=wpm, hands=hands, fingers=fingers, distance=distance, user_id=user_id)
 
-@app.route("/pekl/<user_id>")
+@app.route("/pekl/<user_id>", methods=['POST'])
 def view_pekl(user_id):
+    fast = request.form.get('fast')
+    att = request.form.get('att')
+    keys = request.form.get('keys')
+    keys = keys[1:-1].encode("ascii", "ignore").split()
+    k = []
+    for i in keys:
+        k.append(int(i.strip(",")))
+    a = []
+    layout  = genetic2.main(fast, att, k)
     keystrokes = genData.parseKeystrokes(session['strokes'])
     visualKeyboard, keyboard = genData.createKeyboard(keystrokes)
     if session.get("user_id"):
@@ -226,7 +235,7 @@ def view_pekl(user_id):
             key.code = qwerty_key.code
             new_k.keys.append(key)
         model.session.commit()
-    return render_template("pekl.html", keyboard=keyboard, visualKeyboard=visualKeyboard)
+    return render_template("pekl.html", layout=layout, keyboard=keyboard, visualKeyboard=visualKeyboard)
 
 @app.route("/allusers")
 def all_users():
@@ -326,10 +335,6 @@ def save_edits(board_id):
             k.location = new[key][1:]
         t[k.id] = [k.location, k.values]
         model.session.add(k)
-
-    print new, t
-    import pprint
-    pprint.pprint(model.session.dirty)
     model.session.commit()
     return redirect(url_for("edit_board", board_id=board_id))
 
@@ -364,6 +369,9 @@ def remap_keys(board_id):
     keyboard = Keyboard.query.get(board_id)
     return render_template("export.html", keyboard=keyboard)
 
+@app.route("/datavis")
+def vis():
+    return render_template("d3.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

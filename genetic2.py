@@ -38,8 +38,9 @@ def distance(l, freq):
     distance = 0
     length = 1.8
     homerow = [[28, 29, 30, 31], [34, 35, 36, 37], [50]]
-    f = freq[:(len(freq)/3)]
+
     for i in range(len(f)):
+        w = (1/(1 + i))
         krow, kcol, kh, kf = key_lhf[l.index(toIndex[f[i]])]
         hrow, hcol, hh, hf = key_lhf[homerow[kh][kf]]
         if hrow == krow and hcol == kcol:
@@ -52,7 +53,8 @@ def distance(l, freq):
             a = abs(hrow - krow)
             b = abs(hcol - kcol)
             diff = math.sqrt((a**2) + (b**2))
-        distance += length * diff
+        distance += length * (diff * w)
+
     return distance
 
 def hfmCost(h, f, m, bigrams, layout):
@@ -93,6 +95,7 @@ def findDiff(b, l):
     diff = 0
     length = 1.8
     distance = 0
+    total = 611.8387
 
     for i in range(len(qwerty)):
         qrow, qcol, qh, qf = key_lhf[i]
@@ -110,19 +113,18 @@ def findDiff(b, l):
             b = abs(qcol - col)
             diff = math.sqrt((a**2) + (b**2))
         distance += length * diff
-    return distance
+    return (distance/total)
 
 def fitness(layout, bigrams, att, freq):
     #home row proximity
     homeDist = distance(layout, freq)
 
     #optimize for hand/finger/motion attributes of fastest bigrams
-    hand, finger, motion = att
-    hfm = hfmCost(hand[0], finger[0], motion[0], bigrams, layout)
+    hfm = hfmCost(att[0][0], att[1][0], att[2][0], bigrams, layout)
 
     #qwerty similarity
-    key_cost = 100/len(qwerty)
-    learning = key_cost * findDiff(qwerty, layout)
+    learning = findDiff(qwerty, layout)
+
     cost = homeDist + hfm + learning
     return cost
 
@@ -172,16 +174,21 @@ def find_best(pool, b, prev):
         b = 0
     return prev, b
 
-# def rand_selection(s):
-#     p = []
-#     weighted = [0, 1, 2, 3, 4, 5, 5, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9]
-#     for i in range(len(s)/2):
-#         x = weighted[random.randint(0, len(weighted) - 1)]
-#         p.append(s[x])
-#         for n in weighted:
-#             if n == x:
-#                 del n
-#     return p
+def rand_selection(s):
+    p = []
+    w = []
+    for i in range(len(s)):
+        #test for range of fitness scores
+        f = (s[i][1]/10)
+        for h in f:
+            w.append(i)
+    for i in range(len(s)/2):
+        n = w[random.randint(len(w))]
+        p.append(s[n])
+        for h in w:
+            if h == n:
+                del n
+    return p
 
 def createKeyboard(opt):
     final = []

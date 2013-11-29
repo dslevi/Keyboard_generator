@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block body %}
+<script type="text/javascript" src="/static/jss/d3.vs.js"></script>
+<script type="text/javascript">
+    var dataset;
+
+    d3.json("input.json", function(error, json) {
+        if (error) {
+            console.log(error);
+        } else {
+            dataset = json;
+            generateVis();
+            hideLoadingMsg();
+        }
+    });
+
+    function generateVis(){
+        d3.select('body').selectAll('p').data(dataset).enter().append('p')
+            .text(function(d) {return d}).style("color", function(d) {
+                if (d > 15) {
+                    return "red";
+                } else {
+                    return "green";
+                }
+            });
+    }
+
+</script>
+<html>
+    <div class="bar"></div>
+</html>
+
+{% endblock %}
