@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, request, g, session, url_for, flash, jsonify
-from model import User, Analytics, Prompts, Keyboard, Key, Text
+from model import User, Analytics, Prompts, Keyboard, Key, Text, TestAnalytic
 from flask.ext.login import LoginManager, login_required, login_user, current_user
 from flaskext.markdown import Markdown
 import config
@@ -212,15 +212,21 @@ def show_analytics():
 
 @app.route("/pekl/<user_id>", methods=['POST'])
 def view_pekl(user_id):
-    fast = request.form.get('fast')
-    att = request.form.get('att')
-    keys = request.form.get('keys')
-    keys = keys[1:-1].encode("ascii", "ignore").split()
-    k = []
-    for i in keys:
-        k.append(int(i.strip(",")))
-    a = []
-    layout  = genetic2.main(fast, att, k)
+    f = request.form.get('fast')
+    a = request.form.get('att')
+    k = request.form.get('keys')
+
+    fast = json.loads(f)
+    print len(fast), len(f)
+    keys = json.loads(k)
+    print len(keys), len(k)
+
+    print a
+    
+    att = json.loads(a)
+    print len(att), len(a)
+    
+    layout  = genetic2.main(fast, att, keys)
     keystrokes = genData.parseKeystrokes(session['strokes'])
     visualKeyboard, keyboard = genData.createKeyboard(keystrokes)
     if session.get("user_id"):
@@ -372,6 +378,19 @@ def remap_keys(board_id):
 @app.route("/datavis")
 def vis():
     return render_template("d3.html")
+
+@app.route("/testanalytics/<keyboard_id>", methods=['POST'])
+def test_analytics(keyboard_id):
+    keyboard = Keyboard.query.get(keyboard_id)
+    time = request.form.get('time')
+    text = request.form.get('text')
+    mistakes = request.form.get('mistakes')
+    accuracy, wpm = genData.keyAccuracy(mistakes, text, time)
+    if (len(keyboard.tests) == 0) or (keyboard.tests[-1].accuracy != accuracy and keyboard.tests[-1].wpm != wpm):
+        a = TestAnalytic(accuracy=accuracy, wpm=wpm, keyboard_id=keyboard_id)
+        model.session.add(a)
+        model.session.commit()
+    return render_template("testanalytics.html", keyboard=keyboard)
 
 if __name__ == "__main__":
     app.run(debug=True)

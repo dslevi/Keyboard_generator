@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block body %}
+
+<h1>{{keyboard.name}}</h1><br>
+{% for k in keyboard.tests %}
+    {{k.created_at}}: {{k.wpm}}, {{k.accuracy}}<br>
+{% endfor %}
+{% endblock %}

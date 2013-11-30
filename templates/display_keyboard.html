@@ -16,11 +16,15 @@
         {% endif %}</h3>
         <h3 id="keyboard_display">{{date}}</h3>
     </div>
+    {% if session_id and session_id == keyboard.user.id %}
+    <span id="typing_timer"> </span>
+    <span id="timing"><form action="/testanalytics/{{keyboard.id}}" method="post"><input type="hidden" name="time" id="time" value=""><input type="hidden" name="text" id="text" value=""><input type="hidden" name="mistakes" id="mistakes" value=""><button type="button" id="start">Start Test</button></form></span>
+    {% endif %}
     <div id="typing_test1">
-            <span id="text_sample"><span class="texts" id="new_text"></span><span class="texts" id="old_text"></span></span><span id="text_sample2"><br><b>{{text.title}}</b> -{{text.author}}</span>
+        <span id='new_text'></span><span id='old_text'></span><br>
+        <span id='text_sample2'></span>
     </div>
-
-        <pre><div id="keyboard_text1"></div></pre>
+    <pre><div id="keyboard_text1"></div></pre>
     <div class='newKeyboard'>
         {% for key in jsonKeyboard %}
             <div class="display_key" id="{{key[0]}}">
@@ -54,6 +58,37 @@
     </div>
 
 <script>
+
+    var Timer;
+    var TotalSeconds;
+
+    function CreateTimer(TimerID, Time) {
+        Timer = document.getElementById(TimerID);
+        TotalSeconds = Time;
+
+        UpdateTimer();
+        window.setTimeout("Tick()", 1000);
+    }
+
+    function Tick() {
+        TotalSeconds++;
+        UpdateTimer()
+        window.setTimeout("Tick()", 1000);
+    }
+
+    function UpdateTimer() {
+        var Seconds = TotalSeconds;
+        var Minutes = Math.floor(Seconds/60);
+        Seconds -= (Minutes * 60);
+
+        var TimeStr = Minutes + ":" + LeadingZero(Seconds);
+        Timer.innerHTML = TimeStr;
+    }
+
+    function LeadingZero(Time) {
+        return (Time < 10) ? "0" + Time : Time;
+    }
+
     $(document).ready(function(){
         $('#add_form').submit(function(e) {
             e.preventDefault();
@@ -67,35 +102,21 @@
     var j = 0;
     var d = 0;
     var mistakes = "";
-    document.getElementById('old_text').innerHTML = {{text.content|tojson|safe}};
-    var new_text = document.getElementById('new_text');
+    
     
     function animateTyping(key, chr) {
+        var new_text = document.getElementById('new_text');
+        var old_text = document.getElementById('old_text');
         if ((chr=="DEL") & (d > 0)) {
-            var ch = new_text.innerHTML.slice(-8, -7);
-            if (ch == " ") {
-                mistakes += "SPACE" + " ";
-            } else {
-                mistakes += new_text.innerHTML.slice(-8, -7) + " ";
-            }
-            
             new_text.innerHTML = new_text.innerHTML.slice(0, -30);
             d--;
         } else if ((d == 0) & (chr == "DEL")) {
             if (j > 0) {
-                var ch = new_text.innerHTML.slice(-1);
-                if (ch == " "){
-                    mistakes += "SPACE" + " ";
-                } else {
-                    mistakes += new_text.innerHTML.slice(-1) + " ";
-                }
-                
                 old_text.innerHTML = text.slice(j - 1);
                 new_text.innerHTML = new_text.innerHTML.slice(0, -1);
                 j--;
             }
         } else if ((chr == text[j]) & (d==0)){
-            console.log(chr + " " + text[j]);
             new_text.innerHTML += text[j];
             old_text.innerHTML = old_text.innerHTML.slice(1);
             j++;
@@ -103,6 +124,11 @@
             console.log("shift");
         } else {
             d++;
+            if (chr == " ") {
+                mistakes += "SPACE" + " ";
+            } else {
+                mistakes += chr + " ";
+            }
             new_text.innerHTML += "<span class='mistake'>"+chr+"</span>";
         }
     } 
@@ -216,7 +242,9 @@
                 textarea.innerHTML += chr;
             }
         }
-        animateTyping(event.which, chr);
+        if (start) {
+            animateTyping(event.which, chr);
+        }
     }
 
     $('body').ready(function() {
@@ -256,6 +284,32 @@ var keyup_divs = {192:"A01", 49:"A02",50:"A03", 51:"A04", 52:"A05", 53:"A06", 54
         }
     });
 
+    var start = false;
+
+    $('#start').one("click", function() {
+        document.getElementById('keyboard_text1').innerHTML = "";
+        document.getElementById('keyboard_text1').style.marginTop = 0;
+        document.getElementById('start').innerHTML = "End Test";
+        var container = document.getElementById("text_sample2");
+        document.getElementById('typing_test1').style.border = "1px gray dashed";
+        var node = document.getElementById("old_text");
+        node.innerHTML += "{{text.content}}";
+        container.innerHTML += "<br><b>{{text.title}}</b> -{{text.author}}";
+        $('body').one("keydown", function(event) {
+            CreateTimer("typing_timer", 0);
+            start = true;
+            document.getElementById('start').setAttribute("type", "submit");
+            $('#start').click(function() {
+                document.getElementById('mistakes').value = mistakes;
+                if (TotalSeconds){
+                    document.getElementById('time').value = TotalSeconds;
+                } else {
+                    document.getElementById('time').value = "0";
+                }
+                document.getElementById('text').value = text.slice(0, j);
+            });
+        });
+    });
 
     </script>
 {% endblock %}

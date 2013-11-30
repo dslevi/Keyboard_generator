@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block body %}
-    <div id="text_content"><span class="texts" id="new_text"></span><span class="texts" id="old_text"></span></div> <br>
+    <div id="text_content">
+        <span class="texts" id="new_text"></span><span class="texts" id="old_text"></span>
+    </div> <br>
     <div id="text_details"><span id="text_title"><b>{{text.title}}</b></span> <span id="text_author">-{{text.author}}</span></div>
     <form method="POST", id="typing_data" action="">
         <textarea id='input2_text' cols=700 rows=10></textarea><br>

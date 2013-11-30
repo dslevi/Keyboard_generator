@@ -1,13 +1,11 @@
 {% extends "base.html" %}
 {% block body %}
-<script>
-fast = {{fast|tojson|safe}};
-console.log(fast);
-</script>
+
+{{att[4]}}
 
 <form method="POST" id="rename_form" action="/pekl/{{user_id}}">
     <input type="hidden" name="fast" value="{{fast|tojson|safe}}">
-    <input type="hidden" name="att" value="{{att[4]}}">
+    <input type="hidden" name="att" value="{{att[4]|tojson|safe}}">
     <input type="hidden" name="keys" value="{{keys|tojson|safe}}">
     <input type="submit" id="view_keyboard" value="Generate Your Keyboard">
 </form>
