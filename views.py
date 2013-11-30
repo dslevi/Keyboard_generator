@@ -114,47 +114,50 @@ def get_input2():
 
 @app.route("/analytics")
 def no_analytics():
-    if session.get('input1'):
-        strokes = session['input1']
-        input2 = session['input2']
-        keyboard = session['keyboard']
-        keystrokes = genData.parseKeystrokes(strokes)
-        freq = genData.keyFreq(keystrokes)
-        mistakes = genData.keyMistakes(keystrokes)
-        keytimes = genData.findKeytimes(keystrokes)
-        bigrams = genData.findngrams(2, keytimes)
-        trigrams = genData.findngrams(3, keytimes)
-        dwelltimes = genData.dwellTime(keytimes)
-        flighttimes = genData.flightTime(bigrams)
-        fastflights = genData.definingTimes(3, flighttimes, True)
-        fastdwell = genData.definingTimes(3, dwelltimes, True)
-        slowflights = genData.definingTimes(3, flighttimes, False)
-        slowdwell = genData.definingTimes(3, dwelltimes, False)
-        return render_template("test.html", trigrams=trigrams, dwelltimes=dwelltimes, flighttimes=flighttimes, fastflights=fastflights, fastdwell=fastdwell,
-        slowdwell=slowdwell, slowflights=slowflights, keyboard=keyboard, bigrams=bigrams, keytimes=keytimes, keystrokes=keystrokes, 
-        freq=freq, mistakes=mistakes, input2=input2)
-
     if session.get('user_id'):
-        user = User.query.filter_by(id=session['user_id']).first()
+        user = User.query.get(id=session['user_id'])
         analytics = user.analytics
+
         if len(analytics) > 0:
-            strokes = analytics[-1].input1
+            input1 = analytics[-1].input1
             input2 = analytics[-1].input2
-            keystrokes = genData.parseKeystrokes(strokes)
+            mistakes = analytics[-1].mistakes
+
+            keystrokes = genData.parseKeystrokes(input1)
             freq = genData.keyFreq(keystrokes)
-            mistakes = genData.keyMistakes(keystrokes)
+            keys = genData.makeKeys(keystrokes)
             keytimes = genData.findKeytimes(keystrokes)
-            bigrams = genData.findngrams(2, keytimes)
-            trigrams = genData.findngrams(3, keytimes)
+            hands, fingers = genData.handFingerFreq(keytimes)
+            distance = genData.distance(keytimes)
+
             dwelltimes = genData.dwellTime(keytimes)
+            fastdwell = genData.definingTimes(3, dwelltimes, True)
+            slowdwell = genData.definingTimes(3, dwelltimes, False)
+
+            bigrams = genData.findngrams(2, keytimes)
+            freqbigrams = ""
+            bigramtimes = genData.ngramTimes(bigrams)
+            fastbigrams = genData.definingTimes(4, bigramtimes, True)
+            slowbigrams = genData.definingTimes(4, bigramtimes, False)
+            biAtt = genData.biAttributes(bigrams)
+            fast = genData.fastestTimes(len(bigramtimes)/2, bigramtimes)
+            att = genData.definingAtt(biAtt[3])
+
             flighttimes = genData.flightTime(bigrams)
             fastflights = genData.definingTimes(3, flighttimes, True)
-            fastdwell = genData.definingTimes(3, dwelltimes, True)
             slowflights = genData.definingTimes(3, flighttimes, False)
-            slowdwell = genData.definingTimes(3, dwelltimes, False)
-            return render_template("test.html", trigrams=trigrams, dwelltimes=dwelltimes, flighttimes=flighttimes, fastflights=fastflights, fastdwell=fastdwell,
-            slowdwell=slowdwell, slowflights=slowflights, keyboard=keyboard, bigrams=bigrams, keytimes=keytimes, keystrokes=keystrokes, 
-            freq=freq, mistakes=mistakes)   
+
+            mistakes = genData.keyMistakes(m)
+            mostmistakes = genData.definingTimes(3, mistakes, True)
+            leastmistakes = genData.definingTimes(3, mistakes, False)
+            accuracy, wpm = genData.keyAccuracy(request.form.get("mistakes"), request.form.get("text"), request.form.get("time"))
+
+            return render_template("test.html", fastflights=fastflights, fastdwell=fastdwell,
+                slowdwell=slowdwell, slowflights=slowflights, freqbigrams=freqbigrams,
+                freq=freq, fastbigrams=fastbigrams, slowbigrams=slowbigrams,
+                mostmistakes=mostmistakes, leastmistakes=leastmistakes, biAtt=biAtt, att=att, keys=keys, fast=fast,
+                accuracy=accuracy, wpm=wpm, hands=hands, fingers=fingers, distance=distance)
+
     return render_template("no_analytics.html")
 
 def genName():
@@ -163,52 +166,49 @@ def genName():
 
 @app.route("/analytics", methods=["POST"])
 def show_analytics():
-    strokes = request.form.get("input1")
-    session['strokes'] = strokes
+    input1 = request.form.get("input1")
     input2 = request.form.get("input2")
-    session['input2'] = input2
-    keystrokes = genData.parseKeystrokes(strokes)
+    m = request.form.get("mistakes")
+
+    keystrokes = genData.parseKeystrokes(input1)
     freq = genData.keyFreq(keystrokes)
-    mistakes = genData.keyMistakes(request.form.get("mistakes"))
+    keys = genData.makeKeys(keystrokes)
+    keytimes = genData.findKeytimes(keystrokes)
+    hands, fingers = genData.handFingerFreq(keytimes)
+    distance = genData.distance(keytimes)
+
+    dwelltimes = genData.dwellTime(keytimes)
+    fastdwell = genData.definingTimes(3, dwelltimes, True)
+    slowdwell = genData.definingTimes(3, dwelltimes, False)
+
+    bigrams = genData.findngrams(2, keytimes)
+    freqbigrams = ""
+    bigramtimes = genData.ngramTimes(bigrams)
+    fastbigrams = genData.definingTimes(4, bigramtimes, True)
+    slowbigrams = genData.definingTimes(4, bigramtimes, False)
+    biAtt = genData.biAttributes(bigrams)
+    fast = genData.fastestTimes(len(bigramtimes)/2, bigramtimes)
+    att = genData.definingAtt(biAtt[3])
+
+    flighttimes = genData.flightTime(bigrams)
+    fastflights = genData.definingTimes(3, flighttimes, True)
+    slowflights = genData.definingTimes(3, flighttimes, False)
+
+    mistakes = genData.keyMistakes(m)
     mostmistakes = genData.definingTimes(3, mistakes, True)
     leastmistakes = genData.definingTimes(3, mistakes, False)
     accuracy, wpm = genData.keyAccuracy(request.form.get("mistakes"), request.form.get("text"), request.form.get("time"))
-    keytimes = genData.findKeytimes(keystrokes)
-    bigrams = genData.findngrams(2, keytimes)
-    trigrams = genData.findngrams(3, keytimes)
-    dwelltimes = genData.dwellTime(keytimes)
-    flighttimes = genData.flightTime(bigrams)
-    
-    fastflights = genData.definingTimes(3, flighttimes, True)
-    fastdwell = genData.definingTimes(3, dwelltimes, True)
-    slowflights = genData.definingTimes(3, flighttimes, False)
-    slowdwell = genData.definingTimes(3, dwelltimes, False)
-    bigramtimes = genData.ngramTimes(bigrams)
-    trigramtimes = genData.ngramTimes(trigrams)
-    fastbigrams = genData.definingTimes(4, bigramtimes, True)
-    slowbigrams = genData.definingTimes(4, bigramtimes, False)
-    fasttrigrams = genData.definingTimes(4, trigramtimes, True)
-    slowtrigrams = genData.definingTimes(4, trigramtimes, False)
-    hands, fingers = genData.handFingerFreq(keytimes)
-    distance = genData.distance(keytimes)
-    biAtt = genData.biAttributes(bigrams)
-
-    fast = genData.fastestTimes(len(bigramtimes)/2, bigramtimes)
-    att = genData.definingAtt(biAtt[3])
-    keys = genData.makeKeys(keystrokes)
 
     if session.get("user_id"):
         user_id = session['user_id']
-        # new_a = Analytics(input1=strokes, input2=input2, user_id=user_id)
-        # model.session.add(new_a)
-        # model.session.commit()
-    else:
-        user_id=0
-    return render_template("test.html", trigrams=trigrams, dwelltimes=dwelltimes, flighttimes=flighttimes, fastflights=fastflights, fastdwell=fastdwell,
-        slowdwell=slowdwell, slowflights=slowflights,bigrams=bigrams, keytimes=keytimes, keystrokes=keystrokes,
-        freq=freq, mistakes=mistakes, bigramtimes=bigramtimes, trigramtimes=trigramtimes, fastbigrams=fastbigrams, slowbigrams=slowbigrams,
-        fasttrigrams=fasttrigrams, mostmistakes=mostmistakes, leastmistakes=leastmistakes, biAtt=biAtt, att=att, keys=keys, fast=fast,
-        slowtrigrams=slowtrigrams, accuracy=accuracy, wpm=wpm, hands=hands, fingers=fingers, distance=distance, user_id=user_id)
+        new_a = Analytics(input1=input1, input2=input2, user_id=user_id, mistakes=m)
+        model.session.add(new_a)
+        model.session.commit()
+
+    return render_template("test.html", fastflights=fastflights, fastdwell=fastdwell,
+        slowdwell=slowdwell, slowflights=slowflights, freqbigrams=freqbigrams, 
+        freq=freq, fastbigrams=fastbigrams, slowbigrams=slowbigrams, mostmistakes=mostmistakes, leastmistakes=leastmistakes, 
+        biAtt=biAtt, att=att, keys=keys, fast=fast, accuracy=accuracy, wpm=wpm, hands=hands, fingers=fingers, distance=distance)
 
 @app.route("/genetic/")
 def genetic():
