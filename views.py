@@ -210,17 +210,26 @@ def show_analytics():
         fasttrigrams=fasttrigrams, mostmistakes=mostmistakes, leastmistakes=leastmistakes, biAtt=biAtt, att=att, keys=keys, fast=fast,
         slowtrigrams=slowtrigrams, accuracy=accuracy, wpm=wpm, hands=hands, fingers=fingers, distance=distance, user_id=user_id)
 
+@app.route("/genetic/<user_id>")
+def genetic(user_id):
+    f = request.args.get('f')
+    a = request.args.get('a')
+    k = request.args.get('k')
+
+    fast = json.loads(f)
+    keys = json.loads(k)
+    att = json.loads(a)
+
+    layout  = genetic2.main(fast, att, keys)
+
+    return jsonify(result=layout)
+
 @app.route("/pekl/<user_id>", methods=['POST'])
 def view_pekl(user_id):
     f = request.form.get('fast')
     a = request.form.get('att')
     k = request.form.get('keys')
 
-    fast = json.loads(f)
-    keys = json.loads(k)
-    att = json.loads(a)
-    
-    layout  = genetic2.main(fast, att, keys)
     keystrokes = genData.parseKeystrokes(session['strokes'])
     visualKeyboard, keyboard = genData.createKeyboard(keystrokes)
     if session.get("user_id"):
@@ -235,7 +244,8 @@ def view_pekl(user_id):
             key.code = qwerty_key.code
             new_k.keys.append(key)
         model.session.commit()
-    return render_template("pekl.html", layout=layout, keyboard=keyboard, visualKeyboard=visualKeyboard)
+
+    return render_template("pekl.html", f=f, a=a, k=k, user_id=user_id, keyboard=keyboard, visualKeyboard=visualKeyboard)
 
 @app.route("/allusers")
 def all_users():

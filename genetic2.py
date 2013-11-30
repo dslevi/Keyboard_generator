@@ -39,21 +39,22 @@ def distance(l, freq):
     length = 1.8
     homerow = [[28, 29, 30, 31], [34, 35, 36, 37], [50]]
 
-    for i in range(len(f)):
-        w = (1/(1 + i))
-        krow, kcol, kh, kf = key_lhf[l.index(toIndex[f[i]])]
-        hrow, hcol, hh, hf = key_lhf[homerow[kh][kf]]
-        if hrow == krow and hcol == kcol:
-            diff = 0
-        elif hrow == krow:
-            diff = abs(hcol - kcol)
-        elif hcol == kcol:
-            diff = abs(hrow - krow)
-        else:
-            a = abs(hrow - krow)
-            b = abs(hcol - kcol)
-            diff = math.sqrt((a**2) + (b**2))
-        distance += length * (diff * w)
+    for i in range(len(freq)):
+        if freq[i] != 16:
+            w = (1/(1 + i))
+            krow, kcol, kh, kf = key_lhf[l.index(toIndex[freq[i]])]
+            hrow, hcol, hh, hf = key_lhf[homerow[kh][kf]]
+            if hrow == krow and hcol == kcol:
+                diff = 0
+            elif hrow == krow:
+                diff = abs(hcol - kcol)
+            elif hcol == kcol:
+                diff = abs(hrow - krow)
+            else:
+                a = abs(hrow - krow)
+                b = abs(hcol - kcol)
+                diff = math.sqrt((a**2) + (b**2))
+            distance += length * (diff * w)
 
     return distance
 
@@ -124,7 +125,6 @@ def fitness(layout, bigrams, att, freq):
 
     #qwerty similarity
     learning = findDiff(qwerty, layout)
-
     cost = homeDist + hfm + learning
     return cost
 

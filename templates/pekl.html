@@ -1,55 +1,106 @@
 {% extends "base.html" %}
 {% block body %}
-    {{layout}}
-    <h1 id="test">New Keyboard</h1><br>
-    <pre><div id="remapped_text"></div></pre>
-    <div class='newKeyboard'>
-        {% for key in visualKeyboard %}
-            <div class="block" id="{{key[0]}}">
-                {% for values in key %}
-                    {% if loop.index == 2 %}
-                        {% if values|length == 2%}
-                            {% for value in values %}
-                                {{value}} <br>
-                            {% endfor %}
-                        {% else %}
-                            {{values}}
+        <div id="loading">
+            <div class="c"><div class="l" id="l1">L</div></div>
+            <div class="c"><div id="l2" class="l">O</div></div>
+            <div class="c"><div id="l3" class="l">A</div></div>
+            <div class="c"><div id="l4" class="l">D</div></div>
+            <div class="c"><div id="l5" class="l">I</div></div>
+            <div class="c"><div id="l6" class="l">N</div></div>
+            <div class="c"><div id="l7" class="l">G</div></div>
+            <div class="c"><div id="l8" class="l">...</div></div>
+        </div>
+        <h1 id="test">New Keyboard</h1><br>
+        <pre><div id="remapped_text"></div></pre>
+        <div class='newKeyboard'>
+            {% for key in visualKeyboard %}
+                <div class="block" id="{{key[0]}}">
+                    {% for values in key %}
+                        {% if loop.index == 2 %}
+                            {% if values|length == 2%}
+                                {% for value in values %}
+                                    {{value}} <br>
+                                {% endfor %}
+                            {% else %}
+                                {{values}}
+                            {% endif %}
                         {% endif %}
-                    {% endif %}
-                {% endfor %}
-            </div>
-            {% if key[0]=="B14" %}
-                <div class="block" id="C01">CAPS</div>
-            {% elif key[0]=="C13"%}
-                <div class="block" id="D01">SHIFT</div>
-            {% elif key[0]=="D11"%}
-                <div class="block" id="D12">SHIFT</div>
-                <div class="block" id="E01">CONTROL</div>
-                <div class="block" id="E02">SUPER</div>
-                <div class="block" id="E03">ALT</div>
-            {% elif key[0]=="E04" %}
-                <div class="block" id="E05">ALT</div>
-                <div class="block" id="E06">SUPER</div>
-                <div class="block" id="E07">META</div>
-                <div class="block" id="E08">CONTROL</div>
-            {% endif %}
-        {% endfor %}
-    </div>
-
+                    {% endfor %}
+                </div>
+                {% if key[0]=="B14" %}
+                    <div class="block" id="C01">CAPS</div>
+                {% elif key[0]=="C13"%}
+                    <div class="block" id="D01">SHIFT</div>
+                {% elif key[0]=="D11"%}
+                    <div class="block" id="D12">SHIFT</div>
+                    <div class="block" id="E01">CONTROL</div>
+                    <div class="block" id="E02">SUPER</div>
+                    <div class="block" id="E03">ALT</div>
+                {% elif key[0]=="E04" %}
+                    <div class="block" id="E05">ALT</div>
+                    <div class="block" id="E06">SUPER</div>
+                    <div class="block" id="E07">META</div>
+                    <div class="block" id="E08">CONTROL</div>
+                {% endif %}
+            {% endfor %}
+        </div>
     <script>
-    //PLACEMENT ANIMATION
 
-    var randNumMin = 550;
-    var randNumMax = 2100;
+    function loading() {
+        $(".l").each(function(index) {
+            $(this).delay(200 + (200 * index)).fadeToggle(200);
+        });
+        setTimeout(loading, 2000);
+    }
 
-    $(document).ready(function() {
-        $(function() {
-            $('.block').each(function(i) {
-                $(this).delay((Math.floor(Math.random() * (randNumMax - randNumMin + 1)) + randNumMin)).fadeTo(30, 1); })
+    var ready = false;
+    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+
+    //AJAX - genetic algo generates layout
+    $(function() {
+        $(document).ready(function() {
+            loading();
+          $.getJSON('/genetic/{{user_id}}', {
+            f: {{f|tojson|safe}},
+            k: {{k|tojson|safe}},
+            a: {{a|tojson|safe}}
+          }, function(data) {
+            // document.getElementById('genetic').innerHTML = data.result;
+            $('#loading').fadeOut();
+            cycle = false;
+            ready = true;
+            console.log(data.result);
+
+            var keyboard = {{keyboard|tojson|safe}};
+            var visual_value = {};
+
+            for (var i =0; i < keyboard.length; i++) {
+                for (var h=0; h < keyboard[i].length; h++) {
+                    if (h % 3 == 0) {
+                        visual_value[keyboard[i][h]] = [];
+                        var value1 = keyboard[i][h + 1][0];
+                        var value2 = keyboard[i][h + 1][1];
+                        if (value1 == "SPACE") {
+                            value1 = " ";
+                            value2 = value1;
+                        } else if (value1 == "TAB") {
+                            value1 = "    ";
+                            value2 = value1;
+                        } else if (value1 == "ENTER") {
+                            value1 = "<br>";
+                            value2 = value1;
+                        }
+                        visual_value[keyboard[i][h]].push(value1);
+                        visual_value[keyboard[i][h]].push(value2);
+                    }
+                }
+            }
+          });
+          return false;
         });
     });
 
-    // //KEYPRESS ANIMATIONS
+    //KEYPRESS ANIMATIONS
     var keys = {192:"A01", 49:"A02", 50:"A03", 51:"A04", 52:"A05", 53:"A06", 54:"A07", 55:"A08", 56:"A09", 57:"A10", 48:"A11", 189:"A12", 187:"A13", 8:"A14", 
             9:"B01", 81:"B02", 87:"B03", 69:"B04", 82:"B05", 84:"B06", 89:"B07", 85:"B08", 73:"B09", 79:"B10", 80:"B11", 219:"B12", 221:"B13", 220:"B14", 
             20:"C01", 65:"C02", 83:"C03", 68:"C04", 70:"C05", 71:"C06", 72:'C07', 74:'C08', 75:'C09', 76:'C10',  186:"C11", 222:'C12', 13:"C13", 
@@ -59,70 +110,46 @@
     //makes assumption that caps lock default state is off
     var caps_on = false;
     var shift_on = false;
-
-    var keyboard = {{keyboard|tojson|safe}};
-    var visual_value = {};
-
-    for (var i =0; i < keyboard.length; i++) {
-        for (var h=0; h < keyboard[i].length; h++) {
-            if (h % 3 == 0) {
-                visual_value[keyboard[i][h]] = [];
-                var value1 = keyboard[i][h + 1][0];
-                var value2 = keyboard[i][h + 1][1];
-                if (value1 == "SPACE") {
-                    value1 = " ";
-                    value2 = value1;
-                } else if (value1 == "TAB") {
-                    value1 = "    ";
-                    value2 = value1;
-                } else if (value1 == "ENTER") {
-                    value1 = "<br>";
-                    value2 = value1;
-                }
-                visual_value[keyboard[i][h]].push(value1);
-                visual_value[keyboard[i][h]].push(value2);
-            }
-        }
-    }
     
-    $('body').keydown(function (event) {
-        var textarea = document.getElementById('remapped_text');
-        //if shift, return shifted value
-        if (event.which == 20) {
-            if (caps_on) {
-                document.getElementById('C01').style.backgroundColor="212121";
+    if (ready) {
+        $('body').keydown(function (event) {
+            var textarea = document.getElementById('remapped_text');
+            //if shift, return shifted value
+            if (event.which == 20) {
+                if (caps_on) {
+                    document.getElementById('C01').style.backgroundColor="212121";
+                } else {
+                    document.getElementById('C01').style.backgroundColor="orange"; 
+                }
+                caps_on = !caps_on;
+            } else if (event.which == 16) {
+                shift_on = true;
+                document.getElementById('D01').style.backgroundColor="orange";
+                document.getElementById('D12').style.backgroundColor="orange";
             } else {
-                document.getElementById('C01').style.backgroundColor="orange"; 
+                var key = document.getElementById(keys[event.which]);
+                key.style.backgroundColor="orange";
+                if (visual_value[keys[event.which]][0] == 'DELETE') {
+                    textarea.innerHTML = textarea.innerHTML.slice(0, -1);
+                } else if ((caps_on) || (shift_on)) {
+                    textarea.innerHTML += visual_value[keys[event.which]][1];
+                } else {
+                    textarea.innerHTML += visual_value[keys[event.which]][0];
+                }
             }
-            caps_on = !caps_on;
-        } else if (event.which == 16) {
-            shift_on = true;
-            document.getElementById('D01').style.backgroundColor="orange";
-            document.getElementById('D12').style.backgroundColor="orange";
-        } else {
-            var key = document.getElementById(keys[event.which]);
-            key.style.backgroundColor="orange";
-            if (visual_value[keys[event.which]][0] == 'DELETE') {
-                textarea.innerHTML = textarea.innerHTML.slice(0, -1);
-            } else if ((caps_on) || (shift_on)) {
-                textarea.innerHTML += visual_value[keys[event.which]][1];
-            } else {
-                textarea.innerHTML += visual_value[keys[event.which]][0];
+        });
+
+        $('body').keyup(function (event) {
+            if (event.which == 16) {
+                shift_on = false;
+                document.getElementById('D01').style.backgroundColor="212121";
+                document.getElementById('D12').style.backgroundColor="212121";
+            } else if (event.which != 20) {
+                var key = document.getElementById(keys[event.which]);
+                key.style.backgroundColor="212121";
             }
-        }
-    });
-
-    $('body').keyup(function (event) {
-        if (event.which == 16) {
-            shift_on = false;
-            document.getElementById('D01').style.backgroundColor="212121";
-            document.getElementById('D12').style.backgroundColor="212121";
-        } else if (event.which != 20) {
-            var key = document.getElementById(keys[event.which]);
-            key.style.backgroundColor="212121";
-        }
-    });
-
+        });
+    }
 
     </script>
 {% endblock %}
