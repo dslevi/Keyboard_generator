@@ -25,6 +25,7 @@
     }
 
     var ready = false;
+
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 
     //AJAX - genetic algo generates layout
@@ -40,7 +41,7 @@
             $('#loading').fadeOut();
             ready = true;
             var keyboard = data.result;
-            console.log(keyboard);
+   
             makeKeyboard(keyboard);
             makeValues(keyboard);
           });
@@ -117,8 +118,8 @@
     var caps_on = false;
     var shift_on = false;
     
-    if (ready) {
-        $('body').keydown(function (event) {
+    $('body').keydown(function (event) {
+        if (ready) {
             var textarea = document.getElementById('remapped_text');
             //if shift, return shifted value
             if (event.which == 20) {
@@ -143,9 +144,11 @@
                     textarea.innerHTML += visual_value[keys[event.which]][0];
                 }
             }
-        });
+        }
+    });
 
-        $('body').keyup(function (event) {
+    $('body').keyup(function (event) {
+        if (ready) {
             if (event.which == 16) {
                 shift_on = false;
                 document.getElementById('D01').style.backgroundColor="212121";
@@ -154,8 +157,8 @@
                 var key = document.getElementById(keys[event.which]);
                 key.style.backgroundColor="212121";
             }
-        });
-    }
-
+        }
+    });
+  
     </script>
 {% endblock %}
