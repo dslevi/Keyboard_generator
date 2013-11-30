@@ -217,14 +217,8 @@ def view_pekl(user_id):
     k = request.form.get('keys')
 
     fast = json.loads(f)
-    print len(fast), len(f)
     keys = json.loads(k)
-    print len(keys), len(k)
-
-    print a
-    
     att = json.loads(a)
-    print len(att), len(a)
     
     layout  = genetic2.main(fast, att, keys)
     keystrokes = genData.parseKeystrokes(session['strokes'])

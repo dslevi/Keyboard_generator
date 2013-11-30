@@ -324,11 +324,11 @@ def findAtt(l):
         att[2][e[5]] += 1
     if total > 0:
         for i in range(len(att[0])):
-            att[0][i] = "%.2f" % ((att[0][i]/float(total)) * 100)
+            att[0][i] =  ((att[0][i]/float(total)) * 100)
         for i in range(len(att[1])):
-            att[1][i] = "%.2f" % ((att[1][i]/float(total)) * 100)
+            att[1][i] = ((att[1][i]/float(total)) * 100)
         for i in range(len(att[2])):
-            att[2][i] = "%.2f" % ((att[2][i]/float(total)) * 100)
+            att[2][i] = ((att[2][i]/float(total)) * 100)
     return att
 
 def wordAtt(l):
