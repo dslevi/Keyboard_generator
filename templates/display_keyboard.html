@@ -287,14 +287,13 @@ var keyup_divs = {192:"A01", 49:"A02",50:"A03", 51:"A04", 52:"A05", 53:"A06", 54
     var start = false;
 
     $('#start').one("click", function() {
+        document.getElementById('typing_timer').innerHTML = "0:00"
         document.getElementById('keyboard_text1').innerHTML = "";
-        document.getElementById('keyboard_text1').style.marginTop = 0;
         document.getElementById('start').innerHTML = "End Test";
-        var container = document.getElementById("text_sample2");
-        document.getElementById('typing_test1').style.border = "1px gray dashed";
+        document.getElementById('typing_test1').style.border = "1px #E6E6E6 solid";
         var node = document.getElementById("old_text");
         node.innerHTML += "{{text.content}}";
-        container.innerHTML += "<br><b>{{text.title}}</b> -{{text.author}}";
+        document.getElementById("text_sample2").innerHTML += "<br>'{{text.title}}' - {{text.author}}";
         $('body').one("keydown", function(event) {
             CreateTimer("typing_timer", 0);
             start = true;
