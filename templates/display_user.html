@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 {% block body %}
-    <center>
     <h1 id="name">{{user.name}}</h1><br>
-    </center>
     {% if user.keyboard %}
         {% for board in user.keyboard %}
             <div id="info">

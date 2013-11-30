@@ -6,7 +6,7 @@
 
 .newKeyboard{
     padding: 5px;
-    padding-bottom: 50px;
+    padding-bottom: 500px;
 }
 
 #keyboard_name{
@@ -63,7 +63,7 @@
 }
 
 #rename_form{
-    margin-bottom: 0px;
+    margin-right: 90px;
 }
 
 #keyboard_text{
@@ -316,15 +316,6 @@ pre{
     color:red;
 }
 
-#snaptarget{
-    width:800px;
-    height:180px;
-    margin-top:400px;
-    margin-left: 50px;
-    padding-left: 30px;
-    background-color: gray;
-}
-
 .droppedel{
     background-color: orange;
 }
@@ -394,8 +385,8 @@ pre{
 
 #edit_keyboard{
     position:relative;
-    margin-top: -140px;
-    margin-left: -20px;
+    margin-top: -195px;
+    margin-left: -70px;
 }
 
 .editable{
@@ -445,11 +436,11 @@ pre{
 }
 
 #eB01{
-    width: 70px;
+    width: 68px;
 }
 
 #dB01{
-    width: 67px;
+    width: 65px;
 }
 
 #eA14{
@@ -461,23 +452,23 @@ pre{
 }
 
 #eB14{
-    width: 69px;
-}
-
-#dB14{
     width: 67px;
 }
 
+#dB14{
+    width: 65px;
+}
+
 #eC01{
-    width: 97px;
+    width: 96px;
 }
 
 #eD01{
-    width: 128px;
+    width: 127px;
 }
 
 #eD12{
-    width: 129px;
+    width: 128px;
 }
 
 #eE01{
@@ -610,6 +601,12 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
     display: inline-block;
     width:70px;
     height:0px;
+}
+
+#save_edits{
+    float:right;
+    margin-top: -51px;
+    margin-right: 50px;
 }
 
 

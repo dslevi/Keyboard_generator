@@ -221,21 +221,23 @@ def genetic():
     att = json.loads(a)
 
     layout  = genetic2.main(fast, att, keys)
+    l = layout[0][0]
 
-    # if session.get("user_id"):
-    #     new_k = Keyboard(name=genName(), user_id=session['user_id'])
-    #     model.session.add(new_k)
-    #     for i in range(len(new_k)):
-    #         key = Key(kb_id=new_k.id)
-    #         key.location = new_k[i][0]
-    #         key.values = new_k[i][1][0] + " " + new_k[i][1][1]
-    #         qwerty_key = Key.query.get(i + 1)
-    #         key.code = qwerty_key.code
-    #         model.session.add(key)
-    #         new_k.keys.append(key)
-    #     model.session.commit()
+    if session.get("user_id"):
+        new_k = Keyboard(name=genName(), user_id=session['user_id'])
+        model.session.add(new_k)
+        for i in range(len(l)):
+            print l[i]
+            key = Key(kb_id=new_k.id)
+            key.location = l[i][0]
+            key.values = l[i][1][0] + " " + l[i][1][1]
+            qwerty_key = Key.query.get(i + 1)
+            key.code = qwerty_key.code
+            model.session.add(key)
+            new_k.keys.append(key)
+        model.session.commit()
 
-    return jsonify(result=layout[0][0])
+    return jsonify(result=l)
 
 @app.route("/pekl", methods=['POST'])
 def view_pekl():
