@@ -10,47 +10,18 @@
             <div class="c"><div id="l7" class="l">G</div></div>
             <div class="c"><div id="l8" class="l">...</div></div>
         </div>
-        <h1 id="test">New Keyboard</h1><br>
-        <pre><div id="remapped_text"></div></pre>
-        <div class='newKeyboard'>
-            {% for key in visualKeyboard %}
-                <div class="block" id="{{key[0]}}">
-                    {% for values in key %}
-                        {% if loop.index == 2 %}
-                            {% if values|length == 2%}
-                                {% for value in values %}
-                                    {{value}} <br>
-                                {% endfor %}
-                            {% else %}
-                                {{values}}
-                            {% endif %}
-                        {% endif %}
-                    {% endfor %}
-                </div>
-                {% if key[0]=="B14" %}
-                    <div class="block" id="C01">CAPS</div>
-                {% elif key[0]=="C13"%}
-                    <div class="block" id="D01">SHIFT</div>
-                {% elif key[0]=="D11"%}
-                    <div class="block" id="D12">SHIFT</div>
-                    <div class="block" id="E01">CONTROL</div>
-                    <div class="block" id="E02">SUPER</div>
-                    <div class="block" id="E03">ALT</div>
-                {% elif key[0]=="E04" %}
-                    <div class="block" id="E05">ALT</div>
-                    <div class="block" id="E06">SUPER</div>
-                    <div class="block" id="E07">META</div>
-                    <div class="block" id="E08">CONTROL</div>
-                {% endif %}
-            {% endfor %}
-        </div>
+            <h1 id="test">New Keyboard</h1><br>
+            <pre><div id="remapped_text"></div></pre>
+            <div id='newKeyboard'></div>
     <script>
+
+    var load;
 
     function loading() {
         $(".l").each(function(index) {
             $(this).delay(200 + (200 * index)).fadeToggle(200);
         });
-        setTimeout(loading, 2000);
+        load = setTimeout(loading, 2000);
     }
 
     var ready = false;
@@ -60,45 +31,80 @@
     $(function() {
         $(document).ready(function() {
             loading();
-          $.getJSON('/genetic/{{user_id}}', {
+          $.getJSON('/genetic/', {
             f: {{f|tojson|safe}},
             k: {{k|tojson|safe}},
             a: {{a|tojson|safe}}
           }, function(data) {
-            // document.getElementById('genetic').innerHTML = data.result;
+            clearTimeout(load);
             $('#loading').fadeOut();
-            cycle = false;
             ready = true;
-            console.log(data.result);
-
-            var keyboard = {{keyboard|tojson|safe}};
-            var visual_value = {};
-
-            for (var i =0; i < keyboard.length; i++) {
-                for (var h=0; h < keyboard[i].length; h++) {
-                    if (h % 3 == 0) {
-                        visual_value[keyboard[i][h]] = [];
-                        var value1 = keyboard[i][h + 1][0];
-                        var value2 = keyboard[i][h + 1][1];
-                        if (value1 == "SPACE") {
-                            value1 = " ";
-                            value2 = value1;
-                        } else if (value1 == "TAB") {
-                            value1 = "    ";
-                            value2 = value1;
-                        } else if (value1 == "ENTER") {
-                            value1 = "<br>";
-                            value2 = value1;
-                        }
-                        visual_value[keyboard[i][h]].push(value1);
-                        visual_value[keyboard[i][h]].push(value2);
-                    }
-                }
-            }
+            var keyboard = data.result;
+            console.log(keyboard);
+            makeKeyboard(keyboard);
+            makeValues(keyboard);
           });
           return false;
         });
     });
+
+    var visual_value = {};
+
+    function makeValues(keyboard) {
+        for (var i =0; i < keyboard.length; i++) {
+            for (var h=0; h < keyboard[i].length; h++) {
+                if (h % 3 == 0) {
+                    visual_value[keyboard[i][h]] = [];
+                    var value1 = keyboard[i][h + 1][0];
+                    var value2 = keyboard[i][h + 1][1];
+                    if (value1 == "SPACE") {
+                        value1 = " ";
+                        value2 = value1;
+                    } else if (value1 == "TAB") {
+                        value1 = "    ";
+                        value2 = value1;
+                    } else if (value1 == "ENTER") {
+                        value1 = "<br>";
+                        value2 = value1;
+                    }
+                    visual_value[keyboard[i][h]].push(value1);
+                    visual_value[keyboard[i][h]].push(value2);
+                }
+            }
+        }
+    }
+
+    function makeKeyboard(kb) {
+        for (var i = 0; i < kb.length; i ++) {
+            var location = kb[i][0]
+            var val1 = kb[i][1][1]
+            if ((val1 == "~") || (val1 == "!") || (val1 == "@") || (val1 == "#") || (val1 == "$") || (val1 == "%") ||
+                (val1 == "^") || (val1 == "&") || (val1 == "*") || (val1 == "(") || (val1 == ")") || (val1 == "_") ||
+                (val1 == "+") || (val1 == "{") || (val1 == "}") || (val1 == "|") || (val1 == ":") || (val1 == '"') ||
+                (val1 == "<") || (val1 == ">") || (val1 == "?")) {
+                var val2 = "<br>" + kb[i][1][0]
+            } else {
+                var val2 = ""
+            }
+            $('#newKeyboard').append("<div class='key' id=" + location + ">" + val1 + val2 + "</div>");
+
+            if (location == "B14") {
+                $('#newKeyboard').append("<div class='key' id='C01'>CAPS</div>");
+            } else if (location == "C13") {
+                $('#newKeyboard').append("<div class='key' id='D01'>SHIFT</div>");
+            } else if (location == "D11") {
+                $('#newKeyboard').append("<div class='key' id='D12'>SHIFT</div>");
+                $('#newKeyboard').append("<div class='key' id='E01'>CONTROL</div>");
+                $('#newKeyboard').append("<div class='key' id='E02'>SUPER</div>");
+                $('#newKeyboard').append("<div class='key' id='E03'>ALT</div>");
+            } else if (location == "E04") {
+                $('#newKeyboard').append("<div class='key' id='E05'>ALT</div>");
+                $('#newKeyboard').append("<div class='key' id='E06'>SUPER</div>");
+                $('#newKeyboard').append("<div class='key' id='E07'>META</div>");
+                $('#newKeyboard').append("<div class='key' id='E08'>CONTROL</div>");
+            }
+        }
+    }
 
     //KEYPRESS ANIMATIONS
     var keys = {192:"A01", 49:"A02", 50:"A03", 51:"A04", 52:"A05", 53:"A06", 54:"A07", 55:"A08", 56:"A09", 57:"A10", 48:"A11", 189:"A12", 187:"A13", 8:"A14", 

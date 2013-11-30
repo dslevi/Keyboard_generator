@@ -210,8 +210,8 @@ def show_analytics():
         fasttrigrams=fasttrigrams, mostmistakes=mostmistakes, leastmistakes=leastmistakes, biAtt=biAtt, att=att, keys=keys, fast=fast,
         slowtrigrams=slowtrigrams, accuracy=accuracy, wpm=wpm, hands=hands, fingers=fingers, distance=distance, user_id=user_id)
 
-@app.route("/genetic/<user_id>")
-def genetic(user_id):
+@app.route("/genetic/")
+def genetic():
     f = request.args.get('f')
     a = request.args.get('a')
     k = request.args.get('k')
@@ -222,30 +222,27 @@ def genetic(user_id):
 
     layout  = genetic2.main(fast, att, keys)
 
-    return jsonify(result=layout)
+    # if session.get("user_id"):
+    #     new_k = Keyboard(name=genName(), user_id=session['user_id'])
+    #     model.session.add(new_k)
+    #     for i in range(len(new_k)):
+    #         key = Key(kb_id=new_k.id)
+    #         key.location = new_k[i][0]
+    #         key.values = new_k[i][1][0] + " " + new_k[i][1][1]
+    #         qwerty_key = Key.query.get(i + 1)
+    #         key.code = qwerty_key.code
+    #         model.session.add(key)
+    #         new_k.keys.append(key)
+    #     model.session.commit()
 
-@app.route("/pekl/<user_id>", methods=['POST'])
-def view_pekl(user_id):
+    return jsonify(result=layout[0][0])
+
+@app.route("/pekl", methods=['POST'])
+def view_pekl():
     f = request.form.get('fast')
     a = request.form.get('att')
     k = request.form.get('keys')
-
-    keystrokes = genData.parseKeystrokes(session['strokes'])
-    visualKeyboard, keyboard = genData.createKeyboard(keystrokes)
-    if session.get("user_id"):
-        user_id = session['user_id']
-        new_k = Keyboard(name=genName(), user_id=user_id)
-        model.session.add(new_k)
-        for i in range(len(keyboard)):
-            key = Key(kb_id=new_k.id)
-            key.location = keyboard[i][0]
-            key.values = keyboard[i][1][0] + " " + keyboard[i][1][1]
-            qwerty_key = Key.query.get(i + 1)
-            key.code = qwerty_key.code
-            new_k.keys.append(key)
-        model.session.commit()
-
-    return render_template("pekl.html", f=f, a=a, k=k, user_id=user_id, keyboard=keyboard, visualKeyboard=visualKeyboard)
+    return render_template("pekl.html", f=f, a=a, k=k)
 
 @app.route("/allusers")
 def all_users():
