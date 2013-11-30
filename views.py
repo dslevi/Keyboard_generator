@@ -112,54 +112,6 @@ def get_input2():
     input1 = request.form.get("input1")
     return render_template("input2.html", text=text, input1=input1)
 
-@app.route("/analytics")
-def no_analytics():
-    if session.get('user_id'):
-        user = User.query.get(id=session['user_id'])
-        analytics = user.analytics
-
-        if len(analytics) > 0:
-            input1 = analytics[-1].input1
-            input2 = analytics[-1].input2
-            mistakes = analytics[-1].mistakes
-
-            keystrokes = genData.parseKeystrokes(input1)
-            freq = genData.keyFreq(keystrokes)
-            keys = genData.makeKeys(keystrokes)
-            keytimes = genData.findKeytimes(keystrokes)
-            hands, fingers = genData.handFingerFreq(keytimes)
-            distance = genData.distance(keytimes)
-
-            dwelltimes = genData.dwellTime(keytimes)
-            fastdwell = genData.definingTimes(3, dwelltimes, True)
-            slowdwell = genData.definingTimes(3, dwelltimes, False)
-
-            bigrams = genData.findngrams(2, keytimes)
-            freqbigrams = ""
-            bigramtimes = genData.ngramTimes(bigrams)
-            fastbigrams = genData.definingTimes(4, bigramtimes, True)
-            slowbigrams = genData.definingTimes(4, bigramtimes, False)
-            biAtt = genData.biAttributes(bigrams)
-            fast = genData.fastestTimes(len(bigramtimes)/2, bigramtimes)
-            att = genData.definingAtt(biAtt[3])
-
-            flighttimes = genData.flightTime(bigrams)
-            fastflights = genData.definingTimes(3, flighttimes, True)
-            slowflights = genData.definingTimes(3, flighttimes, False)
-
-            mistakes = genData.keyMistakes(m)
-            mostmistakes = genData.definingTimes(3, mistakes, True)
-            leastmistakes = genData.definingTimes(3, mistakes, False)
-            accuracy, wpm = genData.keyAccuracy(request.form.get("mistakes"), request.form.get("text"), request.form.get("time"))
-
-            return render_template("test.html", fastflights=fastflights, fastdwell=fastdwell,
-                slowdwell=slowdwell, slowflights=slowflights, freqbigrams=freqbigrams,
-                freq=freq, fastbigrams=fastbigrams, slowbigrams=slowbigrams,
-                mostmistakes=mostmistakes, leastmistakes=leastmistakes, biAtt=biAtt, att=att, keys=keys, fast=fast,
-                accuracy=accuracy, wpm=wpm, hands=hands, fingers=fingers, distance=distance)
-
-    return render_template("no_analytics.html")
-
 def genName():
     rand_str = "".join(random.choice('ABCDEFGHIJKLMNOP1234567890') for i in range(10))
     return rand_str
@@ -226,8 +178,8 @@ def genetic():
     if session.get("user_id"):
         new_k = Keyboard(name=genName(), user_id=session['user_id'])
         model.session.add(new_k)
+        model.session.commit()
         for i in range(len(l)):
-            print l[i]
             key = Key(kb_id=new_k.id)
             key.location = l[i][0]
             key.values = l[i][1][0] + " " + l[i][1][1]
@@ -235,6 +187,10 @@ def genetic():
             key.code = qwerty_key.code
             model.session.add(key)
             new_k.keys.append(key)
+        user = User.query.get(session['user_id'])
+        a = user.analytics[-1]
+        a.kd_id = new_k.id
+        print new_k.id
         model.session.commit()
 
     return jsonify(result=l)
@@ -246,15 +202,11 @@ def view_pekl():
     k = request.form.get('keys')
     return render_template("pekl.html", f=f, a=a, k=k)
 
-@app.route("/allusers")
-def all_users():
-    users = User.query.all()
-    return render_template("all_users.html", users=users)
-
-@app.route("/allkeyboards")
-def all_keyboards():
+@app.route("/search")
+def search():
     keyboards = Keyboard.query.all()
-    return render_template("all_keyboards.html", keyboards=keyboards)
+    users = User.query.all()
+    return render_template("search.html", keyboards=keyboards, users=users)
 
 def json_keyboard(keys):
     l = []
@@ -302,7 +254,8 @@ def display_keyboard(keyboard_id):
             values.append([tokens[1]])
     jsonKeyboard = json_keyboard(keys)
     text = Text.query.get(random.randint(1, 11))
-    return render_template("display_keyboard.html", keyboard=keyboard, values=values, session_id=session_id, date=date, jsonKeyboard = jsonKeyboard, text=text)
+    return render_template("display_keyboard.html", keyboard=keyboard, values=values, session_id=session_id, date=date, jsonKeyboard = jsonKeyboard, 
+        text=text)
 
 @app.route("/keyboard/<keyboard_id>", methods=["POST"])
 def rename_keyboard(keyboard_id):
@@ -373,15 +326,6 @@ def delete_board(board_id):
     model.session.commit()
     return redirect(url_for("display_user", user_id=session['user_id']))
 
-@app.route("/export/<board_id>")
-def remap_keys(board_id):
-    keyboard = Keyboard.query.get(board_id)
-    return render_template("export.html", keyboard=keyboard)
-
-@app.route("/datavis")
-def vis():
-    return render_template("d3.html")
-
 @app.route("/testanalytics/<keyboard_id>", methods=['POST'])
 def test_analytics(keyboard_id):
     keyboard = Keyboard.query.get(keyboard_id)
@@ -389,11 +333,23 @@ def test_analytics(keyboard_id):
     text = request.form.get('text')
     mistakes = request.form.get('mistakes')
     accuracy, wpm = genData.keyAccuracy(mistakes, text, time)
+
+    an = Analytics.query.filter_by(kd_id=keyboard_id).one()
+    print an
+    input1 = an.input1
+    input2 = an.input2
+    mistakes = an.mistakes
+
     if (len(keyboard.tests) == 0) or (keyboard.tests[-1].accuracy != accuracy and keyboard.tests[-1].wpm != wpm):
         a = TestAnalytic(accuracy=accuracy, wpm=wpm, keyboard_id=keyboard_id)
         model.session.add(a)
         model.session.commit()
-    return render_template("testanalytics.html", keyboard=keyboard)
+    return render_template("testanalytics.html", keyboard=keyboard, input1=input1, input2=input2, mistakes=mistakes)
+
+@app.route("/datavis")
+def vis():
+    return render_template("d3.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)

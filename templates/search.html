@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block body %}
+    <div class="search" id="users">
+        <h2>Users</h2>
+        {% for user in users %}
+            {% if user.id > 1 %}
+                <a href="/user/{{user.id}}">{{user.name}}</a><br>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div class="search" id="keyboards">
+        <h2>Keyboards</h2>
+        {% for keyboard in keyboards %}
+            <a href="/keyboard/{{keyboard.id}}">{{keyboard.name}}</a><br>
+        {% endfor %}
+    </div>
+{% endblock %}

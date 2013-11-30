@@ -47,9 +47,12 @@ class Analytics(Base):
     id = Column(Integer, primary_key=True)
     input1 = Column(Text, nullable=False)
     input2 = Column(Text, nullable=False)
+    mistakes = Column(Text, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.now)
     user_id = Column(Integer, ForeignKey("users.id"))
+    kd_id = Column(Integer, ForeignKey("keyboards.id"))
 
+    kb = relationship("Keyboard")
     user = relationship("User")
 
 class Prompts(Base):
@@ -66,6 +69,7 @@ class Keyboard(Base):
     rating = Column(Integer, nullable=True, default=0)
     keys = relationship("Key", uselist=True)
     tests = relationship("TestAnalytic", uselist=True)
+    analytics = relationship("Analytics", uselist=True)
 
     user = relationship("User")
 
@@ -106,7 +110,7 @@ def create_tables():
     d = User(name="Danielle", email="d@hba.com", occupation="Programmer")
     d.set_password("python")
     session.add(d)
-    a = Analytics(input1="input1", input2="input2", user_id=u.id)
+    a = Analytics(input1="input1", input2="input2", user_id=u.id, mistakes="mistakes")
     u.analytics.append(a)
     session.commit()
 

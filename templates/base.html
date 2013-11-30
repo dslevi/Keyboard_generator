@@ -14,13 +14,11 @@
                     <ul class="nav">
                         <li><a href="{{url_for("index")}}">Home</a></li>
                         <li><a href="{{url_for("show_keyboard")}}">New keyboard</a></li>
-                        <li><a href="{{url_for("show_analytics")}}">Analytics</a></li>
-                        <li><a href="{{url_for("all_keyboards")}}">All keyboards</a></li>
-                        <li><a href="{{url_for("all_users")}}">All users</a></li>
+                        <li><a href="{{url_for("search")}}">Search</a></li>
                         {% if session_id %}
-                            <li><a href="{{url_for("signout")}}">Sign out</a></li>
+                            <li><a href="{{url_for("signout")}}" id='account'>Sign out</a></li>
                         {% else %}
-                            <li><a href="{{url_for("login")}}">Login</a></li>
+                            <li><a href="{{url_for("login")}}" id='account'>Login</a></li>
                         {% endif %}
                     </ul>
                 </div>

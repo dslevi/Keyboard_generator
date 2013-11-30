@@ -251,14 +251,12 @@
         $('#textarea').focus();
     });
     
-    //does visual keypress animations, displays remapped text for non-meta (qwerty location) keys
     $('body').keypress(function (event) { 
         if ((event.which > 32) && (event.which <= 127)) {
             keyDisplays(event);
         }
     });
     
-    //does key animations for both left/right key pairs for control and alt
     $('body').keydown(function (event) {
         if (event.which <= 32) {
             keyDisplays(event);

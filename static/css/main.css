@@ -1,3 +1,7 @@
+#account{
+    margin-left: 600px;
+}
+
 .keyboard{
     padding: 5px;
     padding-bottom: 16px;
@@ -518,7 +522,7 @@ pre{
 .info{
     color:black;
     font-size: 14px;
-    margin-left: 4px;
+    margin-left: 3px;
     padding-top: 2px;
 }
 
@@ -610,6 +614,12 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
     float:right;
     margin-top: -51px;
     margin-right: 50px;
+}
+
+.search{
+    float:left;
+    margin-right: 100px;
+    margin-left: 10px;
 }
 
 

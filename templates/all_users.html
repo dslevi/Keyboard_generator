@@ -1,9 +1,0 @@
-{% extends "base.html" %}
-{% block body %}
-    <h2>All users</h2>
-    {% for user in users %}
-        {% if user.id > 1 %}
-            <a href="/user/{{user.id}}">{{user.name}}</a><br>
-        {% endif %}
-    {% endfor %}
-{% endblock %}
