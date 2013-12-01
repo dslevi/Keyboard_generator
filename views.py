@@ -334,17 +334,27 @@ def test_analytics(keyboard_id):
     mistakes = request.form.get('mistakes')
     accuracy, wpm = genData.keyAccuracy(mistakes, text, time)
 
-    an = Analytics.query.filter_by(kd_id=keyboard_id).one()
-    print an
-    input1 = an.input1
-    input2 = an.input2
-    mistakes = an.mistakes
-
     if (len(keyboard.tests) == 0) or (keyboard.tests[-1].accuracy != accuracy and keyboard.tests[-1].wpm != wpm):
         a = TestAnalytic(accuracy=accuracy, wpm=wpm, keyboard_id=keyboard_id)
         model.session.add(a)
         model.session.commit()
-    return render_template("testanalytics.html", keyboard=keyboard, input1=input1, input2=input2, mistakes=mistakes)
+
+    if (len(keyboard.analytics) > 0):
+        an = Analytics.query.filter_by(kd_id=keyboard_id).one()
+        input1 = an.input1
+        input2 = an.input2
+        mistakes = an.mistakes
+    else:
+        input1 = []
+        input2 = []
+        mistakes = []
+
+    if session.get('user_id'):
+        user_id = session['user_id']
+    else:
+        user_id = None
+
+    return render_template("testanalytics.html", keyboard=keyboard, input1=input1, input2=input2, mistakes=mistakes, user_id=user_id)
 
 @app.route("/datavis")
 def vis():

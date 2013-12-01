@@ -12,13 +12,14 @@
             <div class="navbar-inner">
                 <div class="container">
                     <ul class="nav">
+                        <li><div id="logo"><span id="pic">pic</span><span id="key_logo">key</span></div></li>
                         <li><a href="{{url_for("index")}}">Home</a></li>
                         <li><a href="{{url_for("show_keyboard")}}">New keyboard</a></li>
                         <li><a href="{{url_for("search")}}">Search</a></li>
                         {% if session_id %}
-                            <li><a href="{{url_for("signout")}}" id='account'>Sign out</a></li>
+                            <li><a href="{{url_for("signout")}}">Sign out</a></li>
                         {% else %}
-                            <li><a href="{{url_for("login")}}" id='account'>Login</a></li>
+                            <li><a href="{{url_for("login")}}">Login</a></li>
                         {% endif %}
                     </ul>
                 </div>

@@ -236,7 +236,7 @@
 
 #timer{
     float:right;
-    margin-right: 30px;
+    margin-right: 50px;
     margin-bottom: 30px;
     margin-top: -18px;
     font-size: 15px;
@@ -244,6 +244,42 @@
 
 .graph{
     margin-left: -15px;
+}
+
+#analytics{
+    background-color: gray;
+    position:absolute;
+    width:1800;
+    height:2350;
+    padding:20px;
+    top:40px;
+    left:0px;
+    opacity:0.1;
+    z-index: -3;
+}
+
+#keyboard_img{
+    position:absolute;
+    top:-295;
+    left:0;
+    width:100%;
+    z-index: -2;
+    box-shadow: 10px 10px 10px rgba(49, 49, 49, 0.2)
+}
+
+#keyboard_img:hover {
+    background-color:#000;
+    opacity:0.8;
+    border-radius:10px;
+}
+
+#gen_text{
+    position:absolute;
+    top:210px;
+    left:705px;
+    font-size: 30px;
+    color:white;
+    opacity: 0.8;
 }
 
 #repeat{
@@ -622,4 +658,246 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
     margin-left: 10px;
 }
 
+#typing_analytics{
+    font-size: 55px;
+    color: white;
+    padding-top: 50px;
+    padding-bottom: 90px;
+    padding-left: 210px;
+}
 
+#white{
+    background-color: white;
+    width:100%;
+    height:2100px;
+    z-index: -1;
+    box-shadow: 10px 10px 10px rgba(49, 49, 49, 0.07);
+}
+
+#data{
+    margin-top: -2080px;
+    margin-left: 60px;
+    width: 900px;
+}
+
+.Ametrics{
+    float:left;
+    padding:10px;
+    border: 1px gray solid;
+    margin:15px;
+    width:110px;
+    height:120px;
+    position:relative;
+    text-align: center;
+}
+
+.AmetricsContent{
+    position:absolute;
+    bottom:0px;
+    width:110px;
+    text-align: center;
+    font-size: 15px;
+    background-color: black;
+    opacity: 0.8;
+    color:white;
+    padding: 5px 10px 5px 10px;
+    margin-left: -10px;
+    height:37px;
+}
+
+#w, #d{
+    font-size: 35px;
+    margin-top: 30px;
+    color:#0088cc;
+}
+
+#a{
+    font-size: 30px;
+    margin-top: 30px;
+    color:#0088cc;  
+}
+
+#acc{
+    padding-top: 9px;
+}
+
+#logo{
+    margin-top: 8px;
+    margin-right: 555px;
+    margin-left: 2px;
+}
+#pic{
+    color:white;
+    font-size: 25px;
+}
+
+#key_logo{
+    color:#0088cc;
+    font-size: 25px;
+}
+
+#view_keyboard{
+    font-size: 22px;
+    height: 50px;
+    width: 310px;
+    color:white;
+    background-color:#0088cc;
+    margin-left: 17px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+#view_keyboard:hover{
+    background-color: black;
+    opacity: 0.8;
+}
+
+#metrics2{
+    border:1px solid rgba(216, 216, 216, 0.71);
+    width:310px;
+    height:301px;
+    margin-left: 503px;
+    text-align: center;
+}
+
+#hands_label{
+    border:1px solid rgba(216, 216, 216, 0.71);
+    width:310px;
+    height:55px;
+    margin-left: 503px;
+    margin-top: -1px;
+    text-align: center;
+}
+
+#metrics3{
+    text-align: center;
+    border:1px solid rgba(216, 216, 216, 0.71);
+    width:454px;
+    height:212px;
+    margin-left: 15px;
+    margin-top: -270px;
+}
+
+#fingers_label{
+    text-align: center;
+    border:1px solid rgba(216, 216, 216, 0.71);
+    width:454px;
+    height:55px;
+    margin: 176px 0px 30px -1px;
+}
+
+.subtitle{
+    color:#0088cc;
+    font-size: 35px; 
+}
+
+#freq{
+    text-align: center;
+    border:1px solid rgba(216, 216, 216, 0.71);
+    width:454px;
+    height:55px;
+    margin-left: -1px;
+}
+
+.dataBox{
+    text-align: center;
+    border:1px solid rgba(216, 216, 216, 0.71);
+}
+#freq{
+    width:798px;
+    height:250px;
+    margin: -1px 0px 0px 15px;
+}
+
+#freq_label{
+    width:798px;
+    height:55px;
+    margin: 90px 0px 0px 15px;
+}
+
+#mistyped{
+    margin:30px 0px 0px 15px;
+    width:230px;
+    height:120px;
+}
+
+#mistyped_label{
+    margin:-1px 0px 0px 15px;
+    width:230px;
+    height:55px;
+}
+
+#mistakesBox{
+    float:right;
+    margin: -178px 85px 15px 0px;
+}
+#mistakes{
+    margin: 0px 0px 0px 15px;
+    width:535px;
+    height:175px;
+}
+
+#mistakes_label{
+    margin:-1px 0px 0px 15px;
+    width:535px;
+    height:55px;
+}
+
+#profile{
+    margin: 30px 30px 35px 15px;
+}
+
+#profile_times{
+    width:798px;
+    height:300px;
+    margin-left:15px;
+    margin-bottom: 30px; 
+}
+
+#bigram{
+    float:right;
+    margin-right: 85px;
+}
+
+.metrics7{
+    float:left;
+    height:238px;
+}
+
+#s_times{
+    margin-left: 15px;
+    width:230px;
+}
+
+#f_times{
+    margin-left: -1px;
+    width:295px;
+}
+
+#attr{
+    width: 215px;
+    float: right;
+    margin: 30px 85px 30px 0px;
+    padding: 20px 10px 20px 10px;
+    height: 150px;
+}
+
+#fhd{
+    height:100px;
+    width:800px;
+    margin-left: 15px;
+    margin-top: 300px;
+    margin-bottom: 100px;
+}
+
+.metrics9{
+    height:300px;
+    width:240px;
+    float:left;
+    margin-right: 37px;
+    margin-bottom: 200px;
+}
+
+#fhd_d{
+    margin-right: 0px;
+}

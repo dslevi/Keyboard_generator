@@ -1,46 +1,99 @@
 {% extends "base.html" %}
 {% block body %}
+<div id="analytics"></div>
+    <div id="typing_analytics">TYPING ANALYTICS</div>
+    <div id="gen_link">
+        <img src="/static/img/kb2.jpg" width="50%" id="keyboard_img"></img>
+    </div>
+    <div id="white"></div>
 
-<form method="POST" id="rename_form" action="/pekl">
-    <input type="hidden" name="fast" value="{{fast|tojson|safe}}">
-    <input type="hidden" name="att" value="{{att[4]|tojson|safe}}">
-    <input type="hidden" name="keys" value="{{keys|tojson|safe}}">
-    <input type="submit" id="view_keyboard" value="Generate Your Keyboard">
-</form>
+    <div id="data">
+        <div id="metrics1">
+            <div class="Ametrics" id="distance"><div id="d">{{distance[:-3]}}<br></div><br><div class="AmetricsContent">Distance<br>(mm)</div></div>
+            <div class="Ametrics" id="wpm"><div id="w">{{wpm}}</div><br><div class="AmetricsContent">Words Per Minute</div></div>
+            <div class="Ametrics" id="accuracy"><div id="a">{{accuracy[:-2]}}%</div><br><div class="AmetricsContent"><div id="acc">Accuracy</div></div></div>
+        </div>
 
-<h1>KEYBOARD ANALYTICS</h1>
+        <div id="metrics_gen">
+            <form method="POST" id="gen_form" action="/pekl">
+                <input type="hidden" name="fast" value="{{fast|tojson|safe}}">
+                <input type="hidden" name="att" value="{{att[4]|tojson|safe}}">
+                <input type="hidden" name="keys" value="{{keys|tojson|safe}}">
+                <input type="submit" id="view_keyboard" value="Generate Your Keyboard">
+            </form>
+        </div>
 
-<b>Finger usage</b> {{fingers}}<br>
-<b>Hand usage</b> {{hands}}<br>
+        <div id="metrics2">
+            <div id="hands">{{hands}}</div>
+        </div>
+        <div id="hands_label">Hand usage</div>
+        
+        <div id="metrics3">
+            <div id="fingers">{{fingers}}
+            </div>
+            <div id="fingers_label">Finger usage</div>
+        </div>
 
-<b>Distance</b> {{distance}}<br><br>
-<b>Words per minute</b> {{wpm}}<br>
-<b>Accuracy</b> {{accuracy}}<br>
+        <div id="metrics4">
+            <div class="dataBox" id="freq_label">Letter Frequencies</div>
+            <div class="dataBox" id="freq">{{freq}}</div>
+        </div>
 
-<b>Letter Freq</b> {{freq}}<br>
-<b>Least mistakes</b> {{mostmistakes}}<br>
-<b>Most mistakes</b> {{leastmistakes}}<br><br>
+        <div id="metrics5">
+            <div class="dataBox" id="mistyped">{{mistyped}}</div>
+            <div class="dataBox" id="mistyped_label">Most Mistyped Word</div>
+            <div id="mistakesBox">
+                <div class="dataBox" id="mistakes">{{mostmistakes}}</div>
+                <div class="dataBox" id="mistakes_label">Mistakes</div>
+            </div>
+        </div>
 
-<b>Fastest dwell times</b> {{fastdwell}}<br>
-<b>Slowest dwell times</b> {{slowdwell}}<br>
-<b>Fastest flight times</b> {{fastflights}}<br>
-<b>Slowest flight times</b> {{slowflights}}<br><br>
+        <div class="subtitle" id="profile">Typing Profile</div>
 
-<b>Freq Bigrams</b> {{freqbigrams}}<br><br>
-<b>Fastest times</b> {{fastbigrams}}<br>
-<b>Slowest times</b> {{slowbigrams}}<br><br>
+        <div id="metrics6">
+            <div class="dataBox" id="profile_times">
+                <b>Fastest dwell times</b> {{fastdwell}}<br>
+                <b>Slowest dwell times</b> {{slowdwell}}<br>
+                <b>Fastest flight times</b> {{fastflights}}<br>
+                <b>Slowest flight times</b> {{slowflights}}<br><br>
+            </div>
+        </div>
 
-<b>Bigram attributes</b><br>
-Same finger use {{biAtt[1]}}<br>
-Hand alteration {{biAtt[0]}}<br>
-Horizontal/vertial movement {{biAtt[2]}}<br>
-Fastest bigram attributes<br>
-{{att[3][0][0]}},
-{{att[3][0][1]}},
-{{att[3][0][2]}}<br>
-Slowest bigram atributes<br>
-{{att[3][2][0]}},
-{{att[3][2][1]}},
-{{att[3][2][2]}}<br>
+        <div class="subtitle" id="bigram">Bigram Metrics</div>
+
+        <div id="metrics7">
+            <div class="dataBox metrics7"id="s_times">
+                {{slowbigrams}}
+                <div id="s_times_label">
+                    Slowest times
+                </div>
+            </div>
+            <div class="dataBox metrics7" id="f_times">
+                {{fastbigrams}}
+                <div id="f_times_label">
+                    Fastest times
+                </div>
+            </div>
+        </div>
+
+        <div id="metrics8">
+            <div class="dataBox" id="attr">
+                <div id="fastest_label">
+                    Fastest attributes
+                </div>
+                {{att[3][0][0]}}<br>
+                {{att[3][0][1]}}<br>
+                {{att[3][0][2]}}
+            </div>
+        </div>
+
+        <div id="metrics9">
+            <div id="fhd">
+                <div class="dataBox metrics9" id="fhd_f">Same finger use {{biAtt[1]}}</div>
+                <div class="dataBox metrics9" id="fhd_h">Hand alteration {{biAtt[0]}}</div>
+                <div class="dataBox metrics9" id="fhd_d">Horizontal/vertial movement {{biAtt[2]}}</div>
+            </div>
+        </div>
+    </data>
 
 {% endblock %}
