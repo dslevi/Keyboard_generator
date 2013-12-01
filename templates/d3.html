@@ -1,30 +1,20 @@
 {% extends "base.html" %}
 {% block body %}
+<div id="d3"></div>
 <script type="text/javascript" src="/static/jss/d3.vs.js"></script>
 <script type="text/javascript">
-    var dataset;
+    var sampleSVG = d3.select("#d3fingers")
+        .append("svg")
+        .attr("width", 454)
+        .attr("height", 212); 
 
-    d3.json("input.json", function(error, json) {
-        if (error) {
-            console.log(error);
-        } else {
-            dataset = json;
-            generateVis();
-            hideLoadingMsg();
-        }
-    });
-
-    function generateVis(){
-        d3.select('body').selectAll('p').data(dataset).enter().append('p')
-            .text(function(d) {return d}).style("color", function(d) {
-                if (d > 15) {
-                    return "red";
-                } else {
-                    return "green";
-                }
-            });
-    }
-
+    sampleSVG.append("rect")
+        .attr("x", 10)
+        .attr("y", 10)
+        .attr("width", 50)
+        .attr("height", 100);
+        .on("mouseover", function(){d3.select(this).style("fill", "aliceblue");})
+        .on("mouseout", function(){d3.select(this).style("fill", "white");});
 </script>
 <html>
     <div class="bar"></div>

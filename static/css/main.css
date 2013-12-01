@@ -760,13 +760,20 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
     text-align: center;
 }
 
+.label{
+    text-align: center;
+    background-color: black;
+    opacity: 0.8;
+    color:white;
+    font-size: 15px;
+}
+
 #hands_label{
     border:1px solid rgba(216, 216, 216, 0.71);
     width:310px;
     height:55px;
     margin-left: 503px;
     margin-top: -1px;
-    text-align: center;
 }
 
 #metrics3{
@@ -783,7 +790,7 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
     border:1px solid rgba(216, 216, 216, 0.71);
     width:454px;
     height:55px;
-    margin: 176px 0px 30px -1px;
+    margin: 0px 0px 30px -1px;
 }
 
 .subtitle{
@@ -901,3 +908,4 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
 #fhd_d{
     margin-right: 0px;
 }
+
