@@ -25,27 +25,28 @@
         </div>
 
         <div id="metrics2">
-            <div id="hands">{{hands}}</div>
+            <div id="hands"><div id="d3hands"></div></div>
         </div>
-        <div class="label" id="hands_label">Hand usage</div>
+        <div class="label_typing" id="hands_label">Hand usage</div>
         
         <div id="metrics3">
             <div id="fingers"><div id="d3fingers"></div>
             </div>
-            <div class="label" id="fingers_label">Finger usage</div>
+            <div class="label_typing" id="fingers_label">Finger usage</div>
         </div>
 
         <div id="metrics4">
-            <div class="dataBox label" id="freq_label">Letter Frequencies</div>
+            <div class="dataBox label_typing" id="freq_label">Letter Frequencies</div>
             <div class="dataBox" id="freq">{{freq}}</div>
         </div>
 
         <div id="metrics5">
             <div class="dataBox" id="mistyped">{{mistyped}}</div>
-            <div class="dataBox label" id="mistyped_label">Most Mistyped Word</div>
+            <div class="dataBox label_typing" id="mistyped_label">Most Mistyped Word</div>
             <div id="mistakesBox">
                 <div class="dataBox" id="mistakes">{{mostmistakes}}</div>
-                <div class="dataBox label" id="mistakes_label">Mistakes</div>
+                <div class="dataBox label_typing" id="mistakes_label">Mistakes</div>
+                <div class="dataBox label_typing" id="mistakes_label">Mistakes</div>
             </div>
         </div>
 
@@ -65,13 +66,13 @@
         <div id="metrics7">
             <div class="dataBox metrics7"id="s_times">
                 {{slowbigrams}}
-                <div class="label" id="s_times_label">
+                <div class="label_typing" id="s_times_label">
                     Slowest times
                 </div>
             </div>
             <div class="dataBox metrics7" id="f_times">
                 {{fastbigrams}}
-                <div class="label" id="f_times_label">
+                <div class="label_typing" id="f_times_label">
                     Fastest times
                 </div>
             </div>
@@ -79,7 +80,7 @@
 
         <div id="metrics8">
             <div class="dataBox" id="attr">
-                <div class="label" id="fastest_label">
+                <div class="label_typing" id="fastest_label">
                     Fastest attributes
                 </div>
                 {{att[3][0][0]}}<br>
@@ -100,21 +101,43 @@
 <script type="text/javascript">
     var fingersSVG = d3.select("#d3fingers")
         .append("svg")
-        .attr("width", 454)
-        .attr("height", 212); 
+        .attr("width", 450)
+        .attr("height", 210); 
 
     var fingers = {{fingers|tojson|safe}};
+    var x = 0;
+
     for (var i=0; i < fingers.length; i++) {
-        for (var h=0; h < fingers[i].length; h++) {
-            fingersSVG.append("rect")
-                .attr("x", 20 + (30 * h) + (i * 120))
-                .attr("y", 0)
-                .attr("width", 25)
-                .attr("height", 10 * parseFloat(fingers[i][h].slice(0, -1)))
-                .style("fill", "gray")
+        if ((i == 4) || (i == 5)) {
+            x += 25;
+        } else {
+            x += 0;
         }
+
+        fingersSVG.append("rect")
+            .attr("x", (35 * i) + x)
+            .attr("y", 0)
+            .attr("width", 25)
+            .attr("height", fingers[i])
+            .style("fill", "gray")
     }
 
+    var handsSVG = d3.select("#d3hands")
+        .append("svg")
+        .attr("width", 450)
+        .attr("height", 610); 
+
+    var hands = {{hands|tojson|safe}};
+
+    for (var j=0; j < hands.length; j++) {        
+ 
+        handsSVG.append("rect")
+            .attr("x", (35 * j))
+            .attr("y", 0)
+            .attr("width", 25)
+            .attr("height", hands[j])
+            .style("fill", "gray")
+    }
 
 </script>
 {% endblock %}

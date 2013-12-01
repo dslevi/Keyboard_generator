@@ -760,12 +760,13 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
     text-align: center;
 }
 
-.label{
+.label_typing{
     text-align: center;
     background-color: black;
     opacity: 0.8;
     color:white;
     font-size: 15px;
+    border:1px black solid;
 }
 
 #hands_label{
@@ -790,7 +791,7 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
     border:1px solid rgba(216, 216, 216, 0.71);
     width:454px;
     height:55px;
-    margin: 0px 0px 30px -1px;
+    margin: 1px 0px 30px -1px;
 }
 
 .subtitle{

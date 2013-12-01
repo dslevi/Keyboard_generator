@@ -201,6 +201,7 @@ def handFingerFreq(keytimes):
     total = 0
     hands = [0, 0, 0]
     fingers = [[0, 0, 0, 0], [0, 0, 0, 0], [0]]
+
     for key in keytimes:
         for k in key:
             if k[0] == "D":
@@ -210,12 +211,13 @@ def handFingerFreq(keytimes):
     if total > 0:
         for i in range(len(hands)):
             percentage = ((hands[i]/float(total)) * 100)
-            hands[i] = (str("%.1f" % percentage) + "%")
+            hands[i] = percentage
         for i in range(len(fingers)):
             for h in range(len(fingers[i])):
                 percentage = ((fingers[i][h]/float(total)) * 100)
-                fingers[i][h] = (str("%.1f" % percentage) + "%")
-    return hands, fingers
+                fingers[i][h] = percentage
+    f = [fingers[0][0], fingers[0][1], fingers[0][2], fingers[0][3], fingers[2][0], fingers[1][3], fingers[1][2], fingers[1][1], fingers[1][0]]
+    return hands, f
 
 def distance(keytimes):
     #measured in mm, includes gap between keys
@@ -248,7 +250,7 @@ def distance(keytimes):
 def intoPercent(l, total):
     for i in range(len(l)):
             percentage = ((l[i]/float(total)) * 100)
-            l[i] = (str("%.1f" % percentage) + "%")
+            l[i] = percentage
     return l
 
 def biAttributes(bigrams):
