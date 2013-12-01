@@ -4,7 +4,7 @@
 <div id="analytics"></div>
     <div id="typing_analytics">TYPING ANALYTICS</div>
     <div id="gen_link">
-        <img src="/static/img/kb2.jpg" width="50%" id="keyboard_img"></img>
+        <img src="/static/img/kb2.jpg" id="keyboard_img"></img>
     </div>
     <div id="white"></div>
 
@@ -32,7 +32,12 @@
         <div id="metrics3">
             <div id="fingers"><div id="d3fingers"></div>
             </div>
-            <div class="label_typing" id="fingers_label">Finger usage</div>
+            <div class="label_typing" id="fingers_label">
+                <div class="sublabel" id="left">Left Hand</div>
+                <div class="sublabel" id="both">Both Hands</div>
+                <div class="sublabel" id="right">Right Hand</div><br>
+                <div id="f_label">Finger Usage Percentages</div>
+            </div>
         </div>
 
         <div id="metrics4">
@@ -46,8 +51,6 @@
             <div id="mistakesBox">
                 <div class="dataBox" id="mistakes">{{mostmistakes}}</div>
                 <div class="dataBox label_typing" id="mistakes_label">Mistakes</div>
-                <div class="dataBox label_typing" id="mistakes_label">Mistakes</div>
-            </div>
         </div>
 
         <div class="subtitle" id="profile">Typing Profile</div>
@@ -65,27 +68,29 @@
 
         <div id="metrics7">
             <div class="dataBox metrics7"id="s_times">
-                {{slowbigrams}}
+                <div id="D3slow"></div>
                 <div class="label_typing" id="s_times_label">
-                    Slowest times
+                    Slowest Bigram Times
                 </div>
             </div>
             <div class="dataBox metrics7" id="f_times">
-                {{fastbigrams}}
+                <div id="D3fast"></div>
                 <div class="label_typing" id="f_times_label">
-                    Fastest times
+                    Fastest Bigram Times
                 </div>
             </div>
         </div>
 
         <div id="metrics8">
             <div class="dataBox" id="attr">
-                <div class="label_typing" id="fastest_label">
+                <div class="label_typing" id="a_label">
                     Fastest attributes
                 </div>
-                {{att[3][0][0]}}<br>
-                {{att[3][0][1]}}<br>
-                {{att[3][0][2]}}
+                <div id="as">
+                    {{att[3][0][0]}}<br><br>
+                    {{att[3][0][1]}}<br><br>
+                    {{att[3][0][2]}}
+                </div>
             </div>
         </div>
 
@@ -99,13 +104,30 @@
     </data>
 
 <script type="text/javascript">
+
+//Helper functions
+    function findMax(l){
+        var max = 0;
+
+        for (var i=0; i < l.length; i++) {
+            if (l[i] > max) {
+                max = l[i];
+            }
+        }
+        return max;
+    }
+
+//Creates D3 graphs
+
+//FINGERS
     var fingersSVG = d3.select("#d3fingers")
         .append("svg")
-        .attr("width", 450)
+        .attr("width", 380)
         .attr("height", 210); 
 
     var fingers = {{fingers|tojson|safe}};
     var x = 0;
+    var max = findMax(fingers);
 
     for (var i=0; i < fingers.length; i++) {
         if ((i == 4) || (i == 5)) {
@@ -114,13 +136,36 @@
             x += 0;
         }
 
+        var height = (fingers[i]/max) * 200;
+        var l = Math.round(fingers[i]);
+    
         fingersSVG.append("rect")
-            .attr("x", (35 * i) + x)
-            .attr("y", 0)
+            .attr("x", 20 + (35 * i) + x)
+            .attr("y", 210 - height)
             .attr("width", 25)
-            .attr("height", fingers[i])
-            .style("fill", "gray")
+            .attr("height", height)
+            .style("fill", "gray");
+
+        if (l > 0) {
+            fingersSVG.append("text")
+                .attr('fill','white')
+                .attr("x", 20 + (35 * i) + x + 13)
+                .attr("y", 225 - height)
+                .attr("text-anchor", "middle")
+                .attr("font-size", "11px")
+                .text(l + "%");
+        } else {
+            fingersSVG.append("text")
+                .attr('fill','black')
+                .attr("x", 20 + (35 * i) + x + 13)
+                .attr("y", 210)
+                .attr("text-anchor", "middle")
+                .attr("font-size", "11px")
+                .text(l + "%");
+        }
     }
+
+//HANDS
 
     var handsSVG = d3.select("#d3hands")
         .append("svg")
@@ -136,8 +181,100 @@
             .attr("y", 0)
             .attr("width", 25)
             .attr("height", hands[j])
-            .style("fill", "gray")
+            .style("fill", "gray");
     }
+
+//SLOWEST TIMES
+
+    var slowestSVG = d3.select("#d3slow")
+        .append("svg")
+        .attr("width", 340)
+        .attr("height", 200); 
+
+    var slowest = {{slowbigrams|tojson|safe}};
+    var x = 0;
+    var max = 0;
+
+    for (var p in slowest) {
+        if (slowest[p][0] > max) {
+            max = slowest[p][0];
+        }
+    }
+
+    for (var p in slowest) {   
+        var v = slowest[p][0];
+        var width = (v/max * 225);
+        var l = slowest[p][1];
+    
+        slowestSVG.append("rect")
+            .attr("x", 340 - width)
+            .attr("y", 20 + (40 * p))
+            .attr("width", width)
+            .attr("height", 25)
+            .style("fill", "gray");
+
+        slowestSVG.append("text")
+                .attr('fill', "#0088cc")
+                .attr("x", 50)
+                .attr("y", 37 + (40 * p))
+                .attr("font-size", "12px")
+                .text(l);
+
+        slowestSVG.append("text")
+            .attr('fill','black')
+            .attr("x", 25)
+            .attr("y", 37 + (40 * p))
+            .attr("text-anchor", "middle")
+            .attr("font-size", "11px")
+            .text(v +"ms");
+    }
+
+//FASTEST TIMES
+
+    var fastestSVG = d3.select("#d3fast")
+        .append("svg")
+        .attr("width", 292)
+        .attr("height", 200); 
+
+    var fastest = {{fastbigrams|tojson|safe}};
+    console.log(fastest);
+    var x = 0;
+
+    for (var p in fastest) {
+        if (fastest[p][0] > max) {
+            max = fastest[p][0];
+        }
+    }
+
+    for (var p in fastest) {   
+        var v = fastest[p][0];
+        var width = (v/max * 225);
+        var l = fastest[p][1];
+    
+        fastestSVG.append("rect")
+            .attr("x", 0)
+            .attr("y", 20 + (40 * p))
+            .attr("width", width)
+            .attr("height", 25)
+            .style("fill", "#0088cc");
+
+        fastestSVG.append("text")
+                .attr('fill', "#0088cc")
+                .attr("x", 160)
+                .attr("y", 37 + (40 * p))
+                .attr("font-size", "12px")
+                .text(l);
+
+        fastestSVG.append("text")
+            .attr('fill','black')
+            .attr("x", 130)
+            .attr("y", 37 + (40 * p))
+            .attr("text-anchor", "middle")
+            .attr("font-size", "12px")
+            .text(v + "ms");
+    
+    }
+
 
 </script>
 {% endblock %}
