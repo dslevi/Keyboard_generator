@@ -774,7 +774,7 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
     width:310px;
     height:55px;
     margin-left: 503px;
-    margin-top: -1px;
+    margin-top: -2px;
 }
 
 #metrics3{
@@ -783,7 +783,7 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
     width:454px;
     height:212px;
     margin-left: 15px;
-    margin-top: -270px;
+    margin-top: -266px;
 }
 
 #fingers_label{
@@ -954,4 +954,38 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
 #as{
     font-size: 16px;
     color:#0088cc;
+}
+
+.mainlabel{
+    color:white;
+    font-size: 18px;
+    float:left;
+}
+
+#fdtimes,
+#sdtimes,
+#sftimes{
+    margin-left: 100px;
+}
+
+#fftimes{
+    margin-left: 150px;
+}
+
+
+#flight{
+    margin-left: 240px;
+    margin-top: 1px;
+}
+
+#dwell{
+    margin-left: -556px;
+    margin-top: 10px;
+}
+
+#l_profile{
+    background-color: black;
+    opacity: 0.8;
+    height: 55px;
+    margin-top: 1;
 }

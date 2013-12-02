@@ -57,10 +57,15 @@
 
         <div id="metrics6">
             <div class="dataBox" id="profile_times">
-                <b>Fastest dwell times</b> {{fastdwell}}<br>
-                <b>Slowest dwell times</b> {{slowdwell}}<br>
-                <b>Fastest flight times</b> {{fastflights}}<br>
-                <b>Slowest flight times</b> {{slowflights}}<br><br>
+                <div id="D3profile"></div>
+                <div id="l_profile">
+                    <div class="sublabel" id="fdtimes">Fastest</div>
+                    <div class="sublabel" id="sdtimes">Slowest</div>
+                    <div class="sublabel" id="fftimes">Fastest</div>
+                    <div class="sublabel" id="sftimes">Slowest</div><br>
+                    <div class="mainlabel" id="dwell">Dwell Times (ms)</div>
+                    <div class="mainlabel" id="flight">Flight Times (ms)</div>
+                </div>
             </div>
         </div>
 
@@ -167,22 +172,33 @@
 
 //HANDS
 
-    var handsSVG = d3.select("#d3hands")
-        .append("svg")
-        .attr("width", 450)
-        .attr("height", 610); 
+    var cScale = d3.scale.linear().domain([0, 100]).range([0, 2 * Math.PI]);
 
     var hands = {{hands|tojson|safe}};
+    console.log(hands[0]);
+    console.log(hands[1]);
+    data = [[0, hands[0], "lightgray"], 
+            [hands[0], hands[0] + hands[1], "gray"], 
+            [hands[0] + hands[1], 100, "#0088cc"]]
 
-    for (var j=0; j < hands.length; j++) {        
- 
-        handsSVG.append("rect")
-            .attr("x", (35 * j))
-            .attr("y", 0)
-            .attr("width", 25)
-            .attr("height", hands[j])
-            .style("fill", "gray");
-    }
+    var handsSVG = d3.select("#d3hands")
+        .append("svg")
+        .attr("width", 310)
+        .attr("height", 300); 
+
+    var arc = d3.svg.arc()
+    .innerRadius(100)
+    .outerRadius(125)
+    .startAngle(function(d){return cScale(d[0]);})
+    .endAngle(function(d){return cScale(d[1]);});
+
+    handsSVG.selectAll("path")
+    .data(data)
+    .enter()
+    .append("path")
+    .attr("d", arc)
+    .style("fill", function(d){return d[2];})
+    .attr("transform", "translate(155,150)");
 
 //SLOWEST TIMES
 
@@ -237,7 +253,6 @@
         .attr("height", 200); 
 
     var fastest = {{fastbigrams|tojson|safe}};
-    console.log(fastest);
     var x = 0;
 
     for (var p in fastest) {
@@ -275,6 +290,167 @@
     
     }
 
+//PROFILE
+    var fdwell = {{fastdwell|tojson|safe}};
+    var sdwell = {{slowdwell|tojson|safe}};
+    var fflight = {{fastflights|tojson|safe}};
+    var sflight = {{slowflights|tojson|safe}};
+
+    var profileSVG = d3.select("#d3profile")
+        .append("svg")
+        .attr("width", 800)
+        .attr("height", 250); 
+
+    var x = 0;
+    var max = 0;
+    var offset = 0;
+
+    for (var h=0; h < sdwell.length; h++) {
+        if (sdwell[h][0] > max) {
+            max = sdwell[h][0];
+        } else if (sflight[h][0] > max) {
+            max = sflight[h][0];
+        } else if (Math.abs(fflight[h][0]) > max) {
+            max = Math.abs(sflight[h][0]);
+        }
+    }
+
+    for (var i=0; i < fdwell.length; i++) {
+        var v = fdwell[i][0];
+        var height = (v/max) * 100;
+        var l = fdwell[i][1];
+    
+        profileSVG.append("rect")
+            .attr("x", 70 + (40 * i) + offset)
+            .attr("y", 130 - height)
+            .attr("width", 25)
+            .attr("height", height)
+            .style("fill", "#0088cc");
+
+        profileSVG.append("text")
+            .attr('fill', "lightgray")
+            .attr("x", 75 + (40 * i) + offset)
+            .attr("y", 170 - height)
+            .attr("font-size", "12px")
+            .text(l);
+
+        profileSVG.append("text")
+            .attr('fill','white')
+            .attr("x", 82 + (40 * i) + offset)
+            .attr("y", 125)
+            .attr("text-anchor", "middle")
+            .attr("font-size", "12px")
+            .text(v);
+    }
+    
+    offset += 165;
+
+    for (var i=0; i < sdwell.length; i++) {
+        var v = sdwell[i][0];
+        var height = (v/max) * 100;
+        var l = sdwell[i][1];
+    
+        profileSVG.append("rect")
+            .attr("x", 70 + (40 * i) + offset)
+            .attr("y", 130 - height)
+            .attr("width", 25)
+            .attr("height", height)
+            .style("fill", "lightgray");
+
+        profileSVG.append("text")
+            .attr('fill', "#0088cc")
+            .attr("x", 75 + (40 * i) + offset)
+            .attr("y", 170 - height)
+            .attr("font-size", "12px")
+            .text(l);
+
+        profileSVG.append("text")
+            .attr('fill','white')
+            .attr("x", 82 + (40 * i) + offset)
+            .attr("y", 125)
+            .attr("text-anchor", "middle")
+            .attr("font-size", "12px")
+            .text(v);
+    }
+
+    offset += 212;
+
+    for (var i=0; i < fflight.length; i++) {
+        var v = fflight[i][0];
+        var l = fflight[i][1];
+        
+        if (v > 0) {
+            var height = (v/max) * 100;
+            var h = 130 - height;
+            var lh = 125;
+        } else {
+            var h = 130;
+            var height = (Math.abs(v)/max) * 257;
+            var lh = 145;
+        }
+
+        profileSVG.append("rect")
+            .attr("x", 70 + (40 * i) + offset)
+            .attr("y", h)
+            .attr("width", 25)
+            .attr("height", height)
+            .style("fill", "#0088cc");
+
+        profileSVG.append("text")
+            .attr('fill', "lightgray")
+            .attr("x", 75 + (40 * i) + offset)
+            .attr("y", 170 - height)
+            .attr("font-size", "12px") 
+            .text(l)
+            .attr("transform", "rotate(45, 75 + (40 * i) + offset + 5, 170 - height + 5)");
+
+        profileSVG.append("text")
+            .attr('fill','white')
+            .attr("x", 82 + (40 * i) + offset)
+            .attr("y", lh)
+            .attr("text-anchor", "middle")
+            .attr("font-size", "12px")
+            .text(v);
+    
+    }
+
+    offset += 165;
+
+    for (var i=0; i < sflight.length; i++) {
+        var v = sflight[i][0];
+        var l = sflight[i][1];
+        var height = (v/max) * 100;
+
+        profileSVG.append("rect")
+            .attr("x", 70 + (40 * i) + offset)
+            .attr("y", 130 - height)
+            .attr("width", 25)
+            .attr("height", height)
+            .style("fill", "lightgray");
+
+        profileSVG.append("text")
+            .attr('fill', "#0088cc")
+            .attr("x", 75 + (40 * i) + offset)
+            .attr("y", 170 - height)
+            .attr("font-size", "12px")
+            .text(l);
+
+        profileSVG.append("text")
+            .attr('fill','white')
+            .attr("x", 82 + (40 * i) + offset)
+            .attr("y", 125)
+            .attr("text-anchor", "middle")
+            .attr("font-size", "12px")
+            .text(v);        
+
+    }
+
+    profileSVG.append("rect")
+            .attr("x", 20)
+            .attr("y", 130)
+            .attr("width", 760)
+            .attr("height", 1)
+            .style("fill", "lightgray");  
 
 </script>
 {% endblock %}
