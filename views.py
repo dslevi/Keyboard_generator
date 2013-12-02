@@ -134,7 +134,6 @@ def show_analytics():
     slowdwell = genData.definingTimes(3, dwelltimes, False)
 
     bigrams = genData.findngrams(2, keytimes)
-    mistyped = ""
     bigramtimes = genData.ngramTimes(bigrams)
     fastbigrams = genData.definingTimes(4, bigramtimes, True)
     slowbigrams = genData.definingTimes(4, bigramtimes, False)
@@ -156,10 +155,9 @@ def show_analytics():
         model.session.add(new_a)
         model.session.commit()
 
-    return render_template("test.html", fastflights=fastflights, fastdwell=fastdwell,
-        slowdwell=slowdwell, slowflights=slowflights, mistyped=mistyped, 
-        freq=freq, fastbigrams=fastbigrams, slowbigrams=slowbigrams, mostmistakes=mostmistakes, 
-        biAtt=biAtt, att=att, keys=keys, fast=fast, accuracy=accuracy, wpm=wpm, hands=hands, fingers=fingers, distance=distance)
+    return render_template("test.html", fastflights=fastflights, fastdwell=fastdwell, slowdwell=slowdwell, slowflights=slowflights, 
+        freq=freq, fastbigrams=fastbigrams, slowbigrams=slowbigrams, mostmistakes=mostmistakes, biAtt=biAtt, att=att, keys=keys, 
+        fast=fast, accuracy=accuracy, wpm=wpm, hands=hands, fingers=fingers, distance=distance)
 
 @app.route("/genetic/")
 def genetic():

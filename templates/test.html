@@ -45,15 +45,6 @@
             <div class="dataBox" id="freq"><div id="D3freq"></div></div>
         </div>
 
-        <div id="metrics5">
-            <div class="dataBox" id="mistyped"><div id="mistyped_s">{{mistyped}}</div></div>
-            <div class="dataBox label_typing" id="mistyped_label"><div id="mist_label">Most Mistyped Word</div></div>
-            <div id="mistakesBox">
-                <div class="dataBox" id="mistakes">{{mostmistakes}}</div>
-                <div class="dataBox label_typing" id="mistakes_label"><div id="mist">Key Mistakes</div></div>
-            </div>
-        </div>
-
         <div class="subtitle" id="profile">Typing Profile</div>
 
         <div id="metrics6">
@@ -67,6 +58,25 @@
                     <div class="mainlabel" id="dwell">Dwell Times (ms)</div>
                     <div class="mainlabel" id="flight">Flight Times (ms)</div>
                 </div>
+            </div>
+        </div>
+
+        <div id="metrics5">
+            <div id="mistakesBox">
+                <div class="dataBox" id="mistakes"><div id="D3mistakes">
+                    {% for m in mostmistakes %}
+                        {% if loop.index == 1 %}
+                            <div id="m0">{{m[1]}}</div>
+                        {% endif %}
+                        {% if loop.index == 2 %}
+                            <div id="m1">{{m[1]}}</div>
+                        {% endif %}
+                        {% if loop.index == 3 %}
+                            <div id="m2">{{m[1]}}</div>
+                        {% endif %}
+                    {% endfor %}
+                </div></div>
+                <div class="dataBox label_typing" id="mistakes_label"><div id="mist">Key Mistakes</div></div>
             </div>
         </div>
 
@@ -318,11 +328,12 @@
 
     var profileSVG = d3.select("#d3profile")
         .append("svg")
-        .attr("width", 800)
+        .attr("width", 555)
         .attr("height", 250); 
 
     var x = 0;
     var max = 0;
+
     var offset = 0;
 
     for (var h=0; h < sdwell.length; h++) {
@@ -337,7 +348,7 @@
         var l = fdwell[i][1];
     
         profileSVG.append("rect")
-            .attr("x", 70 + (40 * i) + offset)
+            .attr("x", 25 + (40 * i) + offset)
             .attr("y", 130 - height)
             .attr("width", 25)
             .attr("height", height)
@@ -345,21 +356,21 @@
 
         profileSVG.append("text")
             .attr('fill', "gray")
-            .attr("x", 75 + (40 * i) + offset)
-            .attr("y", 170 - height)
-            .attr("font-size", "12px")
+            .attr("x", 25 + offset)
+            .attr("y", 160 + (20 * i))
+            .attr("font-size", "13px")
             .text(l);
 
         profileSVG.append("text")
             .attr('fill','white')
-            .attr("x", 82 + (40 * i) + offset)
+            .attr("x", 37 + (40 * i) + offset)
             .attr("y", 125)
             .attr("text-anchor", "middle")
             .attr("font-size", "12px")
             .text(v);
     }
     
-    offset += 165;
+    offset += 125;
 
     for (var i=0; i < sdwell.length; i++) {
         var v = sdwell[i][0];
@@ -367,7 +378,7 @@
         var l = sdwell[i][1];
     
         profileSVG.append("rect")
-            .attr("x", 70 + (40 * i) + offset)
+            .attr("x", 25 + (40 * i) + offset)
             .attr("y", 130 - height)
             .attr("width", 25)
             .attr("height", height)
@@ -375,21 +386,21 @@
 
         profileSVG.append("text")
             .attr('fill', "#0088cc")
-            .attr("x", 75 + (40 * i) + offset)
-            .attr("y", 170 - height)
-            .attr("font-size", "12px")
+            .attr("x", 25 + offset)
+            .attr("y", 160 + (20 * i))
+            .attr("font-size", "13px")
             .text(l);
 
         profileSVG.append("text")
             .attr('fill','white')
-            .attr("x", 82 + (40 * i) + offset)
+            .attr("x", 37 + (40 * i) + offset)
             .attr("y", 125)
             .attr("text-anchor", "middle")
             .attr("font-size", "12px")
             .text(v);
     }
 
-    offset += 212;
+    offset += 150;
 
     var max = 0;
 
@@ -416,7 +427,7 @@
         }
 
         profileSVG.append("rect")
-            .attr("x", 70 + (40 * i) + offset)
+            .attr("x", 25 + (40 * i) + offset)
             .attr("y", h)
             .attr("width", 25)
             .attr("height", height)
@@ -424,15 +435,15 @@
 
         profileSVG.append("text")
             .attr('fill', "gray")
-            .attr("x", 75 + (40 * i) + offset)
-            .attr("y", 170 - height)
-            .attr("font-size", "12px") 
+            .attr("x", 25 + offset)
+            .attr("y", 70 + (20 * i))
+            .attr("font-size", "13px") 
             .text(l)
             .attr("transform", "rotate(45, 75 + (40 * i) + offset + 5, 170 - height + 5)");
 
         profileSVG.append("text")
             .attr('fill','white')
-            .attr("x", 82 + (40 * i) + offset)
+            .attr("x", 37 + (40 * i) + offset)
             .attr("y", lh)
             .attr("text-anchor", "middle")
             .attr("font-size", "12px")
@@ -440,7 +451,7 @@
     
     }
 
-    offset += 165;
+    offset += 125;
 
     for (var i=0; i < sflight.length; i++) {
         var v = sflight[i][0];
@@ -448,7 +459,7 @@
         var height = (v/max) * 100;
 
         profileSVG.append("rect")
-            .attr("x", 70 + (40 * i) + offset)
+            .attr("x", 25 + (40 * i) + offset)
             .attr("y", 130 - height)
             .attr("width", 25)
             .attr("height", height)
@@ -456,14 +467,14 @@
 
         profileSVG.append("text")
             .attr('fill', "#0088cc")
-            .attr("x", 75 + (40 * i) + offset)
-            .attr("y", 170 - height)
-            .attr("font-size", "12px")
+            .attr("x", 25 + offset)
+            .attr("y", 160 + (20 * i))
+            .attr("font-size", "13px")
             .text(l);
 
         profileSVG.append("text")
             .attr('fill','white')
-            .attr("x", 82 + (40 * i) + offset)
+            .attr("x", 37 + (40 * i) + offset)
             .attr("y", 125)
             .attr("text-anchor", "middle")
             .attr("font-size", "12px")
@@ -472,9 +483,9 @@
     }
 
     profileSVG.append("rect")
-            .attr("x", 20)
+            .attr("x", 15)
             .attr("y", 130)
-            .attr("width", 760)
+            .attr("width", 525)
             .attr("height", 1)
             .style("fill", "lightgray");  
 
@@ -669,7 +680,6 @@
         } else {
             c = "lightgray";
         }
-        console.log((freq[i]/total));
 
         freqSVG.append("circle")
             .attr("cx", x)
@@ -686,6 +696,7 @@
 
         h++;
     } 
+
 
 </script>
 {% endblock %}
