@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block body %}
-<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<!-- <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script> -->
+<script src="/static/js/d3.v3.js" charset="utf-8"></script>
 <div id="analytics"></div>
     <div id="typing_analytics">TYPING ANALYTICS</div>
     <div id="gen_link">
@@ -76,7 +77,7 @@
                         {% endif %}
                     {% endfor %}
                 </div></div>
-                <div class="dataBox label_typing" id="mistakes_label"><div id="mist">Key Mistakes</div></div>
+                <div class="dataBox label_typing" id="mistakes_label"><div id="mist">Top 3<br>Key Mistakes</div></div>
             </div>
         </div>
 
