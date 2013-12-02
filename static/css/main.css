@@ -796,6 +796,11 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
     margin-right: 38;
     margin-top: -32;
 }
+
+.subtitle2{
+    color: #0088cc;
+    font-size: 40px;
+    margin: 30px 0px 10px 0px;
 }
 
 #fingers_label{
@@ -989,15 +994,19 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
     float:left;
 }
 
+#home{
+    margin-top: -21px;
+}
+
 #m0{
-    font-size: 80px;
+    font-size: 60px;
     color:#0088cc;
     margin: 30px 0px 15px 0px;
 }
 
 #m1{
     color:gray;
-    font-size: 60px;
+    font-size: 50px;
     margin: 45px 0px 15px 0px;
 }
 

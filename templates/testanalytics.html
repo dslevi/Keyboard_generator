@@ -1,13 +1,15 @@
 {% extends "base.html" %}
 {% block body %}
 <script src="/static/js/d3.v3.js" charset="utf-8"></script>
+<div class="subtitle2" id="keyboard_tests_label">Keyboard Analytics</div><br>
 <h1>{{keyboard.name}}</h1><br>
 
 {% if keyboard.tests %}
     <div id="keyboard_tests"><div id="tests"></div>
         {% for test in keyboard.tests %}
             Accuracy: {{test.accuracy}}<br>
-            WPM: {{test.wpm}}<br><br>
+            WPM: {{test.wpm}}<br>
+            Created: {{test.id}}<br><br>
         {% endfor %}
     <div id="tests_label">Keyboard<br>Accuracy and Words Per Minute</div></div><br>
     <div id="keyboard_vector">KEYBOARD VECTOR</div><br>
@@ -16,7 +18,8 @@
 {% endif %}
 
 {% if an %}
-        <div id="data">
+        <div class="subtitle2" id="data_tests_label">Typing Analytics</div><br>
+        <div id="data_tests">
         <div id="metrics1">
             <div class="Ametrics" id="distance"><div id="d">{{distance[:-3]}}<br></div><br><div class="AmetricsContent">Distance<br>(mm)</div></div>
             <div class="Ametrics" id="wpm"><div id="w">{{wpm}}</div><br><div class="AmetricsContent">Words Per Minute</div></div>

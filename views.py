@@ -370,7 +370,7 @@ def test_analytics(keyboard_id):
         mistakes = genData.keyMistakes(m)
         mostmistakes = genData.definingTimes(3, mistakes, True)
 
-    return render_template("testanalytics.html", keyboard=keyboard, fastflights=fastflights, fastdwell=fastdwell, slowdwell=slowdwell, slowflights=slowflights, 
+    return render_template("testanalytics.html", an=analytics, keyboard=keyboard, fastflights=fastflights, fastdwell=fastdwell, slowdwell=slowdwell, slowflights=slowflights, 
         freq=freq, fastbigrams=fastbigrams, slowbigrams=slowbigrams, mostmistakes=mostmistakes, biAtt=biAtt, att=att, keys=keys, 
         fast=fast, accuracy=accuracy, wpm=wpm, hands=hands, fingers=fingers, distance=distance)
 
