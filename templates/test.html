@@ -27,7 +27,7 @@
         <div id="metrics2">
             <div id="hands"><div id="d3hands"></div></div>
         </div>
-        <div class="label_typing" id="hands_label">Hand usage</div>
+        <div id="hands_label"><div id="hu">Hand usage</div></div>
         
         <div id="metrics3">
             <div id="fingers"><div id="d3fingers"></div>
@@ -81,7 +81,7 @@
             <div class="dataBox metrics7" id="f_times">
                 <div id="D3fast"></div>
                 <div class="label_typing" id="f_times_label">
-                    Fastest Bigram Times
+                    Fastest Bigram<br>Times
                 </div>
             </div>
         </div>
@@ -93,7 +93,7 @@
                 </div>
                 <div id="as">
                     {{att[3][0][0]}}<br><br>
-                    {{att[3][0][1]}}<br><br>
+                    {{att[3][0][0]}}<br><br>
                     {{att[3][0][2]}}
                 </div>
             </div>
@@ -101,9 +101,9 @@
 
         <div id="metrics9">
             <div id="fhd">
-                <div class="dataBox metrics9" id="fhd_f">Same finger use {{biAtt[1]}}</div>
-                <div class="dataBox metrics9" id="fhd_h">Hand alteration {{biAtt[0]}}</div>
-                <div class="dataBox metrics9" id="fhd_d">Horizontal/vertial movement {{biAtt[2]}}</div>
+                <div class="dataBox metrics9" id="fhd_f"><div id="D3same_finger"></div></div>
+                <div class="dataBox metrics9" id="fhd_h"><div id="D3hand_alt"></div></div>
+                <div class="dataBox metrics9" id="fhd_d"><div id="D3direction"></div></div>
             </div>
         </div>
     </data>
@@ -175,11 +175,10 @@
     var cScale = d3.scale.linear().domain([0, 100]).range([0, 2 * Math.PI]);
 
     var hands = {{hands|tojson|safe}};
-    console.log(hands[0]);
-    console.log(hands[1]);
+
     data = [[0, hands[0], "lightgray"], 
-            [hands[0], hands[0] + hands[1], "gray"], 
-            [hands[0] + hands[1], 100, "#0088cc"]]
+            [hands[0], hands[0] + hands[1], "#0088cc"], 
+            [hands[0] + hands[1], 100, "gray"]]
 
     var handsSVG = d3.select("#d3hands")
         .append("svg")
@@ -187,24 +186,44 @@
         .attr("height", 300); 
 
     var arc = d3.svg.arc()
-    .innerRadius(100)
-    .outerRadius(125)
-    .startAngle(function(d){return cScale(d[0]);})
-    .endAngle(function(d){return cScale(d[1]);});
+        .innerRadius(100)
+        .outerRadius(125)
+        .startAngle(function(d){return cScale(d[0]);})
+        .endAngle(function(d){return cScale(d[1]);});
 
     handsSVG.selectAll("path")
-    .data(data)
-    .enter()
-    .append("path")
-    .attr("d", arc)
-    .style("fill", function(d){return d[2];})
-    .attr("transform", "translate(155,150)");
+        .data(data)
+        .enter()
+        .append("path")
+        .attr("d", arc)
+        .style("fill", function(d){return d[2];})
+        .attr("transform", "translate(155,150)");
+
+    handsSVG.append("text")
+        .attr('fill','lightgray')
+        .attr("x", 115)
+        .attr("y", 130)
+        .attr("font-size", "18px")
+        .text("Left Hand");
+    handsSVG.append("text")
+        .attr('fill','#0088cc')
+        .attr("x", 109)
+        .attr("y", 157)
+        .attr("font-size", "18px")
+        .text("Right Hand");
+    handsSVG.append("text")
+        .attr('fill','gray')
+        .attr("x", 107)
+        .attr("y", 184)
+        .attr("font-size", "18px")
+        .text("Both Hands");
+
 
 //SLOWEST TIMES
 
     var slowestSVG = d3.select("#d3slow")
         .append("svg")
-        .attr("width", 340)
+        .attr("width", 370)
         .attr("height", 200); 
 
     var slowest = {{slowbigrams|tojson|safe}};
@@ -223,7 +242,7 @@
         var l = slowest[p][1];
     
         slowestSVG.append("rect")
-            .attr("x", 340 - width)
+            .attr("x", 370 - width)
             .attr("y", 20 + (40 * p))
             .attr("width", width)
             .attr("height", 25)
@@ -275,14 +294,14 @@
 
         fastestSVG.append("text")
                 .attr('fill', "#0088cc")
-                .attr("x", 160)
+                .attr("x", 130)
                 .attr("y", 37 + (40 * p))
                 .attr("font-size", "12px")
                 .text(l);
 
         fastestSVG.append("text")
             .attr('fill','black')
-            .attr("x", 130)
+            .attr("x", 105)
             .attr("y", 37 + (40 * p))
             .attr("text-anchor", "middle")
             .attr("font-size", "12px")
@@ -452,5 +471,130 @@
             .attr("height", 1)
             .style("fill", "lightgray");  
 
+
+//Finger use
+
+    var same_finger = {{biAtt[0]|tojson|safe}};
+
+    data = [[0, same_finger[0], "lightgray"], 
+            [same_finger[0], 100, "#0088cc"]]
+
+    var same_fingerSVG = d3.select("#d3same_finger")
+        .append("svg")
+        .attr("width", 240)
+        .attr("height", 300); 
+
+    var arc = d3.svg.arc()
+        .innerRadius(90)
+        .outerRadius(115)
+        .startAngle(function(d){return cScale(d[0]);})
+        .endAngle(function(d){return cScale(d[1]);});
+
+    same_fingerSVG.selectAll("path")
+        .data(data)
+        .enter()
+        .append("path")
+        .attr("d", arc)
+        .style("fill", function(d){return d[2];})
+        .attr("transform", "translate(120,150)");
+
+    same_fingerSVG.append("text")
+        .attr('fill','lightgray')
+        .attr("x", 78)
+        .attr("y", 142)
+        .attr("font-size", "15px")
+        .text("Same Finger");
+
+    same_fingerSVG.append("text")
+        .attr('fill','#0088cc')
+        .attr("x", 63)
+        .attr("y", 175)
+        .attr("font-size", "15px")
+        .text("Alternating Fingers");
+
+//hand alteration
+
+    var hand_alteration = {{biAtt[1]|tojson|safe}};
+
+    data = [[0, hand_alteration[0], "lightgray"], 
+            [hand_alteration[0], hands[0] + hands[1], "gray"]]
+
+    var handaltSVG = d3.select("#d3hand_alt")
+        .append("svg")
+        .attr("width", 240)
+        .attr("height", 300); 
+
+    var arc = d3.svg.arc()
+        .innerRadius(90)
+        .outerRadius(115)
+        .startAngle(function(d){return cScale(d[0]);})
+        .endAngle(function(d){return cScale(d[1]);});
+
+    handaltSVG .selectAll("path")
+        .data(data)
+        .enter()
+        .append("path")
+        .attr("d", arc)
+        .style("fill", function(d){return d[2];})
+        .attr("transform", "translate(120,150)");
+
+    handaltSVG .append("text")
+        .attr('fill','lightgray')
+        .attr("x", 82)
+        .attr("y", 142)
+        .attr("font-size", "15px")
+        .text("Same Hand");
+    handaltSVG .append("text")
+        .attr('fill','gray')
+        .attr("x", 68)
+        .attr("y", 175)
+        .attr("font-size", "15px")
+        .text("Alternating Hands");
+
+//direction 
+
+    var directional = {{biAtt[2]|tojson|safe}};
+
+    data = [[0, directional[0], "lightgray"], 
+            [directional[0], directional[0] + directional[1], "#0088cc"],
+            [directional[0] + directional[1], 100, "gray"]]
+
+    var directionSVG = d3.select("#D3direction")
+        .append("svg")
+        .attr("width", 240)
+        .attr("height", 300); 
+
+    var arc = d3.svg.arc()
+        .innerRadius(90)
+        .outerRadius(115)
+        .startAngle(function(d){return cScale(d[0]);})
+        .endAngle(function(d){return cScale(d[1]);});
+
+    directionSVG.selectAll("path")
+        .data(data)
+        .enter()
+        .append("path")
+        .attr("d", arc)
+        .style("fill", function(d){return d[2];})
+        .attr("transform", "translate(120,150)");
+
+    directionSVG.append("text")
+        .attr('fill','lightgray')
+        .attr("x", 60)
+        .attr("y", 130)
+        .attr("font-size", "13px")
+        .text("Horizontal Movement");
+    directionSVG.append("text")
+        .attr('fill','#0088cc')
+        .attr("x", 68)
+        .attr("y", 160)
+        .attr("font-size", "13px")
+        .text("Vertical Movement");
+    directionSVG.append("text")
+        .attr('fill','gray')
+        .attr("x", 72)
+        .attr("y", 190)
+        .attr("font-size", "13px")
+        .text("Mixed Movement");    
 </script>
 {% endblock %}

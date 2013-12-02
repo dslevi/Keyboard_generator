@@ -775,6 +775,11 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
     height:55px;
     margin-left: 503px;
     margin-top: -2px;
+    font-size: 20px;
+    text-align: center;
+    background-color: black;
+    opacity: 0.8;
+    color: white;
 }
 
 #metrics3{
@@ -869,13 +874,13 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
 
 #s_times{
     margin-left: 15px;
-    width:340px;
+    width:370px;
     border:1px solid rgba(216, 216, 216, 0.71);
 }
 
 #f_times{
     margin-left: -1px;
-    width:190px;
+    width:160px;
     border:1px solid rgba(216, 216, 216, 0.71);
 }
 
@@ -935,7 +940,7 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
 }
 
 #f_times_label{
-    padding: 15px;
+    padding: 6px;
     margin-top: -10px;
 }
 
@@ -960,6 +965,10 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
     color:white;
     font-size: 18px;
     float:left;
+}
+
+#hu{
+    padding-top: 16px;
 }
 
 #fdtimes,
