@@ -683,7 +683,7 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
 .Ametrics{
     float:left;
     padding:10px;
-    border: 1px gray solid;
+    border: 1px lightgray solid;
     margin:15px;
     width:110px;
     height:120px;
@@ -700,8 +700,8 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
     background-color: black;
     opacity: 0.8;
     color:white;
-    padding: 5px 10px 5px 10px;
-    margin-left: -10px;
+    padding: 5px 11px 5px 11px;
+    margin-left: -11px;
     height:37px;
 }
 
@@ -739,10 +739,10 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
 #view_keyboard{
     font-size: 22px;
     height: 50px;
-    width: 310px;
+    width: 312px;
     color:white;
     background-color:#0088cc;
-    margin-left: 17px;
+    margin-left: 18px;
     margin-top: 15px;
     margin-bottom: 15px;
 }
@@ -934,9 +934,30 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
     margin-left: 28px;
 }
 
+#mist_label{
+    padding-top: 17px;
+    font-size: 18px;
+}
+
+#mist{
+    padding-top: 17px;
+    font-size: 20px;
+}
+
+#lf{
+    padding-top: 17px;
+    font-size: 20px;  
+}
+
 #f_label{
     margin-top: 10px;
     font-size: 18px;
+}
+
+#mistyped_s{
+    font-size: 30px;
+    color:#0088cc;
+    margin-top: 55px;   
 }
 
 #f_times_label{
