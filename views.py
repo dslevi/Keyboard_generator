@@ -151,7 +151,7 @@ def show_analytics():
 
     if session.get("user_id"):
         user_id = session['user_id']
-        new_a = Analytics(input1=input1, input2=input2, user_id=user_id, mistakes=m)
+        new_a = Analytics(input1=input1, input2=input2, user_id=user_id, mistakes=m, accuracy=accuracy, wpm=wpm)
         model.session.add(new_a)
         model.session.commit()
 
@@ -326,37 +326,56 @@ def delete_board(board_id):
 @app.route("/testanalytics/<keyboard_id>", methods=['POST'])
 def test_analytics(keyboard_id):
     keyboard = Keyboard.query.get(keyboard_id)
-    time = request.form.get('time')
-    text = request.form.get('text')
-    mistakes = request.form.get('mistakes')
-    accuracy, wpm = genData.keyAccuracy(mistakes, text, time)
 
-    if (len(keyboard.tests) == 0) or (keyboard.tests[-1].accuracy != accuracy and keyboard.tests[-1].wpm != wpm):
-        a = TestAnalytic(accuracy=accuracy, wpm=wpm, keyboard_id=keyboard_id)
+    if request.form.get('time'):
+        time = request.form.get('time')
+        text = request.form.get('text')
+        mistakes = request.form.get('mistakes')
+        acc, w = genData.keyAccuracy(mistakes, text, time)
+        a = TestAnalytic(accuracy=acc, wpm=w, keyboard_id=keyboard_id)
         model.session.add(a)
         model.session.commit()
 
     if (len(keyboard.analytics) > 0):
-        an = Analytics.query.filter_by(kd_id=keyboard_id).one()
-        input1 = an.input1
-        input2 = an.input2
-        mistakes = an.mistakes
-    else:
-        input1 = []
-        input2 = []
-        mistakes = []
+        analytics = Analytics.query.filter_by(kd_id=keyboard_id).one()
+        input1 = analytics.input1
+        input2 = analytics.input2
+        m = analytics.mistakes
+        accuracy = analytics.accuracy
+        wpm = analytics.wpm
 
-    if session.get('user_id'):
-        user_id = session['user_id']
-    else:
-        user_id = None
+        keystrokes = genData.parseKeystrokes(input1)
+        freq = genData.keyFreq(keystrokes)
+        keys = genData.makeKeys(keystrokes)
+        keytimes = genData.findKeytimes(keystrokes)
+        hands, fingers = genData.handFingerFreq(keytimes)
+        distance = genData.distance(keytimes)
 
-    return render_template("testanalytics.html", keyboard=keyboard, input1=input1, input2=input2, mistakes=mistakes, user_id=user_id)
+        dwelltimes = genData.dwellTime(keytimes)
+        fastdwell = genData.definingTimes(3, dwelltimes, True)
+        slowdwell = genData.definingTimes(3, dwelltimes, False)
 
-@app.route("/datavis")
-def vis():
-    return render_template("d3.html")
+        bigrams = genData.findngrams(2, keytimes)
+        bigramtimes = genData.ngramTimes(bigrams)
+        fastbigrams = genData.definingTimes(4, bigramtimes, True)
+        slowbigrams = genData.definingTimes(4, bigramtimes, False)
+        biAtt = genData.biAttributes(bigrams)
+        fast = genData.fastestTimes(len(bigramtimes)/2, bigramtimes)
+        att = genData.definingAtt(biAtt[3])
 
+        flighttimes = genData.flightTime(bigrams)
+        fastflights = genData.definingTimes(3, flighttimes, True)
+        slowflights = genData.definingTimes(3, flighttimes, False)
+
+        mistakes = genData.keyMistakes(m)
+        mostmistakes = genData.definingTimes(3, mistakes, True)
+
+    return render_template("testanalytics.html", keyboard=keyboard, fastflights=fastflights, fastdwell=fastdwell, slowdwell=slowdwell, slowflights=slowflights, 
+        freq=freq, fastbigrams=fastbigrams, slowbigrams=slowbigrams, mostmistakes=mostmistakes, biAtt=biAtt, att=att, keys=keys, 
+        fast=fast, accuracy=accuracy, wpm=wpm, hands=hands, fingers=fingers, distance=distance)
+
+    
+    
 
 if __name__ == "__main__":
     app.run(debug=True)

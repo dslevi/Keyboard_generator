@@ -791,6 +791,13 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
     margin-top: -266px;
 }
 
+#view_analytics_form{
+    float: right;
+    margin-right: 38;
+    margin-top: -32;
+}
+}
+
 #fingers_label{
     text-align: center;
     width:454px;

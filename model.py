@@ -48,6 +48,8 @@ class Analytics(Base):
     input1 = Column(Text, nullable=False)
     input2 = Column(Text, nullable=False)
     mistakes = Column(Text, nullable=False)
+    wpm = Column(Text, nullable=False)
+    accuracy = Column(Text, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.now)
     user_id = Column(Integer, ForeignKey("users.id"))
     kd_id = Column(Integer, ForeignKey("keyboards.id"))
@@ -110,7 +112,7 @@ def create_tables():
     d = User(name="Danielle", email="d@hba.com", occupation="Programmer")
     d.set_password("python")
     session.add(d)
-    a = Analytics(input1="input1", input2="input2", user_id=u.id, mistakes="mistakes")
+    a = Analytics(input1="input1", input2="input2", user_id=u.id, mistakes="mistakes", wpm="wpm", accuracy="accuracy")
     u.analytics.append(a)
     session.commit()
 

@@ -7,6 +7,11 @@
                 <input type="hidden" name="board_id" value="{{keyboard.id}}">
                 <input type="submit" id="add_keyboard" value="Add to Inventory">
             </form>
+        {% elif session_id and session_id == keyboard.user.id %}
+            <form method="POST" id="view_analytics_form" action="/testanalytics/{{keyboard.id}}">
+                <input type="hidden" name="v_analytics" value=true>
+                <input type="submit" id="view_analytics" value="View Analytics">
+            </form>
         {% endif %}
         <h3 id="keyboard_display"><b>Creator:</b> 
         {% if keyboard.user == None %}
