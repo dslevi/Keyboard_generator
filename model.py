@@ -145,7 +145,7 @@ def create_prompts(filename):
     count = 0
     f = open(filename)
     for line in f:
-        if len(line) <= 95:
+        if len(line) <= 75:
             p = Prompts(text=unicode(line))
             session.add(p)
             count += 1

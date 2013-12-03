@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% block body %}
-    <h1 id="name">{{user.name}}</h1><br>
+    <div id="gen_link">
+        <img src="/static/img/kb2.jpg" id="keyboard_img"></img>
+    </div>
+    <div id="username">{{user.name}}</div><br>
     {% if user.keyboard %}
         {% for board in user.keyboard %}
             <div id="info">

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block body %}
-    <h3>{{prompt}}</h3> <span id="timer">2:00</span><br>
+    <h3 id="prompt"><span id="instruction">Write your own response: </span>{{prompt}}</h3> <span id="timer">2:00</span><br>
     <form method="POST", id="typing_data" action="">
         <textarea id='keyboard_text' cols=100 rows=10></textarea><br>
         <input type="hidden" id="input1" name="input1" value="">

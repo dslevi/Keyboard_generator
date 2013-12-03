@@ -22,15 +22,15 @@
         <h3 id="keyboard_display">{{date}}</h3>
     </div>
     {% if session_id and session_id == keyboard.user.id %}
-    <span id="typing_timer"> </span>
     <span id="timing"><form action="/testanalytics/{{keyboard.id}}" method="post"><input type="hidden" name="time" id="time" value=""><input type="hidden" name="text" id="text" value=""><input type="hidden" name="mistakes" id="mistakes" value=""><button type="button" id="start">Start Test</button></form></span>
+    <span id="typing_timer"></span>
     {% endif %}
     <div id="typing_test1">
         <span id='new_text'></span><span id='old_text'></span><br>
         <span id='text_sample2'></span>
     </div>
     <pre><div id="keyboard_text1"></div></pre>
-    <div class='newKeyboard'>
+    <div id='newKeyboard'>
         {% for key in jsonKeyboard %}
             <div class="display_key" id="{{key[0]}}">
                 {% if key[1][0] == "~" or key[1][0] == "!" or key[1][0] == "@" or key[1][0] == "#" or key[1][0] == "$" or key[1][0] == "%" 
@@ -297,6 +297,7 @@ var keyup_divs = {192:"A01", 49:"A02",50:"A03", 51:"A04", 52:"A05", 53:"A06", 54
         var node = document.getElementById("old_text");
         node.innerHTML += "{{text.content}}";
         document.getElementById("text_sample2").innerHTML += "<br>'{{text.title}}' - {{text.author}}";
+        document.getElementById('old_text').scrollIntoView();
         $('body').one("keydown", function(event) {
             CreateTimer("typing_timer", 0);
             start = true;

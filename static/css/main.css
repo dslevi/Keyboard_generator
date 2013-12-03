@@ -3,8 +3,10 @@
 }
 
 .keyboard{
-    padding: 5px;
+    padding-left: 5px;
     padding-bottom: 16px;
+    margin-top: -18px;
+}
 
 }
 
@@ -308,13 +310,20 @@ h1#test{
     margin: -8px 0px 4px 6px;
 }
 
+#newKeyboard{
+    margin-left: 5px;
+    margin-bottom: 350px;
+}
+
 h3#keyboard_display{
     color:#212121;
     font-weight: normal;
 }
 
 pre{
-    width:890px;
+    border-radius: 0px;
+    width: 889px;
+    margin-top: -1;
     background-color: white;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
@@ -326,10 +335,11 @@ pre{
     line-height: 20px;
     font-weight: normal;
     color:gray;
+    margin-top: -10;
 }
 
 #text_details{
-    margin-bottom: 10px;
+    margin-top: -10px;
 }
 
 #text_title{
@@ -565,12 +575,12 @@ pre{
 #timing{
     margin-right: 40px;
     float:right;
-    margin-top: -4px;
+    margin-top: -53px;
 }
 
 #typing_timer{
     font-size: 18px;
-    margin-left: 795px;
+    margin-left: 863px;
 }
 
 #start{
@@ -586,6 +596,10 @@ pre{
     font-weight: normal;
     vertical-align: middle;
     width: auto;
+}
+
+#user_info{
+    margin-top: -15;
 }
 
 h1#name{
@@ -1059,7 +1073,7 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
 }
 
 #ktests{
-    margin-left: -60px;
+    margin-left: 15px;
     margin-top: 15px;
 }
 
@@ -1099,9 +1113,35 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
     color: #0088cc;
 }
 
+#prompt{
+    width:850px;
+}
+
+#instruction{
+    color:black;
+}
+
+#darkenimg{
+    position:relative;
+}
+#darken{
+    background-color: black;
+    opacity: 0.5;
+    position: absolute;
+    top:0px;
+    left:0px;
+    width:800px;
+    height:300px;
+}
+
 #accuracy_one{
     margin-left: 55px;
     width: 244px;
+}
+#username{
+    color: #FFFFFF;
+    font-size: 80px;
+    margin: 50px 0px 90px 0px;
 }
 
 #wpm_one{
@@ -1118,19 +1158,30 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
     margin-top: -455;
 }
 
+#view_keyboard:hover{
+    background-color:#0088cc;
+    opacity: 1;
+    cursor: pointer;
+}
 #no_analytics{
     font-size: 30px;
-    margin-left: 15px;
+    margin-left: 55px;
     margin-top: 40px;
+    margin-bottom: 30px;
+    color: #004C72;
 }
 
 #no_tests{
     font-size: 30px;
-    margin-left: 15px;
+    margin-left: 55px;
     margin-top: 10px;
     margin-bottom: -16px;
+    color: #004C72;
 }
 
+#no_tests: link{
+    color: #004C72;
+}
 #data_tests{
     margin-left: 40;
 }
