@@ -157,7 +157,7 @@ def show_analytics():
 
     return render_template("test.html", fastflights=fastflights, fastdwell=fastdwell, slowdwell=slowdwell, slowflights=slowflights, 
         freq=freq, fastbigrams=fastbigrams, slowbigrams=slowbigrams, mostmistakes=mostmistakes, biAtt=biAtt, att=att, keys=keys, 
-        fast=fast, accuracy=accuracy, wpm=wpm, hands=hands, fingers=fingers, distance=distance)
+        fast=fast, accuracy=accuracy, wpm=wpm, hands=hands, fingers=fingers, distance=distance, input1=input1)
 
 @app.route("/genetic/")
 def genetic():
@@ -170,6 +170,9 @@ def genetic():
     att = json.loads(a)
 
     layout  = genetic2.main(fast, att, keys)
+
+    print layout
+
     l = layout[0][0]
 
     if session.get("user_id"):

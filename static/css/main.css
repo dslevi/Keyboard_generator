@@ -543,21 +543,21 @@ pre{
 #info{
     margin: 10px 40px 20px 1px;
     float:left;
-    width:80px;
+    width:180px;
 }
 
 .thumbnail{
-    width:90px;
-    height:90px;
+    width:130px;
+    height:130px;
     background-color: black;
     color:white;
     font-size: 35px;
-    padding:5px;
+    padding:10px;
 }
 
 .info{
     color:black;
-    font-size: 14px;
+    font-size: 18px;
     margin-left: 3px;
     padding-top: 2px;
 }
@@ -595,16 +595,16 @@ h1#name{
 #delete{
     color:#343435;
     font-size: 20px;
-    margin-right: -12px;
-    margin-top: -114px;
+    margin-right: 45px;
+    margin-top: -155px;
     float:right;
 }
 
 a#delete:hover {color:white; text-decoration:none;} 
 
 #edit{
-    margin-right: -16px;
-    margin-top: -52px;
+    margin-right: 40px;
+    margin-top: -60px;
     float:right;
     opacity:0.5;
 }

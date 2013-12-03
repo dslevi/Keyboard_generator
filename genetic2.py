@@ -26,24 +26,32 @@ def create_pool(size):
         pool.append(layout())
     return pool
 
-key_lhf = {0: [0, 13, 1, 0], 1: [1, 0, 0, 0], 2: [2, 12, 1, 0], 3: [4, 3, 2, 0], 4: [0, 10, 1, 0], 5: [0, 1, 0, 0], 6: [0, 2, 0, 1], 7: [0, 3, 0, 2], 
-8: [0, 4, 0, 3], 9: [0, 5, 0, 3], 10: [0, 6, 1, 3], 11: [0, 7, 1, 3], 12: [0, 8, 1, 2], 13: [0, 9, 1, 1], 14: [2, 1, 0, 0], 15: [3, 5, 0, 3], 
-16: [3, 3, 0, 2], 17: [2, 3, 0, 2], 18: [1, 3, 0, 2], 19: [2, 4, 0, 3], 20: [2, 5, 0, 3], 21: [2, 6, 1, 3], 22: [1, 8, 1, 2], 23: [2, 7, 1, 3], 
-24: [2, 8, 1, 2], 25: [2, 9, 1, 1], 26: [3, 7, 1, 3], 27: [3, 6, 1, 3], 28: [1, 9, 1, 1], 29: [1, 10, 1, 0], 30: [1, 1, 0, 0], 31: [1, 4, 0, 3], 
-32: [2, 2, 0, 1], 33: [1, 5, 0, 3], 34: [1, 7, 1, 3], 35: [3, 4, 0, 3], 36: [1, 2, 0, 1], 37: [3, 2, 0, 1], 38: [1, 6, 1, 3], 39: [3, 1, 0, 0], 
-40: [2, 10, 1, 0], 41: [0, 12, 1, 0], 42: [3, 8, 1, 2], 43: [0, 11, 1, 0], 44: [3, 9, 1, 1], 45: [3, 10, 1, 0], 46: [0, 0, 0, 0], 47: [1, 11, 1, 0], 
-48: [1, 13, 1, 0], 49: [1, 12, 1, 0], 50: [2, 11, 1, 0]}
+key_lhf = {
+    0:[0, 0, 0, 0], 1:[0, 1, 0, 0], 2:[0, 2, 0, 1], 3:[0, 3, 0, 2], 4:[0, 4, 0, 3], 5:[0, 5, 0, 3], 
+    6: [0, 6, 1, 3], 7:[0, 7, 1, 3], 8:[0, 8, 1, 2], 9:[0, 9, 1, 1], 10:[0, 10, 1, 0], 11:[0, 11, 1, 0], 12:[0, 12, 1, 0], 13:[0, 13, 1, 0], 
+
+    14:[1, 0, 0, 0], 15:[1, 1, 0, 0], 16:[1, 2, 0, 1], 17:[1, 3, 0, 2], 18:[1, 4, 0, 3], 19:[1, 5, 0, 3], 
+    20:[1, 6, 1, 3], 21:[1, 7, 1, 3], 22:[1, 8, 1, 2], 23:[1, 9, 1, 1], 24:[1, 10, 1, 0], 25:[1, 11, 1, 0], 26:[1, 12, 1, 0], 27:[1, 13, 1, 0], 
+
+    28:[2, 0, 0, 0], 29:[2, 1, 0, 0], 30:[2, 2, 0, 1], 31:[2, 3, 0, 2], 32:[2, 4, 0, 3], 33:[2, 5, 0, 3], 
+    34:[2, 6, 1, 3], 35:[2, 7, 1, 3], 36:[2, 8, 1, 2], 37:[2, 9, 1, 1], 38:[2, 10, 1, 0], 39:[2, 11, 1, 0], 
+
+    40:[3, 1, 0, 0], 41:[3, 2, 0, 1], 42:[3, 3, 0, 2], 43:[3, 4, 0, 3], 44:[3, 5, 0, 3], 
+    45:[3, 6, 1, 3], 46:[3, 7, 1, 3], 47:[3, 8, 1, 2], 48:[3, 9, 1, 1], 49:[3, 10, 1, 0], 
+
+    50: [4, 3, 2, 0]}
 
 def distance(l, freq):
     distance = 0
     length = 1.8
-    homerow = [[28, 29, 30, 31], [34, 35, 36, 37], [50]]
-
+    homerow = [[29, 30, 31, 32], [38, 37, 36, 35], [50]]
+    
     for i in range(len(freq)):
-        if freq[i] != 16:
-            w = (1/(1 + i))
+        w = (1 + i)
+        if freq[i] != 16 and freq[i] != 191:
             krow, kcol, kh, kf = key_lhf[l.index(toIndex[freq[i]])]
             hrow, hcol, hh, hf = key_lhf[homerow[kh][kf]]
+
             if hrow == krow and hcol == kcol:
                 diff = 0
             elif hrow == krow:
@@ -54,15 +62,16 @@ def distance(l, freq):
                 a = abs(hrow - krow)
                 b = abs(hcol - kcol)
                 diff = math.sqrt((a**2) + (b**2))
-            distance += length * (diff * w)
+ 
+            distance += ((length * diff)/float(w))
 
     return distance
 
-def hfmCost(h, f, m, bigrams, layout):
+def hfmCost(h, f, m, bigrams, l):
     cost = 0
     for bigram in bigrams:
-        k1 = layout.index(toIndex[bigram[0]])
-        k2 = layout.index(toIndex[bigram[1]])
+        k1 = l.index(toIndex[bigram[0]])
+        k2 = l.index(toIndex[bigram[1]])
 
         row1, col1, h1, f1 = key_lhf[k1]
         row2, col2, h2, f2 = key_lhf[k2]
@@ -90,13 +99,12 @@ def hfmCost(h, f, m, bigrams, layout):
         else: 
             if row1 == row2 and col1 == col2:
                 cost += 0.33
-    return cost
+    return (cost/len(l))
 
 def findDiff(b, l):
     diff = 0
     length = 1.8
     distance = 0
-    total = 611.8387
 
     for i in range(len(qwerty)):
         qrow, qcol, qh, qf = key_lhf[i]
@@ -114,20 +122,21 @@ def findDiff(b, l):
             b = abs(qcol - col)
             diff = math.sqrt((a**2) + (b**2))
         distance += length * diff
-    return (distance/total)
+    return distance
 
-def fitness(layout, bigrams, att, freq):
+def fitness(l, bigrams, att, freq):
     #home row proximity
-    homeDist = distance(layout, freq)
+    homeDist = distance(l, freq)
 
     #optimize for hand/finger/motion attributes of fastest bigrams
-    hfm = hfmCost(att[0][0], att[1][0], att[2][0], bigrams, layout)
+    hfm = hfmCost(att[0][0], att[1][0], att[2][0], bigrams, l)
 
     #qwerty similarity
-    learning = findDiff(qwerty, layout)
-    cost = homeDist + hfm + learning
-    return cost
+    learning = findDiff(qwerty, l)
 
+    # cost = (homeDist * 1.5) + (learning/65) + (hfm * 0.75)
+    print (homeDist), (hfm), (learning/400)
+    return homeDist + hfm + (learning/400)
 def score_pool(pool, existing, keys, att, freq):
     scored = []
     for p in pool:
@@ -165,7 +174,7 @@ def mutate(pool, m):
 def find_best(pool, b, prev):
     new = pool[0]
     for p in pool:
-        if p[1] < new[0]:
+        if p[1] < new[1]:
             new = p
     if prev == new:
         b += 1
@@ -174,29 +183,13 @@ def find_best(pool, b, prev):
         b = 0
     return prev, b
 
-def rand_selection(s):
-    p = []
-    w = []
-    for i in range(len(s)):
-        #test for range of fitness scores
-        f = (s[i][1]/10)
-        for h in f:
-            w.append(i)
-    for i in range(len(s)/2):
-        n = w[random.randint(len(w))]
-        p.append(s[n])
-        for h in w:
-            if h == n:
-                del n
-    return p
-
 visual_value = {219:('[', '{'), 220:('\\', '|'), 221:(']', '}'), 192:('`','~'), 186:(';', ':'), 190:('.', '>'), 188:(',','<'), 189:('-','_'),
         222:("'",'"'), 187:('=','+'), 191:("/", '?'), 9:('TAB','TAB'), 13:('ENTER','ENTER'), 
         32:('SPACE','SPACE'), 20:('CAPS','CAPS'), 8:('DELETE','DELETE'),
         48:('0', ')'), 49:('1', '!'), 50:('2','@'), 51:('3','#'), 52:('4','$'), 53:('5','%'), 54:('6','^'), 55:('7','&'), 56:('8','*'), 57:('9','('),
         65:('a', 'A'), 66:('b', 'B'), 67:('c', 'C'), 68:('d', 'D'), 69:('e', 'E'), 82:('r', 'R'), 83:('s', 'S'), 80:('p', 'P'), 81:('q', 'Q'), 87:('w', 'W'), 
         84:('t', 'T'), 85:('u', 'U'), 86:('v', 'V'), 76:('l', 'L'), 75:('k', 'K'), 74:('j', 'J'), 73:('i', 'I'), 72:('h', 'H'), 71:('g', 'G'), 70:('f', 'F'), 
-        79:('o', 'O'), 78:('n', 'N'), 90:('z', 'Z'), 77:('m', 'M'), 88:('x', 'X'), 89:('y', 'Y'), 90:('?', '?'), 191:('?', '?')}
+        79:('o', 'O'), 78:('n', 'N'), 90:('z', 'Z'), 77:('m', 'M'), 88:('x', 'X'), 89:('y', 'Y'), 90:('/', '?'), 191:('?', '?')}
 
 divs = ['A01', 'A02', 'A03', 'A04', 'A05', 'A06', 'A07', 'A08', 'A09', 'A10', 'A11', 'A12', 'A13', 'A14', 'B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B09', 'B10', 'B11', 'B12', 'B13', 'B14', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C08', 'C09', 'C10', 'C11', 
      'C12', 'C13', 'D02', 'D03', 'D04', 'D05', 'D06', 'D07', 'D08', 'D09', 'D10', 'D11', 'E04']
@@ -213,18 +206,24 @@ def createKeyboard(opt):
 def getbest(p):
     m = p[0]
     for i in p:
-        if p[0] < m[0]:
-            m = p
+        if i[1] < m[1]:
+            m = i          
     return m
+
+def randompool(s):
+    b = []
+    for i in range(len(s)/2):
+        b.append(random.randint(0, len(s)-1))
+    return b
 
 def main(bigrams, att, freq):
     loop = True
-    p = 200
+    p = 300
     m = 3
     g = 0
     b = 0
     n = 3
-    q = 20
+    q = 5
     prev = [0, 0]
     o_pool = []
 
@@ -236,7 +235,7 @@ def main(bigrams, att, freq):
         if b > n:
             o_pool.append(prev)
             b = 0
-        if len(o_pool) > q:
+        if len(o_pool) == q:
             best = getbest(o_pool)
             break
         pool = scored[len(scored)/2:]
