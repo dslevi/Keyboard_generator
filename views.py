@@ -329,20 +329,25 @@ def test_analytics(keyboard_id):
 
     if request.form.get('time'):
         #cannot accept again if its a refresh...
-        time = request.form.get('time')
+        t = request.form.get('time')
         text = request.form.get('text')
         mistakes = request.form.get('mistakes')
-        acc, w = genData.keyAccuracy(mistakes, text, time)
-        a = TestAnalytic(accuracy=acc, wpm=w, keyboard_id=keyboard_id)
-        model.session.add(a)
-        model.session.commit()
+        print t, text, mistakes, 'THIS'
+        acc, w = genData.keyAccuracy(mistakes, text, t)
+        if acc!= keyboard.tests[-1].accuracy and w != keyboard.tests[-1].wpm:
+            a = TestAnalytic(accuracy=acc, wpm=w, keyboard_id=keyboard_id)
+            model.session.add(a)
+            model.session.commit()
+    else:
+        print "dumb..."
 
     tests = keyboard.tests
     t = []
     if (len(tests) > 0):
         for test in tests:
-            t.append([test.accuracy, test.wpm, test.created_at])
+            t.append([test.accuracy, test.wpm, time.strftime('%m/%d/%y %I:%M%p', test.created_at.timetuple())])
         tests = t
+        #doesn't work for only one data point!
 
     if (len(keyboard.analytics) > 0):
         analytics = Analytics.query.filter_by(kd_id=keyboard_id).one()
