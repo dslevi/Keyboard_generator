@@ -4,7 +4,7 @@
     {% if user.keyboard %}
         {% for board in user.keyboard %}
             <div id="info">
-                <a class="info thumb" href="/keyboard/{{board.id}}"><div class="thumbnail">{{board.keys[35].values.split()[1][0]}}</div></a>
+                <a class="info_thumb" href="/keyboard/{{board.id}}"><div class="thumbnail">{{board.keys[35].values.split()[1][0]}}</div></a>
                 <div class="info"><b><a href="/keyboard/{{board.id}}">{{board.name}}</a></b></div> 
                 {% if user.id == user_id %}
                     <a class="info" href="/edit/{{board.id}}" id="edit" title="Edit keyboard"><img src="/static/img/edit.png"></img></a>

@@ -966,6 +966,10 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
     margin-top: 55px;   
 }
 
+.testgraphs{
+    float:left;
+}
+
 #f_times_label{
     padding: 6px;
     margin-top: -10px;
@@ -1052,4 +1056,55 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
     opacity: 0.8;
     height: 55px;
     margin-top: 1;
+}
+
+#ktests{
+    margin-left: -100px;
+    margin-top: 15px;
+}
+
+#keyboard_vector{
+    margin-top: -420;
+    margin-left: 450;
+}
+
+#tests_label{
+    text-align: center;
+    width: 300px;
+    font-size: 18px;
+    color: rgb(88, 88, 88);
+    margin-left: 55px;
+}
+
+#vector_label{
+    float:right;
+    text-align: center;
+    width: 300px;
+    font-size: 18px;
+    color: rgb(88, 88, 88);
+    margin-left: 55px;
+}
+
+#test_name{
+    float: right;
+    margin-top: -52;
+    margin-right: 355;
+    font-size: 33;
+}
+
+#vector_label{
+    float: right;
+    text-align: center;
+    width: 300px;
+    font-size: 20px;
+    color: rgb(88, 88, 88);
+    margin-right: 136px;
+    margin-top: -455;
+}
+
+#no_tests{
+    font-size: 30px;
+    margin-left: 15px;
+    margin-top: 10px;
+    margin-bottom: -16px;
 }

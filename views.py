@@ -328,6 +328,7 @@ def test_analytics(keyboard_id):
     keyboard = Keyboard.query.get(keyboard_id)
 
     if request.form.get('time'):
+        #cannot accept again if its a refresh...
         time = request.form.get('time')
         text = request.form.get('text')
         mistakes = request.form.get('mistakes')
@@ -335,6 +336,13 @@ def test_analytics(keyboard_id):
         a = TestAnalytic(accuracy=acc, wpm=w, keyboard_id=keyboard_id)
         model.session.add(a)
         model.session.commit()
+
+    tests = keyboard.tests
+    t = []
+    if (len(tests) > 0):
+        for test in tests:
+            t.append([test.accuracy, test.wpm, test.created_at])
+        tests = t
 
     if (len(keyboard.analytics) > 0):
         analytics = Analytics.query.filter_by(kd_id=keyboard_id).one()
@@ -371,7 +379,7 @@ def test_analytics(keyboard_id):
         mostmistakes = genData.definingTimes(3, mistakes, True)
 
     return render_template("testanalytics.html", an=analytics, keyboard=keyboard, fastflights=fastflights, fastdwell=fastdwell, slowdwell=slowdwell, slowflights=slowflights, 
-        freq=freq, fastbigrams=fastbigrams, slowbigrams=slowbigrams, mostmistakes=mostmistakes, biAtt=biAtt, att=att, keys=keys, 
+        freq=freq, fastbigrams=fastbigrams, slowbigrams=slowbigrams, mostmistakes=mostmistakes, biAtt=biAtt, att=att, keys=keys, tests=tests,
         fast=fast, accuracy=accuracy, wpm=wpm, hands=hands, fingers=fingers, distance=distance)
 
     

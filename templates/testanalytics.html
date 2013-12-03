@@ -1,24 +1,79 @@
 {% extends "base.html" %}
 {% block body %}
+<script src="/static/js/Chart.js"></script>
 <script src="/static/js/d3.v3.js" charset="utf-8"></script>
 <div class="subtitle2" id="keyboard_tests_label">Keyboard Analytics</div><br>
-<h1>{{keyboard.name}}</h1><br>
+<h1 id="test_name">{{keyboard.name}}</h1><br>
 
-{% if keyboard.tests %}
-    <div id="keyboard_tests"><div id="tests"></div>
-        {% for test in keyboard.tests %}
-            Accuracy: {{test.accuracy}}<br>
-            WPM: {{test.wpm}}<br>
-            Created: {{test.created_at}}<br><br>
-        {% endfor %}
-    <div id="tests_label">Keyboard<br>Accuracy and Words Per Minute</div></div><br>
-    <div id="keyboard_vector">KEYBOARD VECTOR</div><br>
+{% if tests %}
+    <div id="tests_label">Keyboard<br>Accuracy and Words Per Minute</div>
+    <div class="test_graphs" id="ktests"><div id="tests"></div>
+        <canvas id="tests_canvas" width="600" height="400"></canvas>
+    </div><br>
+    <div id="vector_label">Keyboard Optimization</div>
+    <div class="test_graphs" id="keyboard_vector"><canvas id="vector" width="400" height="400"></canvas></div><br>
+    <script type="text/javascript">
+
+        var tests = {{tests|tojson|safe}};
+
+        var accuracy_data=[];
+        var wpm_data=[];
+        var test_labels=[];
+
+        for (var t in tests) {
+            accuracy_data.push(tests[t][0]);
+            wpm_data.push(tests[t][1]);
+            test_labels.push(tests[t][2]);
+        }
+
+        var tests_data = {
+            labels : test_labels,
+            datasets : [
+                {
+                    fillColor : "rgba(220,220,220,0.5)",
+                    strokeColor : "rgba(220,220,220,1)",
+                    pointColor : "rgba(220,220,220,1)",
+                    pointStrokeColor : "#fff",
+                    data : accuracy_data
+                },
+                {
+                    fillColor : "rgba(151,187,205,0.5)",
+                    strokeColor : "rgba(151,187,205,1)",
+                    pointColor : "rgba(151,187,205,1)",
+                    pointStrokeColor : "#fff",
+                    data : wpm_data
+                }
+            ]
+        }
+
+        var constraints = [0.8, 0.9, 0.5];
+
+        var vector_data = {
+            labels : ["Learning","Speed","Comfort"],
+            datasets : [
+                {
+                    fillColor : "rgba(220,220,220,0.5)",
+                    strokeColor : "#0088cc",
+                    pointColor : "rgba(220,220,220,1)",
+                    pointStrokeColor : "#0088cc",
+                    data : constraints
+                }
+            ]
+        }
+
+        var tests_ctx = document.getElementById("tests_canvas").getContext("2d");
+        var tests_Chart = new Chart(tests_ctx).Line(tests_data);
+
+        var vector_ctx = document.getElementById("vector").getContext("2d");
+        var vector_Chart = new Chart(vector_ctx).Radar(vector_data);
+
+    </script>
 {% else %}
     <div id="no_tests"><a href="/keyboard/{{keyboard.id}}">No typing test data</a></div>
 {% endif %}
 
 {% if an %}
-        <div class="subtitle2" id="data_tests_label">Typing Analytics</div><br>
+        <div class="subtitle2" id="data_tests_label"></div><br>
         <div id="data_tests">
         <div id="metrics1">
             <div class="Ametrics" id="distance"><div id="d">{{distance[:-3]}}<br></div><br><div class="AmetricsContent">Distance<br>(mm)</div></div>
@@ -27,12 +82,7 @@
         </div>
 
         <div id="metrics_gen">
-            <form method="POST" id="gen_form" action="/pekl">
-                <input type="hidden" name="fast" value="{{fast|tojson|safe}}">
-                <input type="hidden" name="att" value="{{att[4]|tojson|safe}}">
-                <input type="hidden" name="keys" value="{{keys|tojson|safe}}">
-                <input type="submit" id="view_keyboard" value="Generate Your Keyboard">
-            </form>
+                <button id="view_keyboard">Typing Analytics</button>
         </div>
 
         <div id="metrics2">
