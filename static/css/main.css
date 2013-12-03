@@ -1059,30 +1059,24 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
 }
 
 #ktests{
-    margin-left: -100px;
+    margin-left: -60px;
     margin-top: 15px;
 }
 
 #keyboard_vector{
     margin-top: -420;
-    margin-left: 450;
+    margin-left: 480;
 }
 
 #tests_label{
     text-align: center;
-    width: 300px;
-    font-size: 18px;
-    color: rgb(88, 88, 88);
+    width: 500px;
+    font-size: 25px;
+    padding: 15px;
+    color: white;
     margin-left: 55px;
-}
-
-#vector_label{
-    float:right;
-    text-align: center;
-    width: 300px;
-    font-size: 18px;
-    color: rgb(88, 88, 88);
-    margin-left: 55px;
+    background-color: black;
+    opacity: 0.8;
 }
 
 #test_name{
@@ -1092,14 +1086,42 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
     font-size: 33;
 }
 
+.tg_boxes{
+    float: left;
+    border: 1px lightgray solid;
+    width: 243px;
+    padding: 10;
+    font-size: 30px;
+    line-height: 1.4;
+    text-align: center;
+    margin-left: -1px;
+    margin-bottom: 30px;
+    color: #0088cc;
+}
+
+#accuracy_one{
+    margin-left: 55px;
+    width: 244px;
+}
+
+#wpm_one{
+    margin-right: 290px;
+}
+
 #vector_label{
     float: right;
     text-align: center;
     width: 300px;
     font-size: 20px;
     color: rgb(88, 88, 88);
-    margin-right: 136px;
+    margin-right: 105px;
     margin-top: -455;
+}
+
+#no_analytics{
+    font-size: 30px;
+    margin-left: 15px;
+    margin-top: 40px;
 }
 
 #no_tests{
@@ -1107,4 +1129,8 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
     margin-left: 15px;
     margin-top: 10px;
     margin-bottom: -16px;
+}
+
+#data_tests{
+    margin-left: 40;
 }

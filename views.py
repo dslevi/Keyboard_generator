@@ -328,26 +328,27 @@ def test_analytics(keyboard_id):
     keyboard = Keyboard.query.get(keyboard_id)
 
     if request.form.get('time'):
-        #cannot accept again if its a refresh...
+        
         t = request.form.get('time')
         text = request.form.get('text')
         mistakes = request.form.get('mistakes')
-        print t, text, mistakes, 'THIS'
         acc, w = genData.keyAccuracy(mistakes, text, t)
-        if acc!= keyboard.tests[-1].accuracy and w != keyboard.tests[-1].wpm:
+
+        if (len(keyboard.tests) == 0) or (acc!= keyboard.tests[-1].accuracy and w != keyboard.tests[-1].wpm):
             a = TestAnalytic(accuracy=acc, wpm=w, keyboard_id=keyboard_id)
             model.session.add(a)
             model.session.commit()
-    else:
-        print "dumb..."
 
     tests = keyboard.tests
     t = []
+    mult = False
+
     if (len(tests) > 0):
         for test in tests:
             t.append([test.accuracy, test.wpm, time.strftime('%m/%d/%y %I:%M%p', test.created_at.timetuple())])
         tests = t
-        #doesn't work for only one data point!
+        if len(tests) > 1:
+            mult = True
 
     if (len(keyboard.analytics) > 0):
         analytics = Analytics.query.filter_by(kd_id=keyboard_id).one()
@@ -382,10 +383,30 @@ def test_analytics(keyboard_id):
 
         mistakes = genData.keyMistakes(m)
         mostmistakes = genData.definingTimes(3, mistakes, True)
+    else:
+        analytics = None
+        fastflights = None
+        slowflights = None
+        fastdwell = None
+        slowdwell = None
+        freq = None
+        fastbigrams = None
+        slowbigrams = None
+        mostmistakes = None
+        biAtt = None
+        att = None
+        keys = None
+        fast = None
+        accuracy = None
+        wpm = None
+        hands = None
+        fingers = None
+        distance = None
+        mult = None
 
     return render_template("testanalytics.html", an=analytics, keyboard=keyboard, fastflights=fastflights, fastdwell=fastdwell, slowdwell=slowdwell, slowflights=slowflights, 
         freq=freq, fastbigrams=fastbigrams, slowbigrams=slowbigrams, mostmistakes=mostmistakes, biAtt=biAtt, att=att, keys=keys, tests=tests,
-        fast=fast, accuracy=accuracy, wpm=wpm, hands=hands, fingers=fingers, distance=distance)
+        fast=fast, accuracy=accuracy, wpm=wpm, hands=hands, fingers=fingers, distance=distance, mult=mult)
 
     
     
