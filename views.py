@@ -96,13 +96,13 @@ def signout():
 #can condense?
 @app.route("/keyboard", methods=["POST"])
 def continue_keyboard():
-    prompt = Prompts.query.get(random.randint(1, 227))
+    prompt = Prompts.query.get(random.randint(1, 172))
     input1 = request.form.get("input1")
     return render_template("keyboard.html", prompt=prompt.text, input1=input1)
 
 @app.route("/keyboard")
 def show_keyboard():
-    prompt = Prompts.query.get(random.randint(1, 227))
+    prompt = Prompts.query.get(random.randint(1, 172))
     input1 = ""
     return render_template("keyboard.html", prompt=prompt.text, input1=input1)
 
@@ -344,14 +344,11 @@ def test_analytics(keyboard_id):
 
     tests = keyboard.tests
     t = []
-    mult = False
 
     if (len(tests) > 0):
         for test in tests:
             t.append([test.accuracy, test.wpm, time.strftime('%m/%d/%y %I:%M%p', test.created_at.timetuple())])
         tests = t
-        if len(tests) > 1:
-            mult = True
 
     if (len(keyboard.analytics) > 0):
         analytics = Analytics.query.filter_by(kd_id=keyboard_id).one()
@@ -409,7 +406,7 @@ def test_analytics(keyboard_id):
 
     return render_template("testanalytics.html", an=analytics, keyboard=keyboard, fastflights=fastflights, fastdwell=fastdwell, slowdwell=slowdwell, slowflights=slowflights, 
         freq=freq, fastbigrams=fastbigrams, slowbigrams=slowbigrams, mostmistakes=mostmistakes, biAtt=biAtt, att=att, keys=keys, tests=tests,
-        fast=fast, accuracy=accuracy, wpm=wpm, hands=hands, fingers=fingers, distance=distance, mult=mult)
+        fast=fast, accuracy=accuracy, wpm=wpm, hands=hands, fingers=fingers, distance=distance)
 
     
     

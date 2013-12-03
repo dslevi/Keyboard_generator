@@ -7,18 +7,12 @@
 
 {% if tests %}
     <div id="tests_label">Keyboard Accuracy & Words Per Minute</div>
-    {% if mult %}
+    {% if tests|length > 1 %}
         <div class="test_graphs" id="ktests"><div id="tests"></div>
             <canvas id="tests_canvas" width="600" height="400"></canvas>
         </div>
-    {% else %}
-        <div class="test_graphs" id="ktests_one">
-            <div class="tg_boxes" id="accuracy_one">Accuracy<br>{{tests[0][0]}}</div>
-            <div class="tg_boxes" id="wpm_one">WPM<br>{{tests[0][1]}}</div>
-        </div>
-    {% endif %}
 
-    <script type="text/javascript">
+        <script type="text/javascript">
 
         var tests = {{tests|tojson|safe}};
 
@@ -57,6 +51,13 @@
         var tests_ctx = document.getElementById("tests_canvas").getContext("2d");
         var tests_Chart = new Chart(tests_ctx).Line(tests_data);
     </script>
+
+    {% else %}
+        <div class="test_graphs" id="ktests_one">
+            <div class="tg_boxes" id="accuracy_one">Accuracy<br>{{tests[0][0]}}</div>
+            <div class="tg_boxes" id="wpm_one">WPM<br>{{tests[0][1]}}</div>
+        </div>
+    {% endif %}
 {% else %}
     <div id="no_tests"><a href="/keyboard/{{keyboard.id}}">No typing test data</a></div>
 {% endif %}
@@ -356,14 +357,14 @@
 
         fastestSVG.append("text")
                 .attr('fill', "#0088cc")
-                .attr("x", 130)
+                .attr("x", 90)
                 .attr("y", 37 + (40 * p))
                 .attr("font-size", "12px")
                 .text(l);
 
         fastestSVG.append("text")
             .attr('fill','black')
-            .attr("x", 105)
+            .attr("x", 65)
             .attr("y", 37 + (40 * p))
             .attr("text-anchor", "middle")
             .attr("font-size", "12px")
