@@ -22,11 +22,12 @@
 
         if (tests.length > 1) {
             for (var t in tests) {
-                accuracy_data.push(tests[t][0]);
+                accuracy_data.push(parseInt(tests[t][0].slice(0, -1)));
                 wpm_data.push(tests[t][1]);
                 test_labels.push(tests[t][2]);
             }
 
+            console.log(accuracy_data);
             var tests_data = {
                 labels : test_labels,
                 datasets : [

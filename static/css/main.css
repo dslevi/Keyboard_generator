@@ -329,7 +329,7 @@ pre{
 #text_content{
     margin-left:10px;
     width:895px;
-    font-size: 18px;
+    font-size: 16px;
     line-height: 20px;
     font-weight: normal;
     color:gray;
@@ -342,7 +342,7 @@ pre{
 
 #text_title{
     padding-left: 10px;
-    font-size: 18px;
+    font-size: 15px;
 }
 
 #text_author{
@@ -358,11 +358,11 @@ pre{
 }
 
 #new_text{
-    color:green;
+    color:#00A3F3;
 }
 
 .mistake{
-    color:red;
+    color:orange;
 }
 
 .droppedel{
@@ -1116,7 +1116,10 @@ div.thumb:hover {text-decoration: none; background-color: #0088cc}
 }
 
 #instruction{
+    margin: -10px 0px 20px 10px;
+    font-size: 18px;
     color:black;
+    font-weight: bold;
 }
 
 #darkenimg{
