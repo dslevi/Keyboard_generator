@@ -230,7 +230,7 @@ def main(bigrams, att, freq):
 
     pool = create_pool(p)
     scored = score_pool(pool, False, bigrams, att, freq)
-    #think about subsituting a for loop if while takes too long, force an "optimal" --best available layout
+
     while loop:
         prev, b = find_best(scored, b, prev)
         if b > n:
