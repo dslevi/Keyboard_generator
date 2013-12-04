@@ -41,7 +41,7 @@
             $('#loading').fadeOut();
             ready = true;
             var keyboard = data.result;
-   
+            console.log(keyboard);
             makeKeyboard(keyboard);
             makeValues(keyboard);
           });
@@ -144,7 +144,6 @@
                     textarea.innerHTML += visual_value[keys[event.which]][0];
                 }
             }
-            console.log(event.which);
             if ((event.which == 32) || (event.which == 13)) {
                 return false;
             }
@@ -164,5 +163,6 @@
         }
     });
   
+    
     </script>
 {% endblock %}

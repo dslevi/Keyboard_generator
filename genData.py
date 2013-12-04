@@ -461,10 +461,11 @@ def makeKeys(strokes):
         reversed_bigrams.append((bigram_freq[x], x))
     sorted_bigrams = sorted(reversed_bigrams, reverse=True)
     for key in sorted_bigrams:
-        if key != 16:
+        if key != 16 and key != 191:
             keys.append(key[1])
     for key in common_val:
         if key not in keys:
             keys.append(key)
+            
     return keys
 
