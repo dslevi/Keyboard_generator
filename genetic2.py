@@ -135,7 +135,6 @@ def fitness(l, bigrams, att, freq):
     learning = findDiff(qwerty, l)
 
     # cost = (homeDist * 1.5) + (learning/65) + (hfm * 0.75)
-    print (homeDist), (hfm), (learning/400)
     return homeDist + hfm + (learning/400)
 def score_pool(pool, existing, keys, att, freq):
     scored = []
